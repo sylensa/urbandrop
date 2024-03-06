@@ -7,17 +7,15 @@ import 'package:country_calling_code_picker/picker.dart';
 import 'package:country_picker/country_picker.dart' as c;
 import 'package:intl_phone_field/countries.dart' as intl;
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/routes.dart';
-class BusinessDescriptionPage extends StatefulWidget {
-  const BusinessDescriptionPage({super.key});
+class UploadSelfiePage extends StatefulWidget {
+  const UploadSelfiePage({super.key});
 
   @override
-  State<BusinessDescriptionPage> createState() => _BusinessDescriptionPageState();
+  State<UploadSelfiePage> createState() => _UploadSelfiePageState();
 }
 
-class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
-  TextEditingController phoneNumbersController = TextEditingController();
+class _UploadSelfiePageState extends State<UploadSelfiePage> {
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +29,15 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sText("Business description",size: 20,weight: FontWeight.w700),
+            sText("Upload selfie",size: 20,weight: FontWeight.w700),
             const SizedBox(height: 10,),
-            sText("Nearly there! Give a brief description about your business to help users",size: 14),
+            sText("This selfie will be used to verify your identity",size: 14),
             const SizedBox(height: 20,),
-            SizedBox(
-              height: 200,
-              child: CustomDescriptionField(
-                placeholder: "Write description",
-                maxLines: 5,
-                onChange: (value){
-                  setState(() {
-                  });
-                },
-              ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 0),
+              child: Image.asset("assets/images/upload_selfie.png"),
             ),
-            const SizedBox(height: 20,),
-            sText("0/150",color: const Color(0XFF879EA4),size: 12),
+
             const SizedBox(height: 40,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -58,7 +48,20 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
                   height: 50,
                   radius: 30,
                   onPressed: (){
-                    context.push(Routing.verifyIdentityPage);
+                    context.push(Routing.successfulPage);
+                  }),
+            ),
+            const SizedBox(height: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              child: outlineButton(
+                  content: sText("Retake",color: Color(0XFF183A37),size: 18,weight: FontWeight.w600),
+                  backgroundColor: Colors.white,
+                  shadowStrength: 0,
+                  height: 50,
+                  radius: 30,
+                  onPressed: (){
+                    context.push(Routing.takeSelfiePage);
                   }),
             ),
           ],

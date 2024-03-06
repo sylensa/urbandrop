@@ -543,13 +543,15 @@ Widget outlineButton({
   int shadowStrength= 1,
   double borderWidth= 1,
   double height= 60,
+  double width= double.infinity,
   EdgeInsetsGeometry? padding,
-  Color outlineColor= const Color(0xFFf2f2f2),
+  Color outlineColor= const Color(0xFF183A37),
   Color backgroundColor= Colors.white,
-  String family = 'ProximaRegular',
+  String family = 'Red Hat Display',
 }) {
   return Container(
     height: height,
+    width: width,
     decoration: shadowStrength > 0
         ? BoxDecoration(
             boxShadow:

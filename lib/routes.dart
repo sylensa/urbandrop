@@ -9,10 +9,17 @@ import 'package:urbandrop/features/account/confirm_otp.dart';
 import 'package:urbandrop/features/account/forgot_password.dart';
 import 'package:urbandrop/features/account/login_page.dart';
 import 'package:urbandrop/features/account/register.dart';
+import 'package:urbandrop/features/account/selfie.dart';
+import 'package:urbandrop/features/account/successful_page.dart';
+import 'package:urbandrop/features/account/take_selfie.dart';
+import 'package:urbandrop/features/account/upload_selfie.dart';
+import 'package:urbandrop/features/account/verify_identity.dart';
 import 'package:urbandrop/features/account/verrify_mobile.dart';
+import 'package:urbandrop/features/account/welcome_page.dart';
 import 'package:urbandrop/features/home/home_page.dart';
 import 'package:urbandrop/features/home/onboarding_page.dart';
 import 'package:urbandrop/features/home/splash_screen.dart';
+import 'package:urbandrop/main.dart';
 
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -80,6 +87,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ]
                 ),
+                GoRoute(
+                    path: 'successfulPage',
+                    pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: SuccessfulPage()),
+                ),
+                GoRoute(
+                    path: 'welcomePage',
+                    pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: WelcomePage()),
+                ),
 
                 GoRoute(
                   path: 'businessInformationPage',
@@ -90,6 +107,41 @@ final routerProvider = Provider<GoRouter>((ref) {
                         path: 'businessDescriptionPage',
                         pageBuilder: (context, state) =>
                         const NoTransitionPage(child: BusinessDescriptionPage()),
+                          routes: [
+                            GoRoute(
+                              path: 'verifyIdentityPage',
+                              pageBuilder: (context, state) =>
+                              const NoTransitionPage(child: VerifyIdentityPage()),
+                              routes: [
+                                GoRoute(
+                                  path: 'takeSelfiePage',
+                                  pageBuilder: (context, state) =>
+                                  const NoTransitionPage(child: TakeSelfiePage()),
+                                  routes: [
+                                    GoRoute(
+                                      path: 'selfieCameraScreen',
+                                      pageBuilder: (context, state) =>
+                                       NoTransitionPage(child: SelfieCameraScreen(cameras: cameras,)),
+                                        routes: [
+                                          GoRoute(
+                                            path: 'uploadSelfiePage',
+                                            pageBuilder: (context, state) =>
+                                                NoTransitionPage(child: UploadSelfiePage()),
+
+
+                                          ),
+                                        ]
+
+                                    ),
+
+                                  ]
+
+                                ),
+                              ]
+
+                            ),
+
+                          ]
                     ),
                   ]
 
@@ -142,6 +194,12 @@ class Routing {
   static const String confirmPasswordPage = '/splashScreen/confirmEmailPage/confirmPasswordPage';
   static const String businessInformationPage = '/splashScreen/businessInformationPage';
   static const String businessDescriptionPage = '/splashScreen/businessInformationPage/businessDescriptionPage';
+  static const String verifyIdentityPage = '/splashScreen/businessInformationPage/businessDescriptionPage/verifyIdentityPage';
+  static const String takeSelfiePage = '/splashScreen/businessInformationPage/businessDescriptionPage/verifyIdentityPage/takeSelfiePage';
+  static const String selfieCameraScreen = '/splashScreen/businessInformationPage/businessDescriptionPage/verifyIdentityPage/takeSelfiePage/selfieCameraScreen';
+  static const String uploadSelfiePage = '/splashScreen/businessInformationPage/businessDescriptionPage/verifyIdentityPage/takeSelfiePage/selfieCameraScreen/uploadSelfiePage';
   static const String verifyMobilePage = '/splashScreen/registrationPage/verifyMobilePage';
+  static const String welcomePage = '/splashScreen/welcomePage';
+  static const String successfulPage = '/splashScreen/successfulPage';
 
 }

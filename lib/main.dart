@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -5,11 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/utils/themes.dart';
 import 'package:urbandrop/routes.dart';
-
+late List<CameraDescription> cameras;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   UserPreferences.prefs = await SharedPreferences.getInstance();
+  cameras = await availableCameras();
+  print("cameras:$cameras");
+
   runApp(const ProviderScope(child: MyApp())
   );
 }

@@ -7,17 +7,15 @@ import 'package:country_calling_code_picker/picker.dart';
 import 'package:country_picker/country_picker.dart' as c;
 import 'package:intl_phone_field/countries.dart' as intl;
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/routes.dart';
-class BusinessDescriptionPage extends StatefulWidget {
-  const BusinessDescriptionPage({super.key});
+class SuccessfulPage extends StatefulWidget {
+  const SuccessfulPage({super.key});
 
   @override
-  State<BusinessDescriptionPage> createState() => _BusinessDescriptionPageState();
+  State<SuccessfulPage> createState() => _SuccessfulPageState();
 }
 
-class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
-  TextEditingController phoneNumbersController = TextEditingController();
+class _SuccessfulPageState extends State<SuccessfulPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -29,25 +27,14 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
       body: Container(
         padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            sText("Business description",size: 20,weight: FontWeight.w700),
-            const SizedBox(height: 10,),
-            sText("Nearly there! Give a brief description about your business to help users",size: 14),
             const SizedBox(height: 20,),
-            SizedBox(
-              height: 200,
-              child: CustomDescriptionField(
-                placeholder: "Write description",
-                maxLines: 5,
-                onChange: (value){
-                  setState(() {
-                  });
-                },
-              ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 0),
+              child: Image.asset("assets/images/check-circle_white.png",width: 200,height: 200,),
             ),
-            const SizedBox(height: 20,),
-            sText("0/150",color: const Color(0XFF879EA4),size: 12),
+            sText("Uploaded Successfully",size: 20,weight: FontWeight.w700),
             const SizedBox(height: 40,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -58,9 +45,10 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
                   height: 50,
                   radius: 30,
                   onPressed: (){
-                    context.push(Routing.verifyIdentityPage);
+                    context.push(Routing.welcomePage);
                   }),
             ),
+
           ],
         ),
       ),
