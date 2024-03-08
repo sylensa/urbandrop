@@ -45,7 +45,7 @@ class _SuccessfulPageState extends State<SuccessfulPage> {
                   height: 50,
                   radius: 30,
                   onPressed: (){
-                    context.push(Routing.welcomePage);
+                    context.push(Routing.workspacePage);
                   }),
             ),
 

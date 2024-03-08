@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                       radius: 30,
                       onPressed: (){
-                        context.push(Routing.verifyMobilePage);
+                        context.push(Routing.workspacePage);
                       }),
                 ),
                 const SizedBox(height: 20,),

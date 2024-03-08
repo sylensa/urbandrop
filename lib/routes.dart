@@ -17,8 +17,9 @@ import 'package:urbandrop/features/account/verify_identity.dart';
 import 'package:urbandrop/features/account/verrify_mobile.dart';
 import 'package:urbandrop/features/account/welcome_page.dart';
 import 'package:urbandrop/features/home/home_page.dart';
-import 'package:urbandrop/features/home/onboarding_page.dart';
-import 'package:urbandrop/features/home/splash_screen.dart';
+import 'package:urbandrop/features/account/onboarding_page.dart';
+import 'package:urbandrop/features/account/splash_screen.dart';
+import 'package:urbandrop/features/home/workspace.dart';
 import 'package:urbandrop/main.dart';
 
 
@@ -96,6 +97,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: 'welcomePage',
                     pageBuilder: (context, state) =>
                     const NoTransitionPage(child: WelcomePage()),
+                ),
+                GoRoute(
+                    path: 'workspacePage',
+                    pageBuilder: (context, state) =>
+                     NoTransitionPage(child: WorkspacePage()),
                 ),
 
                 GoRoute(
@@ -179,7 +185,6 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 class Routing {
   static const String homePage = '/';
-  static const String workspacePage = '/workspace';
   static const String phoneVerificationPage = '/loginPage/resetPassword';
   static const String forceUpdatePage = '/forceUpdate';
   static const String confirmPassword = '/confirmPassword';
@@ -200,6 +205,7 @@ class Routing {
   static const String uploadSelfiePage = '/splashScreen/businessInformationPage/businessDescriptionPage/verifyIdentityPage/takeSelfiePage/selfieCameraScreen/uploadSelfiePage';
   static const String verifyMobilePage = '/splashScreen/registrationPage/verifyMobilePage';
   static const String welcomePage = '/splashScreen/welcomePage';
+  static const String workspacePage = '/splashScreen/workspacePage';
   static const String successfulPage = '/splashScreen/successfulPage';
 
 }
