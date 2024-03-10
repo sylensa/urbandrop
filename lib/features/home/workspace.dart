@@ -6,6 +6,7 @@ import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/home/dashboard.dart';
 import 'package:urbandrop/features/home/menu_page.dart';
+import 'package:urbandrop/features/home/notification.dart';
 import 'package:urbandrop/features/home/orders_page.dart';
 import 'package:urbandrop/features/widget/daily_summary_widget.dart';
 import 'package:urbandrop/features/widget/flutter_switch.dart';
@@ -149,7 +150,7 @@ class _WorkspacePageState extends State<WorkspacePage> with TickerProviderStateM
                 const DashboardPage(),
                 const MenuPage(),
                 const OrdersPage(),
-                Container(),
+                const NotificationPage(),
                 Container(),
               ],
             ),

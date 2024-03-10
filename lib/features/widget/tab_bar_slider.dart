@@ -6,11 +6,13 @@ import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/features/widget/custom_text_field.dart';
 
 
 class TabBarSlider extends StatefulWidget {
   List<Widget> child ;
-  TabBarSlider({Key? key, this.child = const []}) : super(key: key);
+  List<Tab> myTabs;
+  TabBarSlider({Key? key, this.child = const [], this.myTabs = const[]}) : super(key: key);
 
   @override
   State<TabBarSlider> createState() => _TabBarSliderState();
@@ -19,29 +21,12 @@ class TabBarSlider extends StatefulWidget {
 class _TabBarSliderState extends State<TabBarSlider> with SingleTickerProviderStateMixin {
   late TabController tabController;
   int currentTabIndex = 0;
-  List<Tab> myTabs = <Tab> [
-    const Tab(
-      text: "All",
-    ),
-    const Tab(
-      text: "Pending",
-    ),
-    const Tab(
-      text: "Confirm",
-    ),
-    const Tab(
-      text: "In Progress",
-    ),
-    const Tab(
-      text: "Completed",
-    ),
-  ];
 
   @override
   void initState() {
     // TODO: implement initState
 
-    tabController = TabController(length: myTabs.length ,vsync: this,initialIndex: currentTabIndex)
+    tabController = TabController(length: widget.myTabs.length ,vsync: this,initialIndex: currentTabIndex)
       ..addListener(() {
         setState(() {
           currentTabIndex = tabController.index;
@@ -55,7 +40,7 @@ class _TabBarSliderState extends State<TabBarSlider> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: myTabs.length,
+      length: widget.myTabs.length,
       child: Container(
         height:appHeight(context) * 0.723,
         width: appWidth(context),
@@ -84,7 +69,7 @@ class _TabBarSliderState extends State<TabBarSlider> with SingleTickerProviderSt
               ),
               indicatorColor: Colors.transparent ,
 
-              tabs: myTabs
+              tabs: widget.myTabs
                   .map<Widget>((myTab) => Tab(
                 child:   AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
@@ -94,14 +79,14 @@ class _TabBarSliderState extends State<TabBarSlider> with SingleTickerProviderSt
 
                   // width: 110,
                   decoration: BoxDecoration(
-                      color:   currentTabIndex == myTabs.indexOf(myTab) ? primaryColor : Colors.white,
+                      color:   currentTabIndex == widget.myTabs.indexOf(myTab) ? primaryColor : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: primaryColor)
                   ),
                   child: Text(
                     myTab.text!,
                     style: TextStyle(
-                        color:   currentTabIndex == myTabs.indexOf(myTab)? Colors.white : primaryColor,
+                        color:   currentTabIndex == widget.myTabs.indexOf(myTab)? Colors.white : primaryColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 12
                     ),
