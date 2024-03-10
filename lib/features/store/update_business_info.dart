@@ -11,50 +11,35 @@ import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/features/widget/social_login_widgets.dart';
 import 'package:urbandrop/routes.dart';
 
-class BusinessInformationPage extends StatefulWidget {
-  const BusinessInformationPage({super.key});
+class UpdateBusinessInformationPage extends StatefulWidget {
+  const UpdateBusinessInformationPage({super.key});
 
   @override
-  State<BusinessInformationPage> createState() => _BusinessInformationPageState();
+  State<UpdateBusinessInformationPage> createState() => _UpdateBusinessInformationPageState();
 }
 
-class _BusinessInformationPageState extends State<BusinessInformationPage> {
+class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformationPage> {
   AuthenticationController authenticationController = AuthenticationController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: Colors.white,
       key: scaffoldKey,
+      appBar: AppBar(
+        title: sText("Shop information",size: 15,weight: FontWeight.w600),
+        centerTitle: true,
+        elevation: 1,
+        backgroundColor: Colors.white,
+      ),
       body: Column(
         children: [
-          Stack(
-            children: [
-              Container(
-                height: 200,
-                padding: const EdgeInsets.only(top: 0),
-                width: appWidth(context),
-                color: primaryColor,
-              ),
-              Positioned(
-                top: 70,
-                child: Image.asset("assets/images/white_image.png",color: Colors.white,width: appWidth(context),height: 270,fit: BoxFit.fitHeight,),
-              ),
-              Positioned(
-                top: 10,
-                child: Image.asset("assets/images/background_1.png",width: appWidth(context),height: 300,fit: BoxFit.fitHeight,),
-              ),
-            ],
-          ),
           const SizedBox(height: 20,),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
-                sText("Business information",size: 20,weight: FontWeight.w700),
-                const SizedBox(height: 10,),
-                sText("Nearly there! Tell us the name of your business. This name will be displayed on your profile.",size: 14),
-                const SizedBox(height: 20,),
                 CustomTextField(
                   placeholder: "Business name",
                   onChange: (value){
@@ -79,6 +64,21 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                     ],
                   ),
                 ),
+              
+                const SizedBox(height: 20,),
+                SizedBox(
+                  height: 200,
+                  child: CustomDescriptionField(
+                    placeholder: "Write description",
+                    maxLines: 5,
+                    onChange: (value){
+                      setState(() {
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                sText("0/150",color: const Color(0XFF879EA4),size: 12),
                 const SizedBox(height: 20,),
                 CustomTextField(
                   placeholder: "Address",
@@ -118,13 +118,12 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                 ),
                 const SizedBox(height: 20,),
                 mainButton(
-                    content: sText("Continue",color: Colors.white,size: 18,weight: FontWeight.w600),
+                    content: sText("Save",color: Colors.white,size: 18,weight: FontWeight.w600),
                     backgroundColor: primaryColor,
                     shadowStrength: 0,
                     height: 50,
                     radius: 30,
                     onPressed: (){
-                      context.push(Routing.businessDescriptionPage);
                     }),
                 const SizedBox(height: 20,),
 

@@ -7,7 +7,8 @@ import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/home/dashboard.dart';
 import 'package:urbandrop/features/home/menu_page.dart';
 import 'package:urbandrop/features/home/notification.dart';
-import 'package:urbandrop/features/home/orders_page.dart';
+import 'package:urbandrop/features/orders/orders_page.dart';
+import 'package:urbandrop/features/store/store.dart';
 import 'package:urbandrop/features/widget/daily_summary_widget.dart';
 import 'package:urbandrop/features/widget/flutter_switch.dart';
 
@@ -146,12 +147,12 @@ class _WorkspacePageState extends State<WorkspacePage> with TickerProviderStateM
             child: PageView(
               physics: const NeverScrollableScrollPhysics(),
               controller: _controller,
-              children: [
-                const DashboardPage(),
-                const MenuPage(),
-                const OrdersPage(),
-                const NotificationPage(),
-                Container(),
+              children: const [
+                DashboardPage(),
+                MenuPage(),
+                OrdersPage(),
+                NotificationPage(),
+                StorePage(),
               ],
             ),
           ),

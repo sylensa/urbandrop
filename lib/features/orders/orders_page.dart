@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/features/widget/recent_order_widget.dart';
 import 'package:urbandrop/features/widget/tab_bar_slider.dart';
+import 'package:urbandrop/routes.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
@@ -78,11 +80,16 @@ class _OrdersWidgetPageState extends State<OrdersWidgetPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
               itemCount: 10,
               itemBuilder: (context, index){
-            return const Column(
-              children: [
-                RecentOrder(),
-                SizedBox(height: 20,)
-              ],
+            return InkWell(
+              onTap: (){
+                context.go(Routing.orderDetailsPage);
+              },
+              child: const Column(
+                children: [
+                  RecentOrder(),
+                  SizedBox(height: 20,)
+                ],
+              ),
             );
           }),
         )

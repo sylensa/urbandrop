@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/product_widget.dart';
+import 'package:urbandrop/routes.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -36,7 +38,9 @@ class _MenuPageState extends State<MenuPage> {
                       Image.asset("assets/images/add.png",width: 15,)
                     ],
                   )
-                  , onPressed:(){}),
+                  , onPressed:(){
+                    context.go(Routing.addProduct);
+              }),
             ],
           ),
           const SizedBox(height: 20,),
