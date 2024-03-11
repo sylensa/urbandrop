@@ -23,12 +23,18 @@ import 'package:urbandrop/features/home/workspace.dart';
 import 'package:urbandrop/features/orders/order_details.dart';
 import 'package:urbandrop/features/product/add_product.dart';
 import 'package:urbandrop/features/settings/account_options.dart';
+import 'package:urbandrop/features/settings/contact_support.dart';
+import 'package:urbandrop/features/settings/deactivate_account.dart';
+import 'package:urbandrop/features/settings/delete_account.dart';
+import 'package:urbandrop/features/settings/faq.dart';
 import 'package:urbandrop/features/settings/notification_settings.dart';
 import 'package:urbandrop/features/settings/notification_types.dart';
 import 'package:urbandrop/features/settings/reset_pssword.dart';
 import 'package:urbandrop/features/settings/settings_page.dart';
 import 'package:urbandrop/features/settings/two_factor.dart';
+import 'package:urbandrop/features/store/add_promotions_page.dart';
 import 'package:urbandrop/features/store/payment_information.dart';
+import 'package:urbandrop/features/store/promotions.dart';
 import 'package:urbandrop/features/store/schedule.dart';
 import 'package:urbandrop/features/store/update_business_info.dart';
 import 'package:urbandrop/main.dart';
@@ -145,6 +151,19 @@ final routerProvider = Provider<GoRouter>((ref) {
 
                         ),
                         GoRoute(
+                          path: 'promotionsPage',
+                          pageBuilder: (context, state) =>
+                              const NoTransitionPage(child: PromotionsPage()),
+                          routes: [
+                            GoRoute(
+                              path: 'addPromotionsPage',
+                              pageBuilder: (context, state) =>
+                              const NoTransitionPage(child: AddPromotionsPage()),
+                            ),
+                          ]
+                        ),
+
+                        GoRoute(
                           path: 'settingsPage',
                           pageBuilder: (context, state) =>
                               const NoTransitionPage(child: SettingsPage()),
@@ -159,6 +178,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                                   path: 'twoFactor',
                                   pageBuilder: (context, state) =>
                                   const NoTransitionPage(child: TwoFactor()),
+
+                                ),
+                                GoRoute(
+                                  path: 'contactSupportPage',
+                                  pageBuilder: (context, state) =>
+                                  const NoTransitionPage(child: ContactSupportPage()),
+
+                                ),
+                                GoRoute(
+                                  path: 'faqPages',
+                                  pageBuilder: (context, state) =>
+                                  const NoTransitionPage(child: FaqPages()),
 
                                 ),
                                 GoRoute(
@@ -177,8 +208,22 @@ final routerProvider = Provider<GoRouter>((ref) {
                                   path: 'accountOptionsPage',
                                   pageBuilder: (context, state) =>
                                   const NoTransitionPage(child: AccountOptionsPage()),
+                                    routes: [
+                                      GoRoute(
+                                        path: 'deleteAccount',
+                                        pageBuilder: (context, state) =>
+                                        const NoTransitionPage(child: DeleteAccount()),
 
+                                      ),
+                                      GoRoute(
+                                        path: 'deactivateAccount',
+                                        pageBuilder: (context, state) =>
+                                        const NoTransitionPage(child: DeactivateAccount()),
+
+                                      ),
+                                    ]
                                 ),
+
                               ]
                         ),
                       ]
@@ -291,7 +336,13 @@ class Routing {
   static const String settingsPage = '/splashScreen/workspacePage/settingsPage';
   static const String resetPassword = '/splashScreen/workspacePage/settingsPage/resetPassword';
   static const String twoFactor = '/splashScreen/workspacePage/settingsPage/twoFactor';
+  static const String faqPages = '/splashScreen/workspacePage/settingsPage/faqPages';
+  static const String promotionsPage = '/splashScreen/workspacePage/promotionsPage';
+  static const String addPromotionsPage = '/splashScreen/workspacePage/promotionsPage/addPromotionsPage';
+  static const String contactSupportPage = '/splashScreen/workspacePage/settingsPage/contactSupportPage';
   static const String accountOptionsPage = '/splashScreen/workspacePage/settingsPage/accountOptionsPage';
+  static const String deleteAccount = '/splashScreen/workspacePage/settingsPage/accountOptionsPage/deleteAccount';
+  static const String deactivateAccount = '/splashScreen/workspacePage/settingsPage/accountOptionsPage/deactivateAccount';
   static const String notificationSettingTypesPage = '/splashScreen/workspacePage/settingsPage/notificationSettingTypesPage';
   static const String notificationSettingPage = '/splashScreen/workspacePage/settingsPage/notificationSettingPage';
   static const String paymentInformation = '/splashScreen/workspacePage/paymentInformation';

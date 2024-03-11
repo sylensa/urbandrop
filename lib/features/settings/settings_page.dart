@@ -82,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       image: "infos.png",
                       content: "FAQs",
                       onTap: (){
-                        context.push(Routing.schedulePage);
+                        context.push(Routing.faqPages);
                       },
                     ),
                     const SizedBox(height: 20,),
@@ -90,6 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       image: "support.png",
                       content: "Contact support",
                       onTap: (){
+                        context.push(Routing.contactSupportPage);
 
                       },
                     ),

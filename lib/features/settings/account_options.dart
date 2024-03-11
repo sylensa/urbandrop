@@ -39,7 +39,7 @@ class _AccountOptionsPageState extends State<AccountOptionsPage> {
                       image: "options.png",
                       content: "Deactivate Account",
                       onTap: (){
-                        context.push(Routing.resetPassword);
+                        context.push(Routing.deactivateAccount);
                       },
                     ),
                     const SizedBox(height: 20,),
@@ -47,7 +47,7 @@ class _AccountOptionsPageState extends State<AccountOptionsPage> {
                       image: "delete.png",
                       content: "Delete Account",
                       onTap: (){
-                        context.push(Routing.twoFactor);
+                        context.push(Routing.deleteAccount);
                       },
                     ),
 

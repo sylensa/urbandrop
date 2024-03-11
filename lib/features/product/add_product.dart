@@ -111,6 +111,13 @@ class _AddProductState extends State<AddProduct> {
                     ),
                   ),
                   const SizedBox(height: 20,),
+                  CustomTextAmountField(
+                    placeholder: "00.00 p",
+                    onChange: (value){
+
+                    },
+                  ),
+                  const SizedBox(height: 20,),
                   CustomTextField(
                     placeholder: "Quantity (optional)",
                     onChange: (value){

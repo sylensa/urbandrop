@@ -91,7 +91,7 @@ class _StorePageState extends State<StorePage> {
                           image: "promo.png",
                           content: "Promotions",
                           onTap: (){
-
+                            context.push(Routing.promotionsPage);
                           },
                         ),
                         const SizedBox(height: 20,),
