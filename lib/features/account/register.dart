@@ -136,7 +136,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: "Sign up with Google",
                   image: "assets/images/google.png",
                   onTap: () async{
-                    await AuthenticationController().signInWithGoogle(context,scaffoldKey,isLoggedIn: false);
+                    // await AuthenticationController().signInWithGoogle(context,scaffoldKey,isLoggedIn: false);
 
 
                   },
@@ -148,7 +148,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: "Sign up with Apple",
                   image: "assets/images/apple.png",
                   onTap: () async{
-                    await AuthenticationController().appleLogin(context,scaffoldKey,isLoggedIn: false);
+                    // await AuthenticationController().appleLogin(context,scaffoldKey,isLoggedIn: false);
                   },
                 ),
                 const SizedBox(height: 10,),
