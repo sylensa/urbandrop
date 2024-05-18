@@ -57,7 +57,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     prefixImage: "email.png",
                     onChange: (value){
                       setState(() {
-                        authenticationController.emailValid = EmailValidator.validate(value);
+                        authenticationController.emailValid = EmailValidator.validate(value.trim());
                         authenticationController.email = value;
                       });
                     },
@@ -107,7 +107,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       height: 50,
                       radius: 30,
                       onPressed: (){
-                        context.push(Routing.verifyMobilePage);
+                        authenticationController.register(context, false);
+
                       }),
                 ),
                 const SizedBox(height: 20,),
@@ -136,7 +137,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: "Sign up with Google",
                   image: "assets/images/google.png",
                   onTap: () async{
-                    // await AuthenticationController().signInWithGoogle(context,scaffoldKey,isLoggedIn: false);
+                    await AuthenticationController().signInWithGoogle(context,scaffoldKey,isLoggedIn: false);
 
 
                   },
@@ -148,7 +149,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: "Sign up with Apple",
                   image: "assets/images/apple.png",
                   onTap: () async{
-                    // await AuthenticationController().appleLogin(context,scaffoldKey,isLoggedIn: false);
+                    await AuthenticationController().appleLogin(context,scaffoldKey,isLoggedIn: false);
                   },
                 ),
                 const SizedBox(height: 10,),

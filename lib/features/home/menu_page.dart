@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/product_widget.dart';
+import 'package:urbandrop/features/widget/smart_refresh.dart';
 import 'package:urbandrop/routes.dart';
 
 class MenuPage extends StatefulWidget {
@@ -17,6 +20,7 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
+    final state = Get.put(ProductsController());
     return Container(
       padding: const EdgeInsets.only(top: 70,left: 20,right: 20),
       child: Column(
@@ -44,26 +48,37 @@ class _MenuPageState extends State<MenuPage> {
             ],
           ),
           const SizedBox(height: 20,),
+          Obx(() =>  state.loading.value ?
+          Expanded(child: Center(child: progressCircular(),)) :
+          state.listProducts.value.isNotEmpty ?
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal:00,vertical: 20),
-              itemCount: 10,
-              gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisExtent: 200,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing:10
+            child: SmartRefresh(
+              onLoading: state.onLoading,
+              onRefresh: state.onRefresh,
+              child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal:00,vertical: 20),
+                  itemCount: 10,
+                  gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 200,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing:10
 
+                  ),
+                  itemBuilder:(context, index){
+                    return  Row(
+                      children: [
+                        Expanded(child: ProductWidget(productData: state.listProducts.value[index],))
+                      ],
+                    );
+                  }
               ),
-                itemBuilder:(context, index){
-                  return const Row(
-                    children: [
-                      Expanded(child: ProductWidget())
-                    ],
-                  );
-                }
-            ),
-          )
+            )
+
+            ,
+          ) :
+          Expanded(child: Center(child: sText( state.errorMessage.value.isEmpty ? "No products" :  state.errorMessage.value),))),
+
         ],
       ),
     );

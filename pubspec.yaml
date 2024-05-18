@@ -92,7 +92,7 @@ dependencies:
   fl_chart: ^0.41.0
   another_xlider: ^1.1.2
   modal_bottom_sheet: ^2.1.2
-  image_picker: ^0.8.6+1
+  image_picker: ^1.1.1
   camera: ^0.9.4
   path: ^1.8.2
   pull_to_refresh: ^2.0.0
@@ -137,6 +137,7 @@ dependencies:
   go_router: ^10.0.0
   email_validator: ^2.1.17
   global_bottom_navigation_bar: ^0.0.8
+  animated_custom_dropdown: ^3.0.0
 
 
 dev_dependencies:

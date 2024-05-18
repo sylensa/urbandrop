@@ -102,7 +102,8 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                       radius: 30,
                       onPressed: (){
-                        context.push(Routing.workspacePage);
+                        authenticationController.login(context, scaffoldKey);
+
                       }),
                 ),
                 const SizedBox(height: 20,),
@@ -131,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                   title: "Sign in with Google",
                   image: "assets/images/google.png",
                   onTap: () async{
-                    // await AuthenticationController().signInWithGoogle(context,scaffoldKey,isLoggedIn: false);
+                    await AuthenticationController().signInWithGoogle(context,scaffoldKey,isLoggedIn: false);
 
 
                   },
@@ -143,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                   title: "Sign in with Apple",
                   image: "assets/images/apple.png",
                   onTap: () async{
-                    // await AuthenticationController().appleLogin(context,scaffoldKey,isLoggedIn: false);
+                    await AuthenticationController().appleLogin(context,scaffoldKey,isLoggedIn: false);
                   },
                 ),
                 const SizedBox(height: 10,),

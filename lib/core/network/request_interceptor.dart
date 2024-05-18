@@ -4,10 +4,13 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
+import 'package:urbandrop/core/helper/helper.dart';
+import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
 import 'package:urbandrop/main.dart';
+import 'package:urbandrop/models/user.dart';
 
 
 
@@ -15,7 +18,7 @@ import 'package:urbandrop/main.dart';
   'Content-Type': 'application/json',
   'Accept': 'application/json',
   'Authorization': 'Bearer ${UserPreferences.accessToken}',
-  'x-api-key': apiKey,
+  'x-api-key': MERCHANT_API_KEY,
   'x-client' : 'mobile'
 };
 
@@ -96,7 +99,7 @@ class HeadersInterceptor extends Interceptor {
 
     //todo: refresh access token
     var body = {
-      // "id": userInstance!.id,
+      "id": userInstance!.id,
       "refresh_token" : UserPreferences.refreshToken
     };
    try{
@@ -104,11 +107,11 @@ class HeadersInterceptor extends Interceptor {
      var res  = await _http.postRequest('${AppUrl.refreshToken}', body);
      print("res object refreshToken:$res");
      if(res["status"] == AppResponseCodes.success){
-       // UserModel user = UserModel.fromJson(res['data']);
-       // await UserPreferences().setUser(res['data']);
-       // await UserPreferences().setToken(user.token!);
-       // await UserPreferences().setRefreshToken(user.refreshToken!);
-       // return user.token;
+       UserModel user = UserModel.fromJson(res['data']);
+       await UserPreferences().setUser(res['data']);
+       await UserPreferences().setToken(user.token!);
+       await UserPreferences().setRefreshToken(user.refreshToken!);
+       return user.token;
      }else{
        return null;
      }

@@ -46,7 +46,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   height: 50,
                   radius: 30,
                   onPressed: (){
-                    context.push(Routing.splashScreen);
+                    context.push(Routing.splashScreen,extra: false);
                   }),
             ),
 

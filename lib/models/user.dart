@@ -1,24 +1,23 @@
 // To parse this JSON data, do
 //
-//     final userModel = userModelFromJson(jsonString);
+//     final UserDataModel = UserDataModelFromJson(jsonString);
 
 import 'dart:convert';
-import 'dart:math';
 
-UserDataModel userModelFromJson(String? str) => UserDataModel.fromJson(json.decode(str!));
+UserDataModel userDataModelFromJson(String str) => UserDataModel.fromJson(json.decode(str));
 
-String? userModelToJson(UserDataModel data) => json.encode(data.toJson());
+String userDataModelToJson(UserDataModel data) => json.encode(data.toJson());
 
 class UserDataModel {
+  String? status;
+  UserModel? data;
+  String? message;
+
   UserDataModel({
     this.status,
     this.data,
     this.message,
   });
-
-  bool? status;
-  UserModel? data;
-  String? message;
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) => UserDataModel(
     status: json["status"],
@@ -28,349 +27,163 @@ class UserDataModel {
 
   Map<String, dynamic> toJson() => {
     "status": status,
-    "data": data == null ? null : data!.toJson(),
+    "data": data?.toJson(),
     "message": message,
   };
 }
 
 class UserModel {
-  UserModel({
-    this.id,
-    this.fullName,
-    this.email,
-    this.mobileNumber,
-    this.gender,
-    this.userType,
-    this.tagName,
-    this.strapLine,
-    this.city,
-    this.country,
-    this.stageName,
-    this.photoUrl,
-    this.bio,
-    this.isActive,
-    this.gcid,
-    this.token,
-    this.refreshToken,
-    this.emailVerified,
-    this.biometricEnable,
-    this.newSocialLogin,
-    this.passcode,
-    this.walletBalance,
-    this.mobileNumberVerified,
-    this.currency,
-    this.firstName,
-    this.lastName,
-    this.backdropUrl,
-    this.isPrivate,
-    this.profileCompletion,
-    this.followers,
-    this.following,
-    this.followsYou,
-    this.youFollow,
-    this.missingProfileItems,
-    this.collectedCardsCount,
-    this.createdCardsCount,
-    this.tiktok,
-    this.twitter,
-    this.facebook,
-    this.instagram,
-    this.website,
-    this.state,
-    this.trash,
-    this.archived,
-    this.date_of_birth,
-    this.post_code,
-    this.address_line_1,
-    this.address_line_2,
-    this.billing_info_set,
-    this.ownershipPercentage,
-    this.spendBalance,
-    this.verified,
-    this.mcc,
-    this.document_uploaded,
-    this.kyc_completed,
-    this.access,
-    this.weavr,
-    this.shareholders,
-    this.songs,
-    this.selected,
-    this.topHolders,
-    this.notificationPreferences,
-    this.block,
-  });
-
   String? id;
-  Weavr? weavr;
-  String? fullName;
+  String? gcId;
   String? email;
-  String? mobileNumber;
-  String? gender;
-  String? userType;
-  String? tagName;
-  String? strapLine;
-  String? city;
-  String? country;
-  String? stageName;
-  String? songs;
-  bool? verified;
-  bool? block;
-  bool? selected;
-  String? photoUrl;
-  String? bio;
+  bool? emailVerified;
   bool? isActive;
-  bool? isPrivate;
-  dynamic date_of_birth;
-  dynamic shareholders;
-  String? gcid;
+  String? businessName;
+  String? mcc;
+  String? mobileNumber;
+  bool? mobileNumberVerified;
+  String? businessDescription;
+  String? merchantCategory;
+  String? imageUrl;
+  String? bannerUrl;
+  bool? verified;
+  bool? available;
+  bool? active;
+  bool? mfaActive;
+  int? rating;
+  bool? documentSubmitted;
+  Notifications? notifications;
+  String? address;
+  String? city;
+  String? postCode;
+  String? accountName;
+  String? accountNumber;
+  String? bankName;
+  String? bankCode;
+  String? bankBranch;
   String? token;
   String? refreshToken;
-  bool? emailVerified;
-  bool? biometricEnable;
-  dynamic newSocialLogin;
-  String? passcode;
-  String? currency;
-  String? firstName;
-  String? lastName;
-  String? state;
-  String? post_code;
-  String? address_line_1;
-  String? address_line_2;
-  String? mcc;
-  bool? billing_info_set;
-  bool? access;
-  bool? mobileNumberVerified;
-  dynamic walletBalance;
-  dynamic spendBalance;
-  dynamic profileCompletion;
-  List<String>? missingProfileItems;
-  String? backdropUrl;
-  String? twitter;
-  String? facebook;
-  String? instagram;
-  String? website;
-  String? tiktok;
-  bool? youFollow;
-  bool? followsYou;
-  bool? document_uploaded;
-  bool? kyc_completed;
-  int? followers;
-  int? following;
-  dynamic collectedCardsCount;
-  dynamic createdCardsCount;
-  bool? archived;
-  bool? trash;
-  dynamic ownershipPercentage;
-  List<TopHolder>? topHolders;
-  List<NotificationPreference>? notificationPreferences;
+
+  UserModel({
+    this.id,
+    this.gcId,
+    this.email,
+    this.emailVerified,
+    this.businessName,
+    this.mcc,
+    this.mobileNumber,
+    this.mobileNumberVerified,
+    this.businessDescription,
+    this.merchantCategory,
+    this.imageUrl,
+    this.bannerUrl,
+    this.verified,
+    this.available,
+    this.active,
+    this.mfaActive,
+    this.rating,
+    this.documentSubmitted,
+    this.notifications,
+    this.address,
+    this.city,
+    this.postCode,
+    this.accountName,
+    this.accountNumber,
+    this.bankName,
+    this.bankCode,
+    this.bankBranch,
+    this.token,
+    this.refreshToken,
+    this.isActive,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    id: json["id"],
-    fullName: json["full_name"] ?? "",
-    state: json["state"] ?? "",
-    mcc: json["mcc"] ?? "+44",
-    archived: json["archived"] ?? false,
-    block: json["block"] ?? false,
-    selected: json["selected"] ?? false,
-    access: json["access"] ?? false,
-    trash: json["trash"] ?? false,
-    shareholders: json["shareholders"] ?? "",
-    kyc_completed: json["kyc_completed"] ?? false,
-    verified: json["verified"] ?? false,
-    document_uploaded: json["document_uploaded"] ?? false,
-    address_line_1: json["address_line_1"] ?? "",
-    address_line_2: json["address_line_2"] ?? "",
-    post_code: json["post_code"] ?? "",
-    songs: json["songs"] ?? "0",
-    billing_info_set: json["billing_info_set"] ?? false,
-    ownershipPercentage: json["ownership_percentage"] ?? "",
-    missingProfileItems: json["missing_profile_items"] == null ? [] : List<String>.from(json["missing_profile_items"]!.map((x) => x)),
-    youFollow: json["you_follow"] ?? false,
-    createdCardsCount: json["created_cards_count"] ?? 0,
-    collectedCardsCount: json["collected_cards_count"] ?? 0,
-    spendBalance: json["spend_balance"] == null || json["spend_balance"] .toString().isEmpty ? "0.00" : json["spend_balance"].toString(),
-    twitter: json["twitter"] ?? "",
-    facebook: json["facebook"] ?? "",
-    instagram: json["instagram"] ?? "",
-    tiktok: json["tiktok"] ?? "",
-    website: json["website"] ?? "",
-    followsYou: json["follows_you"] ?? false,
-    followers: json["followers"] ?? 0,
-    following: json["following"] ?? 0,
-    isPrivate: json["is_private"] ?? false,
-    profileCompletion: json["profile_completion"] ?? "0",
-    firstName: json["first_name"] ?? "",
-    lastName: json["last_name"] ?? "",
+    id: json["id"] ?? "",
+    gcId: json["gc_id"] ?? "",
+    isActive: json["is_active"] == 1 ? true : false,
     email: json["email"] ?? "",
-    currency: json["currency"] ?? "£",
+    emailVerified: json["email_verified"] == 1 ? true : false,
+    businessName: json["business_name"] ?? "",
+    mcc: json["mcc"] ?? "",
     mobileNumber: json["mobile_number"] ?? "",
-    gender: json["gender"] ?? "",
-    userType: json["user_type"] ?? "",
-    tagName: json["tag_name"] ?? "",
-    strapLine: json["strap_line"] ?? "",
+    mobileNumberVerified: json["mobile_number_verified"] == 1 ? true : false,
+    businessDescription: json["business_description"] ?? "",
+    merchantCategory: json["merchant_category"] ?? "",
+    imageUrl: json["image_url"] ?? "",
+    bannerUrl: json["banner_url"] ?? "",
+    verified: json["verified"] == 1 ? true : false,
+    available: json["available"] == 1 ? true : false,
+    active: json["active"] == 1 ? true : false,
+    mfaActive: json["mfa_active"] == 1 ? true : false,
+    rating: json["rating"] ?? "",
+    documentSubmitted: json["document_submitted"] == 1 ? true : false,
+    notifications: json["notifications"] == null ? null : Notifications.fromJson(jsonDecode(json["notifications"])),
+    address: json["address"] ?? "",
     city: json["city"] ?? "",
-    backdropUrl: json["backdrop_url"] ?? "",
-    country: json["country"] ?? "",
-    stageName: json["stage_name"] ?? "",
-    photoUrl: json["photo_url"] ?? "",
-    bio: json["bio"] ?? "",
-    isActive: json["is_active"] ?? false,
-    date_of_birth: json["date_of_birth"] ?? "",
-    gcid: json["gcid"] ?? "",
+    postCode: json["post_code"] ?? "",
+    accountName: json["account_name"] ?? "",
+    accountNumber: json["account_number"] ?? "",
+    bankName: json["bank_name"] ?? "",
+    bankCode: json["bank_code"] ?? "",
+    bankBranch: json["bank_branch"] ?? "",
     token: json["token"] ?? "",
-    notificationPreferences: json["notification_preferences"] == null ? [] : List<NotificationPreference>.from(json["notification_preferences"]!.map((x) => NotificationPreference.fromJson(x))),
     refreshToken: json["refresh_token"] ?? "",
-    emailVerified: json["email_verified"] ?? false,
-    biometricEnable: json["biometric_enabled"] ?? false,
-    newSocialLogin: json["new_social_login"] ?? false,
-    mobileNumberVerified: json["mobile_number_verified"] ?? false,
-    passcode: json["pass_code"],
-    topHolders: json["topHolders"] == null ? [] : List<TopHolder>.from(json["topHolders"]!.map((x) => TopHolder.fromJson(x))),
-    weavr: json["weavr"] == null ? null : Weavr.fromJson(json["weavr"]),
-    walletBalance: json["wallet_balance"] == null ? "0.00" :json["wallet_balance"].toString().isNotEmpty ? json["wallet_balance"] : "0.00",
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "full_name": fullName,
+    "gc_id": gcId,
     "email": email,
-    "weavr": weavr?.toJson(),
-    "ownership_percentage": ownershipPercentage,
-    "profile_completion": profileCompletion ?? "",
-    "is_private": isPrivate ?? false,
-    "kyc_completed": kyc_completed ?? false,
-    "access": access ?? access,
-    "mobile_number": mobileNumber,
-    "gender": gender,
-    "notification_preferences": notificationPreferences == null ? [] : List<dynamic>.from(notificationPreferences!.map((x) => x.toJson())),
-
-    "user_type": userType,
-    "tag_name": tagName,
-    "strap_line": strapLine,
-    "city": city,
-    "backdrop_url": backdropUrl ?? "",
-    "website": website ?? "",
-    "archived": archived ?? false,
-    "trash": trash ?? false,
-    "block": block ?? false,
-    "country": country,
-    "stage_name": stageName,
-    "photo_url": photoUrl,
-    "mobile_number_verified": mobileNumberVerified ?? false,
-    "bio": bio,
-
     "is_active": isActive,
-    "date_of_birth": date_of_birth == null ? null : date_of_birth!,
-    "gcid": gcid,
+    "email_verified": emailVerified,
+    "business_name": businessName,
+    "mcc": mcc,
+    "mobile_number": mobileNumber,
+    "mobile_number_verified": mobileNumberVerified,
+    "business_description": businessDescription,
+    "merchant_category": merchantCategory,
+    "image_url": imageUrl,
+    "banner_url": bannerUrl,
+    "verified": verified,
+    "available": available,
+    "active": active,
+    "mfa_active": mfaActive,
+    "rating": rating,
+    "document_submitted": documentSubmitted,
+    "notifications": notifications?.toJson(),
+    "address": address,
+    "city": city,
+    "post_code": postCode,
+    "account_name": accountName,
+    "account_number": accountNumber,
+    "bank_name": bankName,
+    "bank_code": bankCode,
+    "bank_branch": bankBranch,
     "token": token,
-    "wallet_balance": walletBalance ?? "0.00",
     "refresh_token": refreshToken,
-    "email_verified": emailVerified ?? false,
-    "biometric_enabled": biometricEnable,
-    "pass_code": passcode,
-    "new_social_login": newSocialLogin,
-    "top_holders": topHolders == null ? [] : List<dynamic>.from(topHolders!.map((x) => x.toJson())),
-
   };
 }
 
-class TopHolder {
-  UserModel? userProfile;
+class Notifications {
+  bool? email;
+  bool? push;
+  bool? sms;
 
-  TopHolder({
-    this.userProfile,
+  Notifications({
+    this.email,
+    this.push,
+    this.sms,
   });
 
-  factory TopHolder.fromJson(Map<String, dynamic> json) => TopHolder(
-    userProfile: json["user"] == null ? null : UserModel.fromJson(json["user"]),
-
+  factory Notifications.fromJson(Map<String, dynamic> json) => Notifications(
+    email: json["email"],
+    push: json["push"],
+    sms: json["sms"],
   );
 
   Map<String, dynamic> toJson() => {
-    "user": userProfile,
+    "email": email,
+    "push": push,
+    "sms": sms,
   };
 }
-
-class Weavr {
-  String? id;
-  String? userId;
-  String? token;
-  bool? email_verified;
-  bool? mobile_verified;
-  bool? kyc_completed;
-  String? kyc_status;
-  String? verificationFlow;
-  String? accessToken;
-  String? identityType;
-  String? externalUserId;
-  String? kycProviderKey;
-
-
-  Weavr({
-    this.id,
-    this.userId,
-    this.token,
-    this.email_verified,
-    this.mobile_verified,
-    this.kyc_completed,
-    this.verificationFlow,
-    this.accessToken,
-    this.identityType,
-    this.kyc_status,
-    this.externalUserId,
-    this.kycProviderKey,
-  });
-
-  factory Weavr.fromJson(Map<String, dynamic> json) => Weavr(
-    id: json["id"],
-    userId: json["user_id"],
-    token: json["token"],
-    email_verified: json["email_verified"],
-    kyc_status: json["kyc_status"] ?? "",
-    mobile_verified: json["mobile_verified"],
-    kyc_completed: json["kyc_completed"],
-    verificationFlow: json["verificationFlow"],
-    accessToken: json["accessToken"],
-    identityType: json["identityType"],
-    externalUserId: json["externalUserId"],
-    kycProviderKey: json["kycProviderKey"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "user_id": userId,
-    "token": token,
-    "email_verified": email_verified,
-    "mobile_verified": mobile_verified,
-    "kyc_completed": kyc_completed,
-    "verificationFlow": verificationFlow,
-    "accessToken": accessToken,
-    "identityType": identityType,
-    "externalUserId": externalUserId,
-    "kycProviderKey": kycProviderKey,
-  };
-}
-class NotificationPreference {
-  String? title;
-  String? key;
-  bool? value;
-
-  NotificationPreference({
-    this.title,
-    this.key,
-    this.value,
-  });
-
-  factory NotificationPreference.fromJson(Map<String, dynamic> json) => NotificationPreference(
-    title: json["title"],
-    key: json["key"],
-    value: json["value"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "title": title,
-    "key": key ,
-    "value": value ,
-  };
-}
-

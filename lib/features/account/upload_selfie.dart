@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:country_calling_code_picker/picker.dart';
@@ -16,6 +17,7 @@ class UploadSelfiePage extends StatefulWidget {
 }
 
 class _UploadSelfiePageState extends State<UploadSelfiePage> {
+  AuthenticationController authenticationController = AuthenticationController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +49,12 @@ class _UploadSelfiePageState extends State<UploadSelfiePage> {
                   shadowStrength: 0,
                   height: 50,
                   radius: 30,
-                  onPressed: (){
-                    context.push(Routing.successfulPage);
+                  onPressed: ()async{
+                   var response = await authenticationController.signUpKYC(context);
+                   if(response){
+                     context.go(Routing.successfulPage);
+                   }
+
                   }),
             ),
             const SizedBox(height: 20,),
@@ -60,8 +66,8 @@ class _UploadSelfiePageState extends State<UploadSelfiePage> {
                   shadowStrength: 0,
                   height: 50,
                   radius: 30,
-                  onPressed: (){
-                    context.push(Routing.takeSelfiePage);
+                  onPressed: ()async{
+                     context.pop();
                   }),
             ),
           ],

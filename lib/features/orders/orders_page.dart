@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/orders/orders_controller.dart';
+import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/features/widget/recent_order_widget.dart';
+import 'package:urbandrop/features/widget/smart_refresh.dart';
 import 'package:urbandrop/features/widget/tab_bar_slider.dart';
 import 'package:urbandrop/routes.dart';
 
@@ -62,6 +66,7 @@ class OrdersWidgetPage extends StatefulWidget {
 class _OrdersWidgetPageState extends State<OrdersWidgetPage> {
   @override
   Widget build(BuildContext context) {
+    final state = Get.put(OrdersController());
     return Column(
       children: [
         Padding(
@@ -75,24 +80,37 @@ class _OrdersWidgetPageState extends State<OrdersWidgetPage> {
           ),
         ),
         const SizedBox(height: 20,),
+        Obx(() =>  state.loading.value ?
+        Expanded(child: Center(child: progressCircular(),)) :
+        state.listOrders.value.isNotEmpty ?
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: 10,
-              itemBuilder: (context, index){
-            return InkWell(
-              onTap: (){
-                context.go(Routing.orderDetailsPage);
-              },
-              child: const Column(
-                children: [
-                  RecentOrder(),
-                  SizedBox(height: 20,)
-                ],
-              ),
-            );
-          }),
-        )
+          child: SmartRefresh(
+            onLoading: state.onLoading,
+            onRefresh: state.onRefresh,
+            child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+
+                itemCount: state.listOrders.value.length,
+                itemBuilder: (BuildContext context, int index){
+                  return InkWell(
+                    onTap: (){
+                      context.go(Routing.orderDetailsPage);
+                    },
+                    child: Column(
+                      children: [
+                        RecentOrder(recentOrder: state.listOrders.value[index],),
+                        const SizedBox(height: 10,)
+                      ],
+                    ),
+                  );
+
+                }),
+          )
+
+          ,
+        ) :
+        Expanded(child: Center(child: sText( state.errorMessage.value.isEmpty ? "No orders" :  state.errorMessage.value),))),
+
       ],
     );
   }

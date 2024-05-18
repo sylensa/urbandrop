@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
-import 'package:country_calling_code_picker/picker.dart';
-import 'package:country_picker/country_picker.dart' as c;
-import 'package:intl_phone_field/countries.dart' as intl;
-import 'package:intl_phone_field/intl_phone_field.dart';
+
 import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/routes.dart';
 class BusinessDescriptionPage extends StatefulWidget {
@@ -17,7 +15,7 @@ class BusinessDescriptionPage extends StatefulWidget {
 }
 
 class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
-  TextEditingController phoneNumbersController = TextEditingController();
+  AuthenticationController authenticationController = AuthenticationController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +40,7 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
                 maxLines: 5,
                 onChange: (value){
                   setState(() {
+                    authenticationController.businessDescription = value;
                   });
                 },
               ),
@@ -53,12 +52,34 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: mainButton(
                   content: sText("Continue",color: Colors.white,size: 18,weight: FontWeight.w600),
-                  backgroundColor: primaryColor,
+                  backgroundColor: authenticationController.businessDescription.isNotEmpty ? primaryColor : Colors.grey[400]!,
                   shadowStrength: 0,
                   height: 50,
                   radius: 30,
-                  onPressed: (){
-                    context.push(Routing.verifyIdentityPage);
+                  onPressed: ()async{
+                    try{
+                      if(authenticationController.businessDescription.isNotEmpty){
+                        showLoaderDialog(context);
+                        var response = await authenticationController.update(context, {
+                          "business_description":authenticationController.businessDescription,
+                        });
+                        if(response){
+                          context.pop();
+                          toastSuccessMessage("Updated successfully", context);
+                          context.push(Routing.verifyIdentityPage);
+                        }
+                        else{
+                          context.pop();
+                        }
+                      }
+                      else{
+                        context.pop();
+                        toastMessage("All fields are required", context);
+                      }
+                    }catch(e){
+                      context.pop();
+                      toastMessage(e.toString(), context);
+                    }
                   }),
             ),
           ],

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/features/widget/flutter_switch.dart';
+import 'package:urbandrop/models/product_model.dart';
 
 class ProductWidget extends StatefulWidget {
-  const ProductWidget({super.key});
+  final ProductData? productData;
+  const ProductWidget({super.key, required this.productData});
 
   @override
   State<ProductWidget> createState() => _ProductWidgetState();

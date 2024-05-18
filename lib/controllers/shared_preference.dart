@@ -40,8 +40,6 @@ class UserPreferences {
   }
 
 
-
-
   Future<List<String>> getSearchHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.getStringList('setSearchHistory');
@@ -53,11 +51,6 @@ class UserPreferences {
     return prefs.getBool('seenOnboard') ?? false;
   }
 
-  // Future getSeenAdd() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getBool('seenAdd') ?? false;
-  // }
-
   Future getSeenRoyalty() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('seenRoyalty') ?? false;
@@ -66,8 +59,6 @@ class UserPreferences {
   Future<bool> setUser(var user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("user", jsonEncode(user));
-    // userInstance = UserModel.fromJson(user);
-    // log("userInstance:${userInstance!.mcc}");
     return true;
   }
 
@@ -92,9 +83,7 @@ class UserPreferences {
     UserModel? userInfo;
     if(user != null){
       userInfo = UserModel.fromJson(jsonDecode(user));
-
     }
-
     return userInfo;
   }
 
@@ -102,6 +91,7 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
+
   removeKey() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("setSearchHistory");
@@ -146,6 +136,7 @@ class UserPreferences {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.setBool(FORCE_UPDATE, value);
   }
+
   setToken(String value) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     log("setting new token token:${value}");
@@ -157,6 +148,7 @@ class UserPreferences {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('refresh_token', value);
   }
+
   getPushNotificationToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString('pushNotificationToken');

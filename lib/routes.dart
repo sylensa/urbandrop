@@ -66,7 +66,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: Routing.splashScreen,
               pageBuilder: (context, state) =>
-              const NoTransitionPage(child: SplashScreen()),
+                NoTransitionPage(child: SplashScreen(fromLogIn: state.extra == null ? false :  state.extra as bool,)),
               routes: [
                 GoRoute(
                   path: 'onBoarding',
@@ -100,7 +100,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     GoRoute(
                       path: 'confirmOTP',
                       pageBuilder: (context, state) =>
-                      const NoTransitionPage(child: ConfirmOTP()),
+                       NoTransitionPage(child: ConfirmOTP(confirmEmail: state.extra as bool,)),
 
                     ),
                   ]

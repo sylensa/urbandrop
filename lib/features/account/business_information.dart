@@ -1,7 +1,11 @@
+import 'dart:developer';
+
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
@@ -21,7 +25,12 @@ class BusinessInformationPage extends StatefulWidget {
 class _BusinessInformationPageState extends State<BusinessInformationPage> {
   AuthenticationController authenticationController = AuthenticationController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-
+   final List<String> _list = [
+    'Developer',
+    'Designer',
+    'Consultant',
+    'Student',
+  ];
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -59,32 +68,70 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                   placeholder: "Business name",
                   onChange: (value){
                     setState(() {
-                      authenticationController.emailValid = EmailValidator.validate(value);
-                      authenticationController.email = value;
+                      authenticationController.businessName = value;
                     });
                   },
                 ),
                 const SizedBox(height: 20,),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 17),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: const Color(0XFF1F546033)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      sText("Business type",color: Color(0xFF879EA4)),
-                      const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
-                    ],
+                ClipRRect(
+                  borderRadius:  BorderRadius.circular(30),
+                  child: CustomDropdown<String>(
+                    hintText: 'Business type',
+                      headerBuilder: (context, selectedItem) {
+                        return sText(
+                          selectedItem.toString(),
+                          color:   Colors.black,
+                          size: 16,
+                          weight:  FontWeight.w500,
+
+                        );
+                      },
+                    hintBuilder: (context, selectedItem) {
+                      return sText(
+                        selectedItem.toString(),
+                        color:  const Color(0xFF879EA4),
+                        size: 16,
+                        weight:  FontWeight.w400,
+
+                      );
+                    },
+
+                    closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                    canCloseOutsideBounds: true,
+                    decoration: CustomDropdownDecoration(
+                      closedFillColor: Colors.white,
+                      closedBorderRadius: BorderRadius.circular(30),
+                      closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                      closedShadow:[
+                        const BoxShadow(
+                            blurRadius: 1,
+                            color: Colors.white,
+                            offset: Offset(0, 0.0),
+                            spreadRadius: 1),
+                        const BoxShadow(
+                            blurRadius: 1,
+                            color: Colors.white,
+                            offset: Offset(0, 0.0),
+                            spreadRadius: 1)
+                      ],
+                    ),
+
+                    items: _list,
+                    onChanged: (value) {
+                      setState(() {
+                        authenticationController.businessType = value;
+                      });
+                      log('changing value to: $value');
+                    },
                   ),
                 ),
+
                 const SizedBox(height: 20,),
                 CustomTextField(
                   placeholder: "Address",
                   onChange: (value){
                     setState(() {
-                      authenticationController.verifyPassword = value;
+                      authenticationController.businessAddress = value;
                     });
                   },
                 ),
@@ -97,7 +144,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                         placeholder: "City/Town",
                         onChange: (value){
                           setState(() {
-                            authenticationController.verifyPassword = value;
+                            authenticationController.businessCity = value;
                           });
                         },
                       ),
@@ -109,7 +156,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                         placeholder: "Postcode",
                         onChange: (value){
                           setState(() {
-                            authenticationController.verifyPassword = value;
+                            authenticationController.businessPostCode = value;
                           });
                         },
                       ),
@@ -119,12 +166,39 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                 const SizedBox(height: 20,),
                 mainButton(
                     content: sText("Continue",color: Colors.white,size: 18,weight: FontWeight.w600),
-                    backgroundColor: primaryColor,
+                    backgroundColor: authenticationController.validateBusinessInformation() ? primaryColor : Colors.grey[400]!,
                     shadowStrength: 0,
                     height: 50,
                     radius: 30,
-                    onPressed: (){
-                      context.push(Routing.businessDescriptionPage);
+                    onPressed: ()async{
+                     try{
+                       if(authenticationController.validateBusinessInformation()){
+                         showLoaderDialog(context);
+                         var response = await authenticationController.update(context, {
+                           "address":authenticationController.businessAddress,
+                           "city":authenticationController.businessCity,
+                           "post_code":authenticationController.businessPostCode,
+                           "business_name":authenticationController.businessName,
+                           // "merchant_category":authenticationController.businessType,
+                           "merchant_category":"123456789",
+                         });
+                         if(response){
+                           context.pop();
+                           toastSuccessMessage("Updated successfully", context);
+                           context.push(Routing.businessDescriptionPage);
+                         }
+                         else{
+                           context.pop();
+                         }
+                       }
+                       else{
+                         context.pop();
+                         toastMessage("All fields are required", context);
+                       }
+                     }catch(e){
+                       context.pop();
+                       toastMessage(e.toString(), context);
+                     }
                     }),
                 const SizedBox(height: 20,),
 

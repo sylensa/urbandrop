@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:country_calling_code_picker/picker.dart';
@@ -17,11 +18,20 @@ class VerifyMobilePage extends StatefulWidget {
 
 class _VerifyMobilePageState extends State<VerifyMobilePage> {
   TextEditingController phoneNumbersController = TextEditingController();
+  AuthenticationController authenticationController = AuthenticationController();
   c.Country? country;
   Country? getCountry;
-  String countryCode = "+44";
   String mask = '00-000-0000';
-  String phoneNumber = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(const Duration(seconds: 0),()async{
+      await authenticationController.getCountryCode();
+      setState(() {});
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -61,12 +71,11 @@ class _VerifyMobilePageState extends State<VerifyMobilePage> {
                   dropdownIcon: const Icon(Icons.arrow_drop_down_rounded,color: Colors.black,),
                   controller: phoneNumbersController,
 
-                  initialCountryCode: isoCountryCodes != null ? isoCountryCodes!.toUpperCase() : "UK" ,
+                  initialCountryCode: authenticationController.isoCountryCodes ,
                   disableLengthCheck: true,
                   dropdownTextStyle: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
                   dropdownIconPosition: IconPosition.trailing,
                   textInputAction: TextInputAction.go,
-
                   autofocus: false,
                   style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
                   flagsButtonPadding: const EdgeInsets.only(left: 8),
@@ -83,10 +92,13 @@ class _VerifyMobilePageState extends State<VerifyMobilePage> {
                   },
                   onChanged: (phone) {
                     setState(() {
-                      phoneNumber = phone.number.split("-").join("");
-                      countryCode = phone.countryCode;
-                      print("phoneNumber:$phoneNumber");
-                      print("countryCode:$countryCode");
+                      authenticationController.mobileNumber = phone.completeNumber.split("-").join("");
+                      authenticationController.mcc = phone.countryCode;
+                      authenticationController.mobileNumberWithoutCountryCode = phone.number.split("-").join("");
+                      authenticationController.isoCountryCodes = phone.countryISOCode;
+                      print("phoneNumber:${authenticationController.mobileNumber}");
+                      print("countryCode:${authenticationController.mcc}");
+                      print("isoCountryCodes:${authenticationController.isoCountryCodes}");
                       print("maxLength:${intl.countries.firstWhere((element) => element.code == phone.countryISOCode).maxLength}");
                       if(intl.countries.firstWhere((element) => element.code == phone.countryISOCode).maxLength == 9){
                         mask = "00-000-0000";
@@ -101,7 +113,7 @@ class _VerifyMobilePageState extends State<VerifyMobilePage> {
                   }
                 // },
               ),
-            SizedBox(height: 40,),
+            const SizedBox(height: 40,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: mainButton(
@@ -110,8 +122,8 @@ class _VerifyMobilePageState extends State<VerifyMobilePage> {
                   shadowStrength: 0,
                   height: 50,
                   radius: 30,
-                  onPressed: (){
-                    context.push(Routing.confirmOTP);
+                  onPressed: ()async{
+                   await authenticationController.resendOTP(context);
                   }),
             ),
           ],

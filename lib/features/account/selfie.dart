@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 
 import 'dart:async';
 
 import 'package:urbandrop/core/helper/helper.dart';
+import 'package:urbandrop/routes.dart';
 
 
 
@@ -23,8 +25,7 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   int selectCamera = 0;
-  List<File> captureImages = [];
-
+  AuthenticationController authenticationController = AuthenticationController();
 
 
   initializeCamera(int cameraIndex)async{
@@ -65,7 +66,7 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
               if(snapshot.connectionState == ConnectionState.done){
                 return CameraPreview(_controller);
               }else{
-                return  Center(child: CircularProgressIndicator(),);
+                return  const Center(child: CircularProgressIndicator(),);
               }
             },
 
@@ -83,7 +84,7 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
                 decoration:  BoxDecoration(
                   color: Colors.black26,
                   border: Border.all(color: Colors.white, width: 5.0),
-                  borderRadius:  BorderRadius.all(Radius.elliptical(200, 300)),
+                  borderRadius:  const BorderRadius.all(Radius.elliptical(200, 300)),
                 ),
               ),
             ),
@@ -110,14 +111,14 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
                       GestureDetector(
                         onTap: () async {
                           print(selectCamera);
-                          captureImages.clear();
+                          authenticationController.selfieImageFile = null;
                           if(selectCamera == 1){
                             await _initializeControllerFuture; //To make sure camera is initialized
                             var xFile = await _controller.takePicture();
                             var  profilePicPath = xFile.path;
                             print("path:${xFile.path}");
-                            captureImages.add(File(xFile.path));
-
+                            authenticationController.selfieImageFile = File(xFile.path);
+                            context.push(Routing.uploadSelfiePage);
                           }else{
                             toastMessage("Kindly use front camera by tapping on the camera icon",context);
                           }
@@ -126,7 +127,7 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
                         child: Container(
                           height: 60,
                           width: 60,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
                           child: Image.asset("assets/images/camera_button.png"),
@@ -136,13 +137,18 @@ class _SelfieCameraScreenState extends State<SelfieCameraScreen> {
                   ),
                 ),
               ),
-              Center(
-                child: SizedBox(
-                    width: appWidth(context) * 0.9,
-                    child: sText("CANCEL",align: TextAlign.center,color: Colors.white,size: 20,weight: FontWeight.bold)
+              InkWell(
+                onTap: (){
+                  context.pop();
+                },
+                child: Center(
+                  child: SizedBox(
+                      width: appWidth(context) * 0.9,
+                      child: sText("CANCEL",align: TextAlign.center,color: Colors.white,size: 20,weight: FontWeight.bold)
+                  ),
                 ),
               ),
-              SizedBox(height: 20,)
+              const SizedBox(height: 20,)
             ],
           ),
         )

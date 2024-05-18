@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/daily_summary_widget.dart';
 import 'package:urbandrop/features/widget/flutter_switch.dart';
 import 'package:urbandrop/features/widget/product_widget.dart';
+import 'package:urbandrop/features/widget/recent_delivery.dart';
 import 'package:urbandrop/features/widget/recent_order_widget.dart';
+import 'package:urbandrop/features/widget/smart_refresh.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -13,8 +17,15 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final state = Get.put(DashboardController());
     return  Column(
       children: [
         Container(
@@ -30,7 +41,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     sText("Welcome,",size: 15,weight: FontWeight.w400,color: Colors.white),
-                    sText("Super Mart",size: 25,weight: FontWeight.w600,color: Colors.white),
+                    sText(properCase("${userInstance?.businessName}"),size: 25,weight: FontWeight.w600,color: Colors.white),
 
                   ],
                 ),
@@ -52,108 +63,92 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
         ),
+        Obx(() =>  state.loading.value ?
+        Expanded(child: Center(child: progressCircular(),)) :
+        !state.loading.value ?
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              const SizedBox(height: 10,),
-              Row(
-                children: [
-                  sText("Daily Summary",weight: FontWeight.w500,size: 15,color: Colors.black)
-                ],
-              ),
-              const SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: DailySummary(backgroundColor: const Color(0xFF5CB35E).withOpacity(0.3),)),
-                  const SizedBox(width: 10,),
-                  Expanded(child: DailySummary(backgroundColor: const Color(0xFF5CB35E),textColor: Colors.white,title: "received",amount: "£ 10,000.60p",image: "received.png",)),
-                  const SizedBox(width: 10,),
-                  Expanded(child: DailySummary(backgroundColor: const Color(0xFF183A37),textColor: Colors.white,title: "deliveries",amount: "100",image: "deliveries.png",))
-                ],
-              ),
-              const SizedBox(height: 20,),
-              Row(
-                children: [
-                  sText("Recent delivery",weight: FontWeight.w500,size: 15,color: Colors.black)
-                ],
-              ),
-              const SizedBox(height: 20,),
-              Container(
-                width: appWidth(context),
-                padding: const EdgeInsets.only(left: 20,right: 20,top: 0),
-                decoration: BoxDecoration(
-                    color: const Color(0XFFFFB400),
-                    borderRadius: BorderRadius.circular(10)
-                ),
-                child: Stack(
+          child: SmartRefresh(
+            onLoading:(){},
+            onRefresh: state.onRefresh,
+            child:  ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              children: [
+                const SizedBox(height: 10,),
+                Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 20,),
-
-                            sText("Order: #02387",size: 16,weight: FontWeight.w900),
-                            const SizedBox(height: 5,),
-                            sText("Out for delivery",size: 11,color: const Color(0XFF183A37)),
-                            const SizedBox(height: 10,),
-                            mainButton(
-                                width: 120,
-                                height: 40,
-                                radius: 30,
-                                outlineColor: Colors.transparent,
-                                shadowStrength: 0,
-                                backgroundColor: primaryColor,
-                                content: sText("View details",color: Colors.white,weight: FontWeight.w600,size: 12)
-                                , onPressed:(){}),
-                            const SizedBox(height: 20,),
-                          ],
-                        ),
-
-
-                      ],
-                    ),
-                    Positioned(
-                      right: 10,
-                      child:   Image.asset("assets/images/delivery_service.png",height: 140,width: 157,),
-                    )
+                    sText("Daily Summary",weight: FontWeight.w500,size: 15,color: Colors.black)
                   ],
                 ),
-              ),
-              const SizedBox(height: 20,),
-              Row(
-                children: [
-                  sText("Recent order",weight: FontWeight.w500,size: 15,color: Colors.black)
-                ],
-              ),
-              const SizedBox(height: 20,),
-              const RecentOrder(),
-              const SizedBox(height: 20,),
-              Row(
-                children: [
-                  sText("Popular products",weight: FontWeight.w500,size: 15,color: Colors.black)
-                ],
-              ),
-              const SizedBox(height: 20,),
-              const Row(
-                children: [
-                  Expanded(
-                    child: ProductWidget(),
-                  ),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child:ProductWidget(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20,),
-            ],
-          ),
-        ),
+                const SizedBox(height: 20,),
+                Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: DailySummary(backgroundColor: const Color(0xFF5CB35E).withOpacity(0.3),amount: "${state.orderSummary.value?.count}",)),
+                    const SizedBox(width: 10,),
+                    Expanded(child: DailySummary(backgroundColor: const Color(0xFF5CB35E),textColor: Colors.white,title: "received",amount: "£ ${state.orderSummary.value?.revenue}",image: "received.png",)),
+                    const SizedBox(width: 10,),
+                    Expanded(child: DailySummary(backgroundColor: const Color(0xFF183A37),textColor: Colors.white,title: "deliveries",amount: "${state.orderSummary.value?.deliveries}",image: "deliveries.png",))
+                  ],
+                )),
+                const SizedBox(height: 20,),
+                Row(
+                  children: [
+                    sText("Recent delivery",weight: FontWeight.w500,size: 15,color: Colors.black)
+                  ],
+                ),
+                const SizedBox(height: 20,),
+                Obx(() => RecentDDeliveryWidget(recentDelivery: state.recentOrderDelivery.value,)),
+                const SizedBox(height: 20,),
+
+                Obx(() => Column(
+                  children: [
+                    if(state.recentOrderData.value != null)
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              sText("Recent order",weight: FontWeight.w500,size: 15,color: Colors.black)
+                            ],
+                          ),
+                          const SizedBox(height: 20,),
+                          RecentOrder(recentOrder: state.recentOrderData.value ,),
+                          const SizedBox(height: 20,),
+                        ],
+                      )
+                  ],
+                )),
+                Row(
+                  children: [
+                    sText("Popular products",weight: FontWeight.w500,size: 15,color: Colors.black)
+                  ],
+                ),
+                const SizedBox(height: 20,),
+                Obx(() =>   SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                      itemCount: state.topProducts.value.length,
+                      itemBuilder: (context, index){
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: ProductWidget(productData: state.topProducts.value[index],),
+                            ),
+                            const SizedBox(width: 10,),
+                          ],
+                        );
+
+                      }),
+                )),
+
+                const SizedBox(height: 20,),
+              ],
+            ),
+          )
+
+          ,
+        ) :
+        Expanded(child: Center(child: sText( state.errorMessage.value.isEmpty ? "Check your internet and try again" :  state.errorMessage.value),))),
+
       ],
     );
   }

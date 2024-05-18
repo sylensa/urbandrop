@@ -17,15 +17,15 @@ import 'package:recase/recase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbandrop/controllers/notifications/notification_controller.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
 
 
 final deviceType = getDeviceType();
-String? isoCountryCodes;
 final rootNavigatorKey = GlobalKey<NavigatorState>();
-
+UserModel? userInstance;
 enum DeviceType { Phone, Tablet }
 
 DeviceType getDeviceType() {
@@ -456,8 +456,8 @@ Widget progress({double size = 20,double radius = 10,Color color = appMainColor}
       width: size,
       height: size,
       child:  const CircularProgressIndicator(
-          backgroundColor: appMainColor,
-          valueColor: const AlwaysStoppedAnimation<Color>(Colors.white,)
+          backgroundColor: Colors.white,
+          valueColor: const AlwaysStoppedAnimation<Color>(primaryColor,)
       ));
 }
 Widget progressCircular({double size = 20,double radius = 10,Color color = appMainColor}) {
@@ -1090,10 +1090,10 @@ toastSuccessMessage(String message,BuildContext context,) {
             ),
           ],
         ),
-        backgroundColor: appMainColor,
+        backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: appMainColor),
+          side: const BorderSide(color: primaryColor),
         ),
         showCloseIcon: true,
         closeIconColor: Colors.white,
@@ -1119,7 +1119,9 @@ Map replaceNulls(Map m) {
   }
   return m;
 }
-
+String dateFormat(DateTime timestamp) {
+  return DateFormat.yMMMMEEEEd().format(timestamp);
+}
 bool appIsEmpty(value) {
   return value.toString() == '' || value == null || value == 'null';
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:country_calling_code_picker/picker.dart';
@@ -18,6 +19,7 @@ class TakeSelfiePage extends StatefulWidget {
 }
 
 class _TakeSelfiePageState extends State<TakeSelfiePage> {
+  AuthenticationController authenticationController = AuthenticationController();
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +72,12 @@ class _TakeSelfiePageState extends State<TakeSelfiePage> {
                   shadowStrength: 0,
                   height: 50,
                   radius: 30,
-                  onPressed: (){
-                    context.push(Routing.uploadSelfiePage);
+                  onPressed: ()async{
+                    await context.push(Routing.selfieCameraScreen);
+                    setState(() {
+                      print("sellfie:${authenticationController.selfieImageFile?.path}");
+
+                    });
                   }),
             ),
           ],

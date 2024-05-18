@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/models/orders_model.dart';
 
 class RecentOrder extends StatefulWidget {
-  const RecentOrder({super.key});
+ final OrderData? recentOrder;
+  const RecentOrder({super.key, required this.recentOrder});
 
   @override
   State<RecentOrder> createState() => _RecentOrderState();
@@ -13,6 +15,7 @@ class _RecentOrderState extends State<RecentOrder> {
   @override
   Widget build(BuildContext context) {
     return  Container(
+
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         border: Border.all(color:  Colors.black,width: 0.2,),
@@ -49,7 +52,7 @@ class _RecentOrderState extends State<RecentOrder> {
                 Row(
                   children: [
                     mainButton(
-                        width: 95,
+                        width: 90,
                         height: 30,
                         radius: 30,
                         outlineColor: Colors.transparent,
@@ -59,7 +62,7 @@ class _RecentOrderState extends State<RecentOrder> {
                         , onPressed:(){}),
                     const SizedBox(width: 10,),
                     outlineButton(
-                        width: 95,
+                        width: 90,
                         height: 30,
                         radius: 30,
                         outlineColor: const Color(0XFFF74242),
