@@ -12,12 +12,13 @@ class CustomTextField extends StatefulWidget {
   final String? prefixImage;
   final int? maxLines;
   final TextDirection? textDirection;
+  final TextInputType? keyboardType;
   final List<TextInputFormatter> inputFormatters;
   final TextEditingController? controller;
   final ValueChanged<String>? onChange;
   final ValueChanged<String>? onSubmit;
 
-   CustomTextField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines})
+   CustomTextField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines, this.keyboardType})
       : super(key: key);
 
   @override
@@ -39,6 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller,
       onChanged: widget.onChange,
       onSubmitted: widget.onSubmit,
+      keyboardType: widget.keyboardType,
       prefix: widget.prefixImage != null ?
       Padding(
         padding: const EdgeInsets.only(left: 20),
@@ -257,6 +259,7 @@ class _CustomTextAmountFieldState extends State<CustomTextAmountField> {
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
+     keyboardType: TextInputType.numberWithOptions(decimal: true),
       textDirection:widget.textDirection,
       controller: widget.controller,
       onChanged: widget.onChange,

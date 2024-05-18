@@ -1,11 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:urbandrop/controllers/shared_preference.dart';
+import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
 import 'package:urbandrop/models/product_model.dart';
+import 'package:urbandrop/models/user.dart';
 
 class ProductsController extends GetxController{
   final HttpClientWrapper _http = HttpClientWrapper();
@@ -16,6 +27,7 @@ class ProductsController extends GetxController{
   final Rx<String> errorMessage = Rx<String>("");
   final Rx<bool> loading = Rx<bool>(true);
   final Rx<bool> paginationLoading = Rx<bool>(false);
+  final userPreferences = UserPreferences();
 
   // function called once the controller is instantiated
   @override
@@ -25,12 +37,10 @@ class ProductsController extends GetxController{
     start();
   }
 
-  // function to call these getAbsencesData(),getMembersData() concurrently
   Future start({updateLoader = false}) async {
     return Future.wait([getProducts()]);
   }
 
-  // function to fetch orders information through an api
   Future<void> getProducts({int limit = 10, int offset = 0})async{
     ProductModel? productModel;
     errorMessage.value = "";
@@ -49,7 +59,88 @@ class ProductsController extends GetxController{
     refreshData();
   }
 
+  uploadProduct(BuildContext context, Map<String, String> body,File? mediaPath) async {
+    showLoaderDialog(context);
+    try{
+      var headers = {
+        "Content-Type": "multipart/form-data",
+        'Authorization': 'Bearer ${await userPreferences.getUserToken()}',
+        'x-api-key': apiKey,
+        'x-client' : 'mobile'
+      };
+      var request = http.MultipartRequest('post', Uri.parse(AppUrl.products),);
 
+      print("body: $body");
+      print("mediaPath: $mediaPath");
+      if(mediaPath != null){
+        final directory = await getApplicationDocumentsDirectory();
+        if (Platform.isIOS) {
+          mediaPath = File('${directory.path}/${mediaPath.path.split("/").last}');
+          if(!mediaPath.existsSync()){
+            mediaPath  =  await mediaPath.create(recursive: true);
+          }
+        }
+        else if (Platform.isAndroid) {
+          if(!mediaPath.existsSync()){
+            mediaPath  =  await mediaPath.create(recursive: true);
+          }
+        }
+        print("mediaPath2: $mediaPath");
+      }
+
+      request.fields.addAll(body);
+      request.headers.addAll(headers);
+      if(mediaPath  != null){
+        var ext = mediaPath.path.split('.').last;
+        request.files.add(
+          http.MultipartFile("image", mediaPath.readAsBytes().asStream(),mediaPath.lengthSync(),
+              filename: mediaPath.path.split("/").last, contentType: MediaType('image', ext)),
+        );
+      }
+      log("request: ${request.fields}");
+      log("request filles: ${request.files}");
+      var res = await request.send();
+      var responseData = await res.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+      print('responseString: $responseString');
+      Map responseMap = json.decode(responseString);
+      print('responseMap: $responseMap');
+      if(responseMap["status"] == AppResponseCodes.success){
+        ProductData  productData = ProductData.fromJson(responseMap["data"]);
+        List<ProductData> listProduct = [];
+        listProduct.add(productData);
+        listProducts.value.insertAll(0, listProduct);
+        listProducts.refresh();
+        toastSuccessMessage(responseMap["message"], context);
+        context.pop();
+      } else  if(responseMap["status"] == AppResponseCodes.invalidToken){
+        var bodys = {
+          "id": userInstance!.id,
+          "refresh_token" : userInstance!.refreshToken
+        };
+        var res = await _http.postRequest(AppUrl.refreshToken, bodys);
+        print("res object:$res");
+        if(res["status"] == AppResponseCodes.success){
+          UserModel user = UserModel.fromJson(res['data']);
+          await userPreferences.setUser(res['data']);
+          await userPreferences.setToken(user.token!);
+          await  uploadProduct(context,body,mediaPath);
+        }else{
+          context.pop();
+          toastMessage("${res["message"]}", context);
+        }
+      }
+      else{
+        print('StatusCode: ${res.statusCode}');
+        toastMessage("${responseMap["message"]}", context);
+        context.pop();
+      }
+    }catch(e){
+      print("object:${ e.toString()}");
+      toastMessage(e.toString(),context);
+      context.pop();
+    }
+  }
 
   // function to refresh the list view
   void onRefresh()async{

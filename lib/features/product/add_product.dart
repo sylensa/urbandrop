@@ -1,4 +1,14 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
@@ -11,8 +21,36 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  final List<String> _list = [
+    'Developer',
+    'Designer',
+    'Consultant',
+    'Student',
+  ];
+  final List<String> weightList = [
+    'KG',
+    'ml',
+    'litre',
+    'gm',
+  ];
+  File? mediaPath;
+  AuthenticationController authenticationController = AuthenticationController();
+  TextEditingController productNameController = TextEditingController();
+  TextEditingController productDescriptionController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
+  TextEditingController stockController = TextEditingController();
+  String? category;
+  String? weight;
+  validateField(){
+    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && quantityController.text.isNotEmpty && mediaPath != null){
+      return true;
+    }
+    return false;
+  }
   @override
   Widget build(BuildContext context) {
+    final state = Get.put(ProductsController());
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -21,175 +59,240 @@ class _AddProductState extends State<AddProduct> {
         elevation: 1,
         backgroundColor: Colors.white,
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: appWidth(context),
-              height: 150,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: const Color(0XFF879EA4).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
-                  sText("Tap to add a new image",size: 9,weight: FontWeight.w400)
+      body: GestureDetector(
+        onTap: (){
+          FocusManager.instance.primaryFocus!.unfocus();
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: ()async{
+                  mediaPath = await authenticationController.attachFils();
+                  setState(() {
 
-                ],
-              ),
-            ),
-            const SizedBox(height: 20,),
-            Expanded(
-              child: ListView(
-                children: [
-                  Row(
+                  });
+                },
+                child: Container(
+                  width: appWidth(context),
+                  height: 150,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0XFF879EA4).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Container(
-                          color: Colors.grey[300],
-                          height: 1,
-                        ),
-                      ),
-                      sText(" OR ",color: Colors.grey[400]!,size: 12),
-                      Expanded(
-                        child: Container(
-                          color: Colors.grey[300],
-                          height: 1,
-                        ),
-                      ),
+                      mediaPath == null ? Image.asset("assets/images/upload_product.png",width: 40,height: 40,) :
+                      displayLocalImageDevice(mediaPath!.path,radius: 0,width: 40,height: 40),
+                      sText("Tap to add a new image",size: 9,weight: FontWeight.w400)
+
                     ],
                   ),
-                  const SizedBox(height: 20,),
-                  sText("Tap here to select image",color: primaryColor,size: 12,weight: FontWeight.w600),
-                  const SizedBox(height: 20,),
-                  CustomTextField(
-                    placeholder: "Product Name",
-                    onChange: (value){
-
-                    },
-                  ),
-                  const SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: sText("0 / 80 characters",color: const Color(0XFF879EA4),size: 12),
-                  ),
-                  const SizedBox(height: 20,),
-                  SizedBox(
-                    height: 200,
-                    child: CustomDescriptionField(
-                      placeholder: "Write description",
-                      maxLines: 5,
+                ),
+              ),
+              const SizedBox(height: 20,),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            color: Colors.grey[300],
+                            height: 1,
+                          ),
+                        ),
+                        sText(" OR ",color: Colors.grey[400]!,size: 12),
+                        Expanded(
+                          child: Container(
+                            color: Colors.grey[300],
+                            height: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20,),
+                    sText("Tap here to select image",color: primaryColor,size: 12,weight: FontWeight.w600),
+                    const SizedBox(height: 20,),
+                    CustomTextField(
+                      controller: productNameController,
+                      placeholder: "Product Name",
                       onChange: (value){
                         setState(() {
+
+                        });
+
+                      },
+                    ),
+                    const SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: sText("0 / 80 characters",color: const Color(0XFF879EA4),size: 12),
+                    ),
+                    const SizedBox(height: 20,),
+                    SizedBox(
+                      height: 200,
+                      child: CustomDescriptionField(
+                        placeholder: "Write description",
+                        maxLines: 5,
+                        controller: productDescriptionController,
+                        onChange: (value){
+                          setState(() {
+
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: sText("0/150",color: const Color(0XFF879EA4),size: 12),
+                    ),
+                    const SizedBox(height: 20,),
+                    ClipRRect(
+                      borderRadius:  BorderRadius.circular(30),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: const Color(0XFF1F546033))
+                        ),
+                        child: CustomDropdown<String>(
+                          hintText: 'Select category',
+                          headerBuilder: (context, selectedItem) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:   Colors.black,
+                              size: 16,
+                              weight:  FontWeight.w500,
+
+                            );
+                          },
+                          hintBuilder: (context, selectedItem) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:  const Color(0xFF879EA4),
+                              size: 16,
+                              weight:  FontWeight.w400,
+
+                            );
+                          },
+                          closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                          canCloseOutsideBounds: true,
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: Colors.white,
+                            closedBorderRadius: BorderRadius.circular(30),
+                            closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                            closedShadow:[
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9),
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9)
+                            ],
+                          ),
+
+                          items: _list,
+                          onChanged: (value) {
+                            setState(() {
+                              category = value;
+                            });
+                            log('changing value to: $value');
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+                    CustomTextAmountField(
+                      placeholder: "00.00 p",
+                      controller: amountController,
+                      onChange: (value){
+                        setState(() {
+
                         });
                       },
                     ),
-                  ),
-                  const SizedBox(height: 20,),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: sText("0/150",color: const Color(0XFF879EA4),size: 12),
-                  ),
-                  const SizedBox(height: 20,),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 17),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: const Color(0XFF1F546033)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        sText("Select category",color: Color(0xFF879EA4)),
-                        const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  CustomTextAmountField(
-                    placeholder: "00.00 p",
-                    onChange: (value){
+                    const SizedBox(height: 20,),
+                    CustomTextField(
+                      keyboardType: TextInputType.number,
+                      controller: quantityController,
+                      placeholder: "Quantity (optional)",
+                      onChange: (value){
+                        setState(() {
 
-                    },
-                  ),
-                  const SizedBox(height: 20,),
-                  CustomTextField(
-                    placeholder: "Quantity (optional)",
-                    onChange: (value){
-
-                    },
-                  ),
-                  const SizedBox(height: 20,),
-                  Container(
-                    child: Row(
-                      children: [
-                        mainButton(
-                            width: 70,
-                            height: 30,
-                            radius: 30,
-                            outlineColor: Colors.transparent,
-                            shadowStrength: 0,
-                            backgroundColor: primaryColor,
-                            content:  sText("KG",color: Colors.white,weight: FontWeight.w600,size: 12),
-                            onPressed:(){
-                        }),
-                        SizedBox(width: 20,),
-                        mainButton(
-                            width: 70,
-                            height: 30,
-                            radius: 30,
-                            outlineColor: Colors.transparent,
-                            shadowStrength: 0,
-                            backgroundColor: primaryColor,
-                            content:  sText("ml",color: Colors.white,weight: FontWeight.w600,size: 12),
-                            onPressed:(){
-                            }),
-                        SizedBox(width: 20,),
-                        mainButton(
-                            width: 70,
-                            height: 30,
-                            radius: 30,
-                            outlineColor: Colors.transparent,
-                            shadowStrength: 0,
-                            backgroundColor: primaryColor,
-                            content:  sText("litre",color: Colors.white,weight: FontWeight.w600,size: 12),
-                            onPressed:(){
-                            }),
-                        SizedBox(width: 20,),
-                        mainButton(
-                            width: 70,
-                            height: 30,
-                            radius: 30,
-                            outlineColor: Colors.transparent,
-                            shadowStrength: 0,
-                            backgroundColor: primaryColor,
-                            content:  sText("gm",color: Colors.white,weight: FontWeight.w600,size: 12),
-                            onPressed:(){
-                            }),
-                      ],
+                        });
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 40,),
-                  mainButton(
-                      width: appWidth(context),
+                    const SizedBox(height: 20,),
+                    Container(
                       height: 50,
-                      radius: 30,
-                      outlineColor: Colors.transparent,
-                      shadowStrength: 0,
-                      backgroundColor: primaryColor,
-                      content:  sText("Ad product",color: Colors.white,weight: FontWeight.w600,size: 18),
-                      onPressed:(){
+                      child: ListView.builder(
+                        itemCount: weightList.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index){
+                          return Row(
+                            children: [
+                              mainButton(
+                                  width: 70,
+                                  height: 30,
+                                  radius: 30,
+                                  outlineColor:weightList[index] == weight ? Colors.transparent : primaryColor,
+                                  shadowStrength: 0,
+                                  backgroundColor:weightList[index] == weight ?  primaryColor : Colors.white,
+                                  content:  sText(weightList[index],color: weightList[index] == weight ? Colors.white : primaryColor,weight: FontWeight.w600,size: 12),
+                                  onPressed:(){
+                                    setState(() {
+                                      weight = weightList[index];
+                                    });
+                                  }),
+                              const SizedBox(width: 20,),
+
+                            ],
+                          );
+
                       }),
-                  const SizedBox(height: 40,),
-                ],
-              ),
-            )
-          ],
+                    ),
+                    const SizedBox(height: 40,),
+                    mainButton(
+                        width: appWidth(context),
+                        height: 50,
+                        radius: 30,
+                        outlineColor: Colors.transparent,
+                        shadowStrength: 0,
+                        backgroundColor:validateField() ? primaryColor : Colors.grey[400]!,
+                        content:  sText("Ad product",color: Colors.white,weight: FontWeight.w600,size: 18),
+                        onPressed:(){
+                          if(validateField()){
+                            Map<String, String> body = {
+                              "product_name":productNameController.text,
+                              "product_description": productDescriptionController.text,
+                              "category_id":"$category",
+                              "price":amountController.text,
+                              "stock":quantityController.text,
+                              "unit":"$weight",
+                            };
+                            var response = state.uploadProduct(context, body, mediaPath);
+
+                          }else{
+                            toastSuccessMessage("All fields are required", context);
+                          }
+
+                        }),
+                    const SizedBox(height: 40,),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

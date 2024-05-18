@@ -34,9 +34,9 @@ AuthenticationController authenticationController = AuthenticationController();
             InkWell(
               onTap: ()async{
                 if(authenticationController.frontImageFile == null){
-                  authenticationController.frontImageFile = await authenticationController.attachDoc();
+                  authenticationController.frontImageFile = await authenticationController.attachCamera();
                 }else {
-                  authenticationController.backImageFile ??= await authenticationController.attachDoc();
+                  authenticationController.backImageFile ??= await authenticationController.attachCamera();
                 }
                 setState(() {
 
@@ -64,10 +64,10 @@ AuthenticationController authenticationController = AuthenticationController();
               onTap: ()async{
                 if(authenticationController.frontImageFile != null){
                   authenticationController.frontImageFile = null;
-                  authenticationController.frontImageFile = await authenticationController.attachDoc();
+                  authenticationController.frontImageFile = await authenticationController.attachCamera();
                 }else{
                   authenticationController.backImageFile = null;
-                  authenticationController.backImageFile = await authenticationController.attachDoc();
+                  authenticationController.backImageFile = await authenticationController.attachCamera();
                 }
              setState(() {
 

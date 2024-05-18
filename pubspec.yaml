@@ -138,6 +138,7 @@ dependencies:
   email_validator: ^2.1.17
   global_bottom_navigation_bar: ^0.0.8
   animated_custom_dropdown: ^3.0.0
+  images_picker: ^1.2.11
 
 
 dev_dependencies:

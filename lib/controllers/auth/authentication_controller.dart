@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:images_picker/images_picker.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
@@ -600,7 +602,24 @@ resendOTP(BuildContext context) async {
   }
 }
 
-attachDoc() async {
+attachFils() async {
+  FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+
+  if (result != null) {
+    File file = File(result.files.single.path!);
+    return file;
+  } else {
+    // User canceled the picker
+    return null;
+  }
+
+}
+
+attachCamera() async {
+  List<Media>? res = await ImagesPicker.openCamera(
+    pickType: PickType.image,
+  );
+  return res != null ? File(res.first.path) : null;
   final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
   File? imageFile;
   if(photo != null){
