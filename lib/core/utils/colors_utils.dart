@@ -47,6 +47,7 @@ const appGray = Color(0xFFadb4b9);
 const appDarkText = Color(0xFF2F2F2F);
 const cardColor =  Color(0XFF3E4550);
 const Color primaryColor = Color(0xFF5CB35E);
+const Color primaryRedColor = Color(0XFFF74242);
 const Color snackBarColor = Color(0xFF2C303A);
 const Color lightBlueColor = Color(0xFFF5F5F5);
 const Color primaryFadeColor = Color(0xFFF4F7FB);

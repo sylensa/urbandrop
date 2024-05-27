@@ -2,8 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
+import 'package:urbandrop/controllers/orders/orders_controller.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/models/user.dart';
@@ -173,6 +177,17 @@ class UserPreferences {
   }
 
   logout() async {
+    final dashboardState = Get.put(DashboardController());
+    final ordersState = Get.put(OrdersController());
+    final productsState = Get.put(ProductsController());
+    productsState.listProducts.value = [];
+    productsState.unFilteredListProducts.value = [];
+    ordersState.listOrders.value = [];
+    ordersState.unFilteredListOrders.value = [];
+    dashboardState.topProducts.value = [];
+    dashboardState.recentOrderDelivery.value = null;
+    dashboardState.recentOrderData.value = null;
+    dashboardState.orderSummary.value = null;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
     await clearPrefs();

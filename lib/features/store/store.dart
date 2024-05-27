@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
@@ -107,7 +108,9 @@ class _StorePageState extends State<StorePage> {
                           content: "Log out",
                           image: "logout.png"
                               "",
-                          onTap: (){
+                          onTap: ()async{
+                            await UserPreferences().logout();
+                            context.pushReplacement(Routing.loginPage);
 
                           },
                         ),

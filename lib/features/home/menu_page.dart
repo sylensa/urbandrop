@@ -57,7 +57,7 @@ class _MenuPageState extends State<MenuPage> {
               onRefresh: state.onRefresh,
               child: GridView.builder(
                   padding: const EdgeInsets.symmetric(horizontal:00,vertical: 20),
-                  itemCount: 10,
+                  itemCount: state.listProducts.value.length,
                   gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisExtent: 200,
@@ -68,7 +68,7 @@ class _MenuPageState extends State<MenuPage> {
                   itemBuilder:(context, index){
                     return  Row(
                       children: [
-                        Expanded(child: ProductWidget(productData: state.listProducts.value[index],))
+                        Expanded(child: ProductWidget(productData: state.listProducts.value[index],fromMenu: true,))
                       ],
                     );
                   }

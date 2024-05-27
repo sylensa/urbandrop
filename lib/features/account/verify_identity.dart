@@ -13,7 +13,6 @@ class VerifyIdentityPage extends StatefulWidget {
 }
 
 class _VerifyIdentityPageState extends State<VerifyIdentityPage> {
-AuthenticationController authenticationController = AuthenticationController();
 
   @override
   Widget build(BuildContext context) {

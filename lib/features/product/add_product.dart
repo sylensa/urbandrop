@@ -12,9 +12,11 @@ import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
+import 'package:urbandrop/models/product_model.dart';
 
 class AddProduct extends StatefulWidget {
-  const AddProduct({super.key});
+  final ProductData? productData;
+  const AddProduct({super.key, this.productData});
 
   @override
   State<AddProduct> createState() => _AddProductState();
@@ -39,14 +41,28 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  TextEditingController stockController = TextEditingController();
   String? category;
   String? weight;
   validateField(){
-    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && quantityController.text.isNotEmpty && mediaPath != null){
+    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && quantityController.text.isNotEmpty && (mediaPath != null || widget.productData != null) && weight != null){
       return true;
     }
     return false;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.productData != null){
+      productNameController.text ="${widget.productData?.productName}";
+      productDescriptionController.text ="${widget.productData?.productDescription}";
+      amountController.text ="${widget.productData?.price}";
+      quantityController.text ="${widget.productData?.stock}";
+      weight = "${widget.productData?.unit}";
+    }
+
+
   }
   @override
   Widget build(BuildContext context) {
@@ -54,7 +70,7 @@ class _AddProductState extends State<AddProduct> {
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: sText("Add Product",size: 15,weight: FontWeight.w600),
+        title: sText(widget.productData == null ?"Add Product" : "Edit Product",size: 15,weight: FontWeight.w600),
         centerTitle: true,
         elevation: 1,
         backgroundColor: Colors.white,
@@ -86,8 +102,10 @@ class _AddProductState extends State<AddProduct> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      mediaPath == null ? Image.asset("assets/images/upload_product.png",width: 40,height: 40,) :
-                      displayLocalImageDevice(mediaPath!.path,radius: 0,width: 40,height: 40),
+                      mediaPath != null ?
+                      displayLocalImageDevice(mediaPath!.path,radius: 0,width: 40,height: 40) :
+                      widget.productData != null ? displayImage(widget.productData!.imageUrl,radius: 0,width: 40,height: 40) :
+                      Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
                       sText("Tap to add a new image",size: 9,weight: FontWeight.w400)
 
                     ],
@@ -269,23 +287,40 @@ class _AddProductState extends State<AddProduct> {
                         outlineColor: Colors.transparent,
                         shadowStrength: 0,
                         backgroundColor:validateField() ? primaryColor : Colors.grey[400]!,
-                        content:  sText("Ad product",color: Colors.white,weight: FontWeight.w600,size: 18),
+                        content:  sText(widget.productData == null ? "Ad product" : "Save",color: Colors.white,weight: FontWeight.w600,size: 18),
                         onPressed:(){
                           if(validateField()){
                             Map<String, String> body = {
                               "product_name":productNameController.text,
                               "product_description": productDescriptionController.text,
-                              "category_id":"$category",
+                              // "category_id":"$category",
+                              "category_id":"123456789",
                               "price":amountController.text,
                               "stock":quantityController.text,
                               "unit":"$weight",
                             };
-                            var response = state.uploadProduct(context, body, mediaPath);
+                            var response = state.uploadProduct(context, body, mediaPath,widget.productData);
 
                           }else{
                             toastSuccessMessage("All fields are required", context);
                           }
 
+                        }),
+                    const SizedBox(height: 20,),
+                    if(widget.productData != null)
+                    mainButton(
+                        width: appWidth(context),
+                        height: 50,
+                        radius: 30,
+                        outlineColor: Colors.transparent,
+                        shadowStrength: 0,
+                        backgroundColor:primaryRedColor,
+                        content:  sText( "Delete",color: Colors.white,weight: FontWeight.w600,size: 18),
+                        onPressed:(){
+                          final response = state.deleteProduct(widget.productData!.id!,context);
+                          if(response){
+                            context.pop();
+                          }
                         }),
                     const SizedBox(height: 40,),
                   ],

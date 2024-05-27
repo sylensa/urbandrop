@@ -12,9 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:money_formatter/money_formatter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:recase/recase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/controllers/notifications/notification_controller.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/models/user.dart';
@@ -26,12 +28,21 @@ import 'package:url_launcher/url_launcher.dart';
 final deviceType = getDeviceType();
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 UserModel? userInstance;
+AuthenticationController authenticationController = AuthenticationController();
 enum DeviceType { Phone, Tablet }
 
 DeviceType getDeviceType() {
   final data = MediaQueryData.fromView(WidgetsBinding.instance.window);
   return data.size.shortestSide < 550 ? DeviceType.Phone : DeviceType.Tablet;
 }
+
+formattedAmount({amount = "0"}){
+  return MoneyFormatter(amount: double.parse(amount ?? "0")).output.nonSymbol.toString();
+}
+checkOutStock({String? stock = "0"}){
+  return stock == null || stock == "0" ? true : false;
+}
+
 
 List<BoxShadow> elevation({required Color color, required int elevation}) {
   return [

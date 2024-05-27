@@ -16,16 +16,12 @@ class FlavorSettings {
     switch (flavor) {
       case FlavorType.PROD:
         flavor = FlavorType.PROD;
-        websiteBaseURL = "https://showout.studio/cards/";
-         apiKey = "byeUCKp3uHzTrB73PniEDCYpq6kzMVA9";
         FlavorConfig(variables: {"baseUrl": AppUrl.liveBaseURL});
         break;
       default:
         // flavor = FlavorType.PROD;
         // FlavorConfig(variables: {"baseUrl": AppUrl.liveBaseURL});
         flavor = FlavorType.DEV;
-        websiteBaseURL = "https://dev.showout.studio/cards/";
-         apiKey = "fgy6435678hghytr534qwe567890poijhgyftr543wesdrtfyu";
         FlavorConfig(
             name: "TEST",
             color: Colors.red,

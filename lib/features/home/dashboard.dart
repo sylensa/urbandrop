@@ -126,13 +126,13 @@ class _DashboardPageState extends State<DashboardPage> {
                 Obx(() =>   SizedBox(
                   height: 200,
                   child: ListView.builder(
+                    padding: EdgeInsets.zero,
                       itemCount: state.topProducts.value.length,
+                      scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index){
                         return Row(
                           children: [
-                            Expanded(
-                              child: ProductWidget(productData: state.topProducts.value[index],),
-                            ),
+                            ProductWidget(productData: state.topProducts.value[index],),
                             const SizedBox(width: 10,),
                           ],
                         );

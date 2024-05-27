@@ -10,8 +10,10 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
+import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
@@ -43,6 +45,7 @@ class ProductsController extends GetxController{
 
   Future<void> getProducts({int limit = 10, int offset = 0})async{
     ProductModel? productModel;
+    listProducts.value.clear();
     errorMessage.value = "";
     try{
       var response  =  await _http.getRequest("${AppUrl.products}/list?limit=$limit&offset=$offset");
@@ -59,16 +62,56 @@ class ProductsController extends GetxController{
     refreshData();
   }
 
-  uploadProduct(BuildContext context, Map<String, String> body,File? mediaPath) async {
+  deleteProduct(String productId, BuildContext context)async{
+    showLoaderDialog(context);
+   try{
+     final response = await _http.deleteRequest("${AppUrl.products}/$productId");
+     if(response["status"].toUpperCase() == AppResponseCodes.success){
+       removeProductFromList(productId);
+       toastSuccessMessage(response["message"], context);
+       context.pop();
+       return true;
+     }
+   }
+   catch(e){
+     toastMessage(e.toString(), context);
+   }
+    context.pop();
+   return false;
+  }
+
+  removeProductFromList(String productId){
+    final state = Get.put(DashboardController());
+    for(int i =0; i < listProducts.value.length; i++){
+      if(listProducts.value[i].id == productId){
+        listProducts.value.removeAt(i);
+        listProducts.refresh();
+      }
+    }
+    for(int i =0; i < state.topProducts.value.length; i++){
+      if(state.topProducts.value[i].id == productId){
+        state.topProducts.value.removeAt(i);
+        state.topProducts.refresh();
+      }
+    }
+
+  }
+
+  uploadProduct(BuildContext context, Map<String, String> body,File? mediaPath,ProductData? productData) async {
     showLoaderDialog(context);
     try{
       var headers = {
         "Content-Type": "multipart/form-data",
         'Authorization': 'Bearer ${await userPreferences.getUserToken()}',
-        'x-api-key': apiKey,
+        'x-api-key': MERCHANT_API_KEY,
         'x-client' : 'mobile'
       };
-      var request = http.MultipartRequest('post', Uri.parse(AppUrl.products),);
+      var request;
+      if(productData != null){
+        request = http.MultipartRequest('put', Uri.parse("${AppUrl.products}/${productData.id}"),);
+      }else{
+        request = http.MultipartRequest('post', Uri.parse(AppUrl.products),);
+      }
 
       print("body: $body");
       print("mediaPath: $mediaPath");
@@ -109,7 +152,12 @@ class ProductsController extends GetxController{
         ProductData  productData = ProductData.fromJson(responseMap["data"]);
         List<ProductData> listProduct = [];
         listProduct.add(productData);
-        listProducts.value.insertAll(0, listProduct);
+        if(listProducts.value.isNotEmpty){
+          listProducts.value.insertAll(0, listProduct);
+        }else{
+          listProducts.value.addAll(listProduct);
+        }
+
         listProducts.refresh();
         toastSuccessMessage(responseMap["message"], context);
         context.pop();
@@ -124,7 +172,7 @@ class ProductsController extends GetxController{
           UserModel user = UserModel.fromJson(res['data']);
           await userPreferences.setUser(res['data']);
           await userPreferences.setToken(user.token!);
-          await  uploadProduct(context,body,mediaPath);
+          await  uploadProduct(context,body,mediaPath,productData);
         }else{
           context.pop();
           toastMessage("${res["message"]}", context);
@@ -142,18 +190,16 @@ class ProductsController extends GetxController{
     }
   }
 
-  // function to refresh the list view
   void onRefresh()async{
     paginationLoading.value = true;
+    loading.value = true;
     paginationLoading.refresh();
     listProducts.value.clear();
     unFilteredListProducts.value.clear();
     await getProducts(limit: 10,offset: 0);
-    // data refresh and th UI is rebuild
     refreshData();
     refreshController.loadComplete();
   }
-  // function to handle pagination while scrolling
   void onLoading()async{
     paginationLoading.value = true;
     paginationLoading.refresh();
@@ -168,20 +214,16 @@ class ProductsController extends GetxController{
       if(value.isNotEmpty){
 
       }else{
-        // if the value is empty then i append the previous list called unFilteredListProducts
         listProducts.value.addAll(unFilteredListProducts.value);
       }
     });
-    // data refresh and th UI is rebuild
     refreshData();
   }
 
-  // filter absences by type and date
   filterProducts(String type,String date){
     if(type.isNotEmpty  || date.isNotEmpty){
 
     }else{
-      // when the filter is cleared then the list is reset
       listProducts.value.addAll(unFilteredListProducts.value);
     }
     refreshData();

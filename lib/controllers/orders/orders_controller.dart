@@ -17,15 +17,12 @@ class OrdersController extends GetxController{
   final Rx<bool> loading = Rx<bool>(true);
   final Rx<bool> paginationLoading = Rx<bool>(false);
 
-  // function called once the controller is instantiated
   @override
   onReady() {
     super.onReady();
-    // start all controller defaults
     start();
   }
 
-  // function to call these getAbsencesData(),getMembersData() concurrently
   Future start({updateLoader = false}) async {
     return Future.wait([getOrders()]);
   }
@@ -47,7 +44,67 @@ class OrdersController extends GetxController{
     }
     refreshData();
   }
+  deleteOrders({String? orderId})async{
+    OrdersModel? ordersModel;
+    errorMessage.value = "";
+    try{
+      var response  =  await _http.deleteRequest("${AppUrl.orders}/$orderId");
+      ordersModel = OrdersModel.fromJson(response);
+      if(ordersModel.status?.toUpperCase() == AppResponseCodes.success){
+        removeOrdersFromList(orderId!);
+      }
+    }catch(e){
+      errorMessage.value = e.toString();
+    }
+    refreshData();
+  }
+  updateOrders({String? orderId})async{
+    OrdersModel? ordersModel;
+    errorMessage.value = "";
+    try{
+      var response  =  await _http.deleteRequest("${AppUrl.orders}/$orderId");
+      ordersModel = OrdersModel.fromJson(response);
+      if(ordersModel.status?.toUpperCase() == AppResponseCodes.success){
 
+      }else{
+        errorMessage.value = ordersModel.message!;
+      }
+    }catch(e){
+      errorMessage.value = e.toString();
+    }
+    refreshData();
+  }
+  getOrder({String? orderId})async{
+    OrdersModel? ordersModel;
+    errorMessage.value = "";
+    try{
+      var response  =  await _http.getRequest("${AppUrl.orders}/$orderId");
+      ordersModel = OrdersModel.fromJson(response);
+      if(ordersModel.status?.toUpperCase() == AppResponseCodes.success){
+
+      }else{
+        errorMessage.value = ordersModel.message!;
+      }
+    }catch(e){
+      errorMessage.value = e.toString();
+    }
+    refreshData();
+  }
+  removeOrdersFromList(String orderId){
+    for(int i =0; i < listOrders.value.length; i++){
+      if(listOrders.value[i].id == orderId){
+        listOrders.value.removeAt(i);
+        listOrders.refresh();
+      }
+    }
+    for(int i =0; i < unFilteredListOrders.value.length; i++){
+      if(unFilteredListOrders.value[i].id == orderId){
+        unFilteredListOrders.value.removeAt(i);
+        unFilteredListOrders.refresh();
+      }
+    }
+
+  }
 
 
   void onRefresh()async{

@@ -39,8 +39,8 @@ class ProductData {
   String? imageUrl;
   String? productName;
   String? productDescription;
-  int? price;
-  int? stock;
+  var price;
+  var stock;
   String? unit;
   bool? inPromo;
   String? promoExpiry;
@@ -69,7 +69,7 @@ class ProductData {
     price: json["price"],
     stock: json["stock"],
     unit: json["unit"],
-    inPromo: json["in_promo"],
+    inPromo: json["in_promo"] == 0 ? false : true,
     promoExpiry: json["promo_expiry"],
   );
 

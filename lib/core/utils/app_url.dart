@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:urbandrop/flavor_settings.dart';
 
  String websiteBaseURL = "https://api.urbandrop.io/";
- String apiKey = "fgy6435678hghytr534qwe567890poijhgyftr543wesdrtfyu";
 
 class AppUrl {
   static const String liveBaseURL = "https://api.urbandrop.io";

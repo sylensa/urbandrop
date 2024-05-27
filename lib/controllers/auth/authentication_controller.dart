@@ -16,6 +16,7 @@ import 'package:images_picker/images_picker.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
+import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
@@ -349,7 +350,7 @@ faceBookLogin (BuildContext context,GlobalKey<ScaffoldState> scaffoldKey,{bool i
 
 appleLogin (BuildContext context,GlobalKey<ScaffoldState> scaffoldKey,{bool isLoggedIn  = true}) async {
   var redirectURL = "https://api.urbandrop.io/callbacks/apple";
-  var clientID = "com.showout.web";
+  var clientID = "io.urbandrop.merchant";
   try{
     final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -630,17 +631,15 @@ attachCamera() async {
 
 signUpKYC(BuildContext context,) async {
   try{
-
+    showLoaderDialog(context);
     var headers = {
       "Content-Type": "multipart/form-data",
       'Authorization': 'Bearer ${await userPreferences.getUserToken()}',
-      'x-api-key':apiKey
+      'x-api-key':MERCHANT_API_KEY
     };
     var request = http.MultipartRequest('post', Uri.parse(AppUrl.verifyUserDocs));
     Map <String,String> body = {
-      "country_of_issue" : "$countryName",
-      "id_type" :"$idType",
-      "id_number" :"$idNumber",
+
     };
     print("body: $body");
     request.fields.addAll(body);
@@ -655,14 +654,14 @@ signUpKYC(BuildContext context,) async {
     if(frontImageFile != null){
       var ext = frontImageFile!.path.split('.').last;
       request.files.add(
-        http.MultipartFile("front", File(frontImageFile!.path).readAsBytes().asStream(), File( frontImageFile!.path).lengthSync(),
+        http.MultipartFile("document_front", File(frontImageFile!.path).readAsBytes().asStream(), File( frontImageFile!.path).lengthSync(),
             filename: frontImageFile!.path.split("/").last, contentType: MediaType('image', ext)),
       );
     }
     if(backImageFile != null){
       var ext = backImageFile!.path.split('.').last;
       request.files.add(
-        http.MultipartFile("back", File(backImageFile!.path).readAsBytes().asStream(), File( backImageFile!.path).lengthSync(),
+        http.MultipartFile("document_back", File(backImageFile!.path).readAsBytes().asStream(), File( backImageFile!.path).lengthSync(),
             filename: backImageFile!.path.split("/").last, contentType: MediaType('image', ext)),
       );
     }
@@ -674,12 +673,13 @@ signUpKYC(BuildContext context,) async {
     Map responseMap = json.decode(responseString);
     print('responseMap: ' + responseMap.toString());
     if(responseMap["status"] == AppResponseCodes.success && responseMap["data"].isNotEmpty){
-      UserModel user = UserModel.fromJson(responseMap['data']);
-      await userPreferences.setUser(responseMap['data']);
-      await userPreferences.setToken(user.token!);
-      await userPreferences.setRefreshToken(user.refreshToken!);
+      // UserModel user = UserModel.fromJson(responseMap['data']);
+      // await userPreferences.setUser(responseMap['data']);
+      // await userPreferences.setToken(user.token!);
+      // await userPreferences.setRefreshToken(user.refreshToken!);
       errorMessage = "${responseMap["message"]}";
      context.pop();
+     return true;
     }
     else  if(responseMap["status"] == AppResponseCodes.invalidToken){
       var body = {
@@ -696,24 +696,24 @@ signUpKYC(BuildContext context,) async {
         context.pop();
         errorMessage = "${res["message"]}";
         toastMessage( errorMessage,context);
-       return true;
       }else{
         context.pop();
         errorMessage = "${res["message"]}";
         toastMessage( errorMessage,context);
-
+        return false;
       }
     }
     else{
       errorMessage = "${responseMap["message"]}";
       context.pop();
       toastMessage(errorMessage,context);
+      return false;
     }
   }catch(e){
     print("object:${ e.toString()}");
     context.pop();
     toastMessage(e.toString(),context);
+    return false;
   }
-  return false;
 }
 }
