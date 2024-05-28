@@ -58,7 +58,7 @@ class _StorePageState extends State<StorePage> {
                   ],
                 ),
                 const SizedBox(height: 10,),
-                sText("123 Food Street, City. C45 9PL",size: 15,weight: FontWeight.w500,align: TextAlign.center,color: const Color(0XFF879EA4)),
+                sText(" ${userInstance?.city},${userInstance?.address},${userInstance?.postCode}",size: 15,weight: FontWeight.w500,align: TextAlign.center,color: const Color(0XFF879EA4)),
                 const SizedBox(height: 20,),
                 Expanded(
                   child: ListView(

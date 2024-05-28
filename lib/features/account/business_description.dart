@@ -16,7 +16,14 @@ class BusinessDescriptionPage extends StatefulWidget {
 
 class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
   AuthenticationController authenticationController = AuthenticationController();
-
+  TextEditingController businessDescription = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    businessDescription.text = userInstance?.businessDescription ?? "";
+    authenticationController.businessDescription = userInstance?.businessDescription ?? "";
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -37,6 +44,7 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
               height: 200,
               child: CustomDescriptionField(
                 placeholder: "Write description",
+                controller: businessDescription,
                 maxLines: 5,
                 onChange: (value){
                   setState(() {

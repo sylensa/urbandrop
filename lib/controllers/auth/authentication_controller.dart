@@ -254,12 +254,13 @@ updateUser(Map data,BuildContext context,{notLoadingDialog = false}) async {
 
 signInWithGoogle(BuildContext context,GlobalKey<ScaffoldState> scaffoldKey,{bool isLoggedIn  = true}) async {
   try {
+    showLoaderDialog(context, message: "logging in...");
     await _googleSignIn.signIn().then((result) {
       if(result != null){
         result.authentication.then((googleKey) async {
           print("googleKey.idToken:${googleKey.idToken}");
           // print(googleKey.serverAuthCode);
-          showLoaderDialog(context, message: "logging in...");
+
           if (googleKey.idToken != null) {
             var fcmToken = await getGoogleCloudId();
             await userPreferences.setPushNotificationToken(fcmToken);
@@ -277,9 +278,9 @@ signInWithGoogle(BuildContext context,GlobalKey<ScaffoldState> scaffoldKey,{bool
               await userPreferences.setUser(response['data']);
               await userPreferences.setToken(user.token!);
               await userPreferences.setRefreshToken(user.refreshToken!);
+              toastSuccessMessage(response['message'], context);
               context.pop();
-              toastMessage(response['message'], context);
-              context.go(Routing.splashScreen,extra: true);
+              context.push(Routing.splashScreen,extra: true);
             } else{
               context.pop();
               toastMessage(response['message'].toString(), context);
@@ -377,40 +378,28 @@ appleLogin (BuildContext context,GlobalKey<ScaffoldState> scaffoldKey,{bool isLo
       "gcid": fcmToken,
     });
     print("(response:$response");
-
     if (response["status"] == AppResponseCodes.success) {
       UserModel user = UserModel.fromJson(response['data']);
       await userPreferences.setUser(response['data']);
       await userPreferences.setToken(user.token!);
       await userPreferences.setRefreshToken(user.refreshToken!);
+      toastSuccessMessage(response['message'], context);
+      context.pop();
+      context.push(Routing.splashScreen,extra: true);
     }
     else{
       errorMessage = response["message"];
-      showOkAlertDialog(context: context,message: errorMessage,);
+      context.pop();
+      toastMessage(errorMessage, context);
     }
   }catch(e){
     print("error:${e.toString()}");
-    showOkAlertDialog(context: context,message: isLoggedIn? "Apple sign in failed, try again" : "Apple sign up failed, try again" ,);
+    context.pop();
+    toastMessage( isLoggedIn? "Apple sign in failed, try again" : "Apple sign up failed, try again", context);
   }
 }
 
-signInWithApple() async {
-  var redirectURL = "https://apidev.showout.studio/auth/callbacks/apple";
-  var clientID = "com.showout.web";
-  final appleIdCredential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-      webAuthenticationOptions: WebAuthenticationOptions(
-          clientId: clientID,
-          redirectUri: Uri.parse(
-              redirectURL)));
 
-  print("appleIdCredential:$appleIdCredential");
-
-
-}
 
 user({String userId = ''}) async {
   try {

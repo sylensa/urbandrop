@@ -59,7 +59,7 @@ class _AddProductState extends State<AddProduct> {
       productDescriptionController.text ="${widget.productData?.productDescription}";
       amountController.text ="${widget.productData?.price}";
       quantityController.text ="${widget.productData?.stock}";
-      weight = "${widget.productData?.unit}";
+      weight = widget.productData?.unit ;
     }
 
 
@@ -93,7 +93,7 @@ class _AddProductState extends State<AddProduct> {
                 },
                 child: Container(
                   width: appWidth(context),
-                  height: 150,
+                  height: 250,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: const Color(0XFF879EA4).withOpacity(0.1),
@@ -103,10 +103,15 @@ class _AddProductState extends State<AddProduct> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       mediaPath != null ?
-                      displayLocalImageDevice(mediaPath!.path,radius: 0,width: 40,height: 40) :
-                      widget.productData != null ? displayImage(widget.productData!.imageUrl,radius: 0,width: 40,height: 40) :
-                      Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
-                      sText("Tap to add a new image",size: 9,weight: FontWeight.w400)
+                      displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
+                      widget.productData != null ? 
+                      displayImage(widget.productData!.imageUrl,radius: 0,width: 40,height: 40) :
+                     Column(
+                       children: [
+                         Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
+                         sText("Tap to add a new image",size: 9,weight: FontWeight.w400)
+                       ],
+                     )
 
                     ],
                   ),
@@ -263,10 +268,10 @@ class _AddProductState extends State<AddProduct> {
                                   width: 70,
                                   height: 30,
                                   radius: 30,
-                                  outlineColor:weightList[index] == weight ? Colors.transparent : primaryColor,
+                                  outlineColor:weightList[index].toLowerCase() == weight?.toLowerCase() ? Colors.transparent : primaryColor,
                                   shadowStrength: 0,
-                                  backgroundColor:weightList[index] == weight ?  primaryColor : Colors.white,
-                                  content:  sText(weightList[index],color: weightList[index] == weight ? Colors.white : primaryColor,weight: FontWeight.w600,size: 12),
+                                  backgroundColor:weightList[index].toLowerCase() == weight?.toLowerCase() ?  primaryColor : Colors.white,
+                                  content:  sText(weightList[index],color: weightList[index].toLowerCase() == weight?.toLowerCase() ? Colors.white : primaryColor,weight: FontWeight.w600,size: 12),
                                   onPressed:(){
                                     setState(() {
                                       weight = weightList[index];

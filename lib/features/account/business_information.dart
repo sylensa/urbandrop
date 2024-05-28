@@ -24,6 +24,10 @@ class BusinessInformationPage extends StatefulWidget {
 
 class _BusinessInformationPageState extends State<BusinessInformationPage> {
   AuthenticationController authenticationController = AuthenticationController();
+  TextEditingController businessName = TextEditingController();
+  TextEditingController businessAddress = TextEditingController();
+  TextEditingController businessCity = TextEditingController();
+  TextEditingController businessPostcode = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
    final List<String> _list = [
     'Developer',
@@ -31,6 +35,20 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
     'Consultant',
     'Student',
   ];
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    businessName.text = userInstance?.businessName ?? "";
+    authenticationController.businessName = userInstance?.businessName ?? "";
+    businessAddress.text = userInstance?.address ?? "";
+    authenticationController.businessAddress = userInstance?.address ?? "";
+    businessCity.text = userInstance?.city ?? "";
+    authenticationController.businessCity = userInstance?.city ?? "";
+    businessPostcode.text = userInstance?.postCode ?? "";
+    authenticationController.businessPostCode = userInstance?.postCode ?? "";
+
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -65,6 +83,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                 sText("Nearly there! Tell us the name of your business. This name will be displayed on your profile.",size: 14),
                 const SizedBox(height: 20,),
                 CustomTextField(
+                  controller: businessName,
                   placeholder: "Business name",
                   onChange: (value){
                     setState(() {
@@ -128,6 +147,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
 
                 const SizedBox(height: 20,),
                 CustomTextField(
+                  controller: businessAddress,
                   placeholder: "Address",
                   onChange: (value){
                     setState(() {
@@ -141,6 +161,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                     Expanded(
                       flex: 3,
                       child: CustomTextField(
+                        controller: businessCity,
                         placeholder: "City/Town",
                         onChange: (value){
                           setState(() {
@@ -153,6 +174,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                     Expanded(
                       flex: 2,
                       child: CustomTextField(
+                        controller:  businessPostcode,
                         placeholder: "Postcode",
                         onChange: (value){
                           setState(() {

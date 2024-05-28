@@ -30,9 +30,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     try{
       userInstance = await UserPreferences().getUser();
       if(userInstance != null){
-        // if(widget.fromLogIn == false){
           userInstance =  await AuthenticationController().user();
-        // }
         if(userInstance == null){
           context.go(Routing.registrationPage);
         }else{
@@ -47,9 +45,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           } else if (userInstance!.businessDescription!.isEmpty) {
             context.go(Routing.businessDescriptionPage);
           }
-          // else if (!userInstance!.documentSubmitted!) {
-          //   context.go(Routing.verifyIdentityPage);
-          // }
+          else if (!userInstance!.documentSubmitted!) {
+            context.go(Routing.verifyIdentityPage);
+          }
           else if(userInstance!.active! && userInstance!.emailVerified! && userInstance!.mobileNumberVerified!){
             context.go(Routing.workspacePage);
           }

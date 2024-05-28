@@ -68,9 +68,6 @@ List<BoxShadow> elevation({required Color color, required int elevation}) {
 
 displayImage(imagePath, {double radius = 30.0, double? height, double? width, bool isFrom = false}) {
 
-  if(isFrom){
-    log.log("imagePath:$imagePath");
-  }
   return CachedNetworkImage(
       imageUrl: "${imagePath}",
       height: height,
@@ -446,7 +443,7 @@ Widget displayLocalImageDevice(String filePath,
   )
       :
   Image(
-    fit: BoxFit.fill,
+    fit: BoxFit.fitHeight,
     height: height,
     width: width,
     image: (filePath.isEmpty

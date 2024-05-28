@@ -17,6 +17,7 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
+    print("${widget.productData?.imageUrl}");
     return GestureDetector(
       onTap: (){
         context.push(Routing.addProduct,extra: widget.productData);
@@ -34,7 +35,7 @@ class _ProductWidgetState extends State<ProductWidget> {
               children: [
                 ClipRRect(
                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(15),topRight:Radius.circular(15) ),
-                    child: displayImage("${widget.productData?.imageUrl}",width: 186,height: 110,radius: 0)),
+                    child: Image.network("${widget.productData?.imageUrl}",width: 186,height: 110, fit: BoxFit.cover,)),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Column(

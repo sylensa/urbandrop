@@ -41,7 +41,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     sText("Welcome,",size: 15,weight: FontWeight.w400,color: Colors.white),
-                    sText(properCase("${userInstance?.businessName}"),size: 25,weight: FontWeight.w600,color: Colors.white),
+                    SizedBox(width:appWidth(context) * 0.6,child: sText(properCase("${userInstance?.businessName}"),size: 20,weight: FontWeight.w600,color: Colors.white,maxLines: 1)),
 
                   ],
                 ),

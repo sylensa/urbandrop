@@ -30,7 +30,7 @@ class ProductsController extends GetxController{
   final Rx<bool> loading = Rx<bool>(true);
   final Rx<bool> paginationLoading = Rx<bool>(false);
   final userPreferences = UserPreferences();
-
+  final stateDashboard = Get.put(DashboardController());
   // function called once the controller is instantiated
   @override
   onReady() {
@@ -81,23 +81,23 @@ class ProductsController extends GetxController{
   }
 
   removeProductFromList(String productId){
-    final state = Get.put(DashboardController());
+
     for(int i =0; i < listProducts.value.length; i++){
       if(listProducts.value[i].id == productId){
         listProducts.value.removeAt(i);
         listProducts.refresh();
       }
     }
-    for(int i =0; i < state.topProducts.value.length; i++){
-      if(state.topProducts.value[i].id == productId){
-        state.topProducts.value.removeAt(i);
-        state.topProducts.refresh();
+    for(int i =0; i < stateDashboard.topProducts.value.length; i++){
+      if(stateDashboard.topProducts.value[i].id == productId){
+        stateDashboard.topProducts.value.removeAt(i);
+        stateDashboard.topProducts.refresh();
       }
     }
 
   }
 
-  uploadProduct(BuildContext context, Map<String, String> body,File? mediaPath,ProductData? productData) async {
+  uploadProduct(BuildContext context, Map<String, String> body,File? mediaPath,ProductData? product) async {
     showLoaderDialog(context);
     try{
       var headers = {
@@ -107,29 +107,29 @@ class ProductsController extends GetxController{
         'x-client' : 'mobile'
       };
       var request;
-      if(productData != null){
-        request = http.MultipartRequest('put', Uri.parse("${AppUrl.products}/${productData.id}"),);
+      if(product != null){
+        request = http.MultipartRequest('put', Uri.parse("${AppUrl.products}/${product.id}"),);
       }else{
         request = http.MultipartRequest('post', Uri.parse(AppUrl.products),);
       }
 
       print("body: $body");
       print("mediaPath: $mediaPath");
-      if(mediaPath != null){
-        final directory = await getApplicationDocumentsDirectory();
-        if (Platform.isIOS) {
-          mediaPath = File('${directory.path}/${mediaPath.path.split("/").last}');
-          if(!mediaPath.existsSync()){
-            mediaPath  =  await mediaPath.create(recursive: true);
-          }
-        }
-        else if (Platform.isAndroid) {
-          if(!mediaPath.existsSync()){
-            mediaPath  =  await mediaPath.create(recursive: true);
-          }
-        }
-        print("mediaPath2: $mediaPath");
-      }
+      // if(mediaPath != null){
+      //   final directory = await getApplicationDocumentsDirectory();
+      //   if (Platform.isIOS) {
+      //     mediaPath = File('${directory.path}/${mediaPath.path.split("/").last}');
+      //     if(!mediaPath.existsSync()){
+      //       mediaPath  =  await mediaPath.create(recursive: true);
+      //     }
+      //   }
+      //   else if (Platform.isAndroid) {
+      //     if(!mediaPath.existsSync()){
+      //       mediaPath  =  await mediaPath.create(recursive: true);
+      //     }
+      //   }
+      //   print("mediaPath2: $mediaPath");
+      // }
 
       request.fields.addAll(body);
       request.headers.addAll(headers);
@@ -152,13 +152,28 @@ class ProductsController extends GetxController{
         ProductData  productData = ProductData.fromJson(responseMap["data"]);
         List<ProductData> listProduct = [];
         listProduct.add(productData);
-        if(listProducts.value.isNotEmpty){
-          listProducts.value.insertAll(0, listProduct);
+        if(product == null){
+          if(listProducts.value.isNotEmpty){
+            listProducts.value.insertAll(0, listProduct);
+            stateDashboard.topProducts.value.insertAll(0, listProduct);
+          }else{
+            listProducts.value.addAll(listProduct);
+            stateDashboard.topProducts.value.addAll(listProduct);
+          }
         }else{
-          listProducts.value.addAll(listProduct);
+          if(listProducts.value.contains(product)){
+            listProducts.value.remove(product);
+            listProducts.value.insertAll(0,listProduct);
+          }
+          if(stateDashboard.topProducts.value.contains(product)){
+            stateDashboard.topProducts.value.remove(product);
+            stateDashboard.topProducts.value.insertAll(0,listProduct);
+          }
         }
 
+
         listProducts.refresh();
+        stateDashboard.topProducts.refresh();
         toastSuccessMessage(responseMap["message"], context);
         context.pop();
       } else  if(responseMap["status"] == AppResponseCodes.invalidToken){
@@ -172,7 +187,7 @@ class ProductsController extends GetxController{
           UserModel user = UserModel.fromJson(res['data']);
           await userPreferences.setUser(res['data']);
           await userPreferences.setToken(user.token!);
-          await  uploadProduct(context,body,mediaPath,productData);
+          await  uploadProduct(context,body,mediaPath,product);
         }else{
           context.pop();
           toastMessage("${res["message"]}", context);
