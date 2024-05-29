@@ -48,7 +48,7 @@ class _RecentDDeliveryWidgetState extends State<RecentDDeliveryWidget> {
                       content: sText("View details",color: Colors.white,weight: FontWeight.w600,size: 12)
                       , onPressed:(){
                         if(widget.recentDelivery != null){
-                          context.go(Routing.orderDetailsPage);
+                          context.go(Routing.orderDetailsPage,extra: widget.recentDelivery);
                         }
                   }),
                   const SizedBox(height: 20,),

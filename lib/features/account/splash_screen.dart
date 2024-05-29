@@ -15,8 +15,7 @@ import 'package:urbandrop/main.dart';
 import 'package:urbandrop/routes.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
- final bool? fromLogIn;
-  const SplashScreen({super.key,this.fromLogIn = false});
+  const SplashScreen({super.key});
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
@@ -26,7 +25,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   bool loading = true;
   pageRedirect() async{
-    print("intialaised running:${widget.fromLogIn}");
     try{
       userInstance = await UserPreferences().getUser();
       if(userInstance != null){

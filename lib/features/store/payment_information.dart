@@ -23,10 +23,10 @@ class _PaymentInformationState extends State<PaymentInformation> {
     super.initState();
     accountName.text = userInstance?.accountName ?? "";
     authenticationController.accountName = userInstance?.accountName ?? "";
-    accountNumber.text = userInstance?.accountName ?? "";
-    authenticationController.accountNumber = userInstance?.accountName ?? "";
-    sortCode.text = userInstance?.bankCode ?? "";
-    authenticationController.sortCode = userInstance?.bankCode ?? "";
+    accountNumber.text = userInstance?.accountNumber ?? "";
+    authenticationController.accountNumber = userInstance?.accountNumber ?? "";
+    sortCode.text = userInstance?.sortCode ?? "";
+    authenticationController.sortCode = userInstance?.sortCode ?? "";
 
   }
   @override
@@ -102,7 +102,7 @@ class _PaymentInformationState extends State<PaymentInformation> {
                                    {
                                      "account_name":authenticationController.accountName.trim(),
                                      "account_number":authenticationController.accountNumber.trim(),
-                                     "bank_code":authenticationController.sortCode.trim(),
+                                     "sort_code":authenticationController.sortCode.trim(),
                                    });
                                if(response){
                                  context.pop();

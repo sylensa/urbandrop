@@ -38,6 +38,7 @@ import 'package:urbandrop/features/store/promotions.dart';
 import 'package:urbandrop/features/store/schedule.dart';
 import 'package:urbandrop/features/store/update_business_info.dart';
 import 'package:urbandrop/main.dart';
+import 'package:urbandrop/models/orders_model.dart';
 import 'package:urbandrop/models/product_model.dart';
 
 
@@ -67,7 +68,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: Routing.splashScreen,
               pageBuilder: (context, state) =>
-                NoTransitionPage(child: SplashScreen(fromLogIn: state.extra == null ? false :  state.extra as bool,)),
+                const NoTransitionPage(child: SplashScreen()),
               routes: [
                 GoRoute(
                   path: 'onBoarding',
@@ -124,13 +125,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                         GoRoute(
                           path: 'addProduct',
                           pageBuilder: (context, state) =>
-                               NoTransitionPage(child: AddProduct(productData: state.extra as ProductData,)),
+                               NoTransitionPage(child: AddProduct(productData: state.extra == null ? null :  state.extra as ProductData,)),
 
                         ),
                         GoRoute(
                           path: 'orderDetailsPage',
                           pageBuilder: (context, state) =>
-                              const NoTransitionPage(child: OrderDetailsPage()),
+                               NoTransitionPage(child: OrderDetailsPage(orderData: state.extra == null ? null : state.extra as OrderData,)),
 
                         ),
                         GoRoute(

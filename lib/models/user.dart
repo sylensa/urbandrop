@@ -59,7 +59,7 @@ class UserModel {
   String? accountName;
   String? accountNumber;
   String? bankName;
-  String? bankCode;
+  String? sortCode;
   String? bankBranch;
   String? token;
   String? refreshToken;
@@ -90,7 +90,7 @@ class UserModel {
     this.accountName,
     this.accountNumber,
     this.bankName,
-    this.bankCode,
+    this.sortCode,
     this.bankBranch,
     this.token,
     this.refreshToken,
@@ -124,7 +124,7 @@ class UserModel {
     accountName: json["account_name"] ?? "",
     accountNumber: json["account_number"] ?? "",
     bankName: json["bank_name"] ?? "",
-    bankCode: json["bank_code"] ?? "",
+    sortCode: json["sort_code"] ?? "",
     bankBranch: json["bank_branch"] ?? "",
     token: json["token"] ?? "",
     refreshToken: json["refresh_token"] ?? "",
@@ -157,7 +157,7 @@ class UserModel {
     "account_name": accountName,
     "account_number": accountNumber,
     "bank_name": bankName,
-    "bank_code": bankCode,
+    "sort_code": sortCode,
     "bank_branch": bankBranch,
     "token": token,
     "refresh_token": refreshToken,

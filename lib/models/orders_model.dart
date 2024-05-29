@@ -41,8 +41,8 @@ class OrderData {
   String? customerId;
   String? riderId;
   String? status;
-  int? total;
-  List<ProductData>? items;
+  var total;
+  List<OrderProduct>? items;
   bool? riderAssigned;
   bool? completed;
   String? completedAt;
@@ -69,9 +69,9 @@ class OrderData {
     riderId: json["rider_id"],
     status: json["status"],
     total: json["total"],
-    items: json["data"] == null ? [] : List<ProductData>.from(json["items"]!.map((x) => ProductData.fromJson(x))),
-    riderAssigned: json["rider_assigned"],
-    completed: json["completed"],
+    items: json["items"] == null ? [] : List<OrderProduct>.from(json["items"]!.map((x) => OrderProduct.fromJson(x))),
+    riderAssigned: json["rider_assigned"] == 1 ? true : false,
+    completed: json["completed"]  == 1 ? true : false,
     completedAt: json["completed_at"] != null  ? dateFormat(DateTime.parse(json["completed_at"])) : "",
     createdAt: json["created_at"] != null  ? dateFormat(DateTime.parse(json["created_at"])) : "",
   );
@@ -90,3 +90,46 @@ class OrderData {
     "created_at": createdAt,
   };
 }
+
+class OrderProduct {
+  String? product_id;
+  String? product_name;
+  String? product_image;
+  var price;
+  int? quantity;
+  int? total;
+
+
+  OrderProduct({
+    this.product_id,
+    this.product_name,
+    this.product_image,
+    this.price,
+    this.quantity,
+    this.total,
+
+  });
+
+  factory OrderProduct.fromJson(Map<String, dynamic> json) => OrderProduct(
+    product_id: json["product_id"],
+    product_name: json["product_name"],
+    product_image: json["product_image"],
+    price: json["price"],
+    quantity: json["quantity"],
+    total: json["total"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "product_id": product_id,
+    "product_name": product_name,
+    "product_image": product_image,
+    "price": price,
+    "quantity": quantity,
+    "total": total,
+
+  };
+}
+
+
+
+

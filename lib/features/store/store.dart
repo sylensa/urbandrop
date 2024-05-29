@@ -41,20 +41,21 @@ class _StorePageState extends State<StorePage> {
               children: [
                 Image.asset("assets/images/store.png",height: 166,width: 166,),
                 const SizedBox(height: 10,),
-                sText("Super Store",size: 20,weight: FontWeight.w600),
+                sText("${userInstance?.businessName}",size: 20,weight: FontWeight.w600),
                 const SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset("assets/images/rating.png",height: 15,width: 15,),
+
+                    Image.asset("assets/images/rating.png",height: 15,width: 15,color: userInstance!.rating! > 0 ? Colors.yellow : Colors.black,),
                     const SizedBox(width: 5,),
-                    Image.asset("assets/images/rating.png",height: 15,width: 15,),
+                    Image.asset("assets/images/rating.png",height: 15,width: 15,color: userInstance!.rating! > 1 ? Colors.yellow : Colors.black,),
                     const SizedBox(width: 5,),
-                    Image.asset("assets/images/rating.png",height: 15,width: 15,),
+                    Image.asset("assets/images/rating.png",height: 15,width: 15,color: userInstance!.rating! > 2 ? Colors.yellow : Colors.black,),
                     const SizedBox(width: 5,),
-                    Image.asset("assets/images/rating.png",height: 15,width: 15,),
+                    Image.asset("assets/images/rating.png",height: 15,width: 15,color: userInstance!.rating! > 3 ? Colors.yellow : Colors.black,),
                     const SizedBox(width: 5,),
-                    Image.asset("assets/images/rating.png",height: 15,width: 15,),
+                    Image.asset("assets/images/rating.png",height: 15,width: 15,color: userInstance!.rating! > 4 ? Colors.yellow : Colors.black,),
                   ],
                 ),
                 const SizedBox(height: 10,),

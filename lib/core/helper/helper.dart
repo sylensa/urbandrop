@@ -1472,5 +1472,26 @@ class MaskedTextInputFormatter extends TextInputFormatter {
   }
 }
 
+String formatDateTime(DateTime dateTime) {
+  final day = DateFormat('d').format(dateTime);
+  final suffix = getDaySuffix(int.parse(day));
+  final formattedDate = DateFormat('d\'$suffix\' MMM. yyyy; h:mm a').format(dateTime);
+  return formattedDate;
+}
 
+String getDaySuffix(int day) {
+  if (day >= 11 && day <= 13) {
+    return 'th';
+  }
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
+}
 

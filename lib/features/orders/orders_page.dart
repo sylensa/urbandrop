@@ -94,7 +94,7 @@ class _OrdersWidgetPageState extends State<OrdersWidgetPage> {
                 itemBuilder: (BuildContext context, int index){
                   return InkWell(
                     onTap: (){
-                      context.go(Routing.orderDetailsPage);
+                      context.go(Routing.orderDetailsPage,extra: state.listOrders.value[index]);
                     },
                     child: Column(
                       children: [

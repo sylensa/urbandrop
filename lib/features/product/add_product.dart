@@ -93,7 +93,7 @@ class _AddProductState extends State<AddProduct> {
                 },
                 child: Container(
                   width: appWidth(context),
-                  height: 250,
+                  height: mediaPath != null ||  widget.productData != null ? 250 : 150,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: const Color(0XFF879EA4).withOpacity(0.1),
@@ -105,7 +105,7 @@ class _AddProductState extends State<AddProduct> {
                       mediaPath != null ?
                       displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
                       widget.productData != null ? 
-                      displayImage(widget.productData!.imageUrl,radius: 0,width: 40,height: 40) :
+                      Image.network(widget.productData!.imageUrl!,width: appWidth(context),height: 210) :
                      Column(
                        children: [
                          Image.asset("assets/images/upload_product.png",width: 40,height: 40,),

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/models/orders_model.dart';
 
 class OrderDetailsPage extends StatefulWidget {
-  const OrderDetailsPage({super.key});
+  OrderData? orderData;
+   OrderDetailsPage({super.key, required this.orderData});
 
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
@@ -23,109 +25,122 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         elevation: 1,
         backgroundColor: Colors.white,
       ),
+
       body: Container(
         padding: const EdgeInsets.only(top: 0),
         child: Column(
           children: [
-            SizedBox(
-              height: 200,
-              child: ListView(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Image.asset("assets/images/product_1.png",width: 168,),
-                  ),
-                  const SizedBox(width: 10,),
-                  Image.asset("assets/images/product_2.png",width: 168,),
-                  const SizedBox(width: 10,),
-                  Image.asset("assets/images/product_1.png",width: 168,),
-                  const SizedBox(width: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Image.asset("assets/images/product_2.png",width: 168,),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20,),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  sText("Order: #01234567",size: 20,weight: FontWeight.w900,color: primaryColor),
-                  sText("£54.97p",size: 20,weight: FontWeight.w900),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20,),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  sText("No. of items:",size: 12,weight: FontWeight.w400,),
-                  const SizedBox(width: 10,),
-                  sText("5",size: 12,weight: FontWeight.w600),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 10,),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  sText("Date:",size: 12,weight: FontWeight.w400,),
-                  const SizedBox(width: 10,),
-                  sText(" 3rd Jan. 2024; 4:35pm",size: 12,weight: FontWeight.w400),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20,),
             Expanded(
-              child: Container(
-                margin: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0XFF879EA4),width: 0.2),
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                    itemBuilder: (context,index){
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      itemCount: widget.orderData!.items!.length,
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context,index){
+                         return  Row(
+                           children: [
+                             Padding(
+                               padding: const EdgeInsets.only(left: 20),
+                               child: ClipRRect(
+                                 borderRadius: BorderRadius.circular(10),
+                                 child: Image.network("${widget.orderData!.items![index].product_image}",width: 168,),
+                               ),
+                             ),
+                           ],
+                         );
+                    }),
+                  ),
+                  const SizedBox(height: 20,),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: appWidth(context)/2,
+                          child: sText("Order: #${widget.orderData?.id}",size: 20,weight: FontWeight.w900,color: primaryColor,maxLines: 1),
+                        ),
+                        sText("£${formattedAmount(amount: widget.orderData?.total.toString())}p",size: 20,weight: FontWeight.w900),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        sText("No. of items:",size: 12,weight: FontWeight.w400,),
+                        const SizedBox(width: 10,),
+                        sText("${widget.orderData?.items?.length}",size: 12,weight: FontWeight.w600),
+                      ],
+                    ),
+                  ),
 
-                  return Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                        child: Row(
+                  const SizedBox(height: 10,),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        sText("Date:",size: 12,weight: FontWeight.w400,),
+                        const SizedBox(width: 10,),
+                        sText(formatDateTime(widget.orderData!.createdAt!.isNotEmpty ? DateTime.parse("${widget.orderData?.createdAt}") : DateTime.now()),size: 12,weight: FontWeight.w400)
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0XFF879EA4),width: 0.2),
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Column(
+                      children: [
+                        for(int index = 0; index < widget.orderData!.items!.length; index++)
+                        Column(
                           children: [
-                            Image.asset("assets/images/product_2.png",width: 36,),
-                            const SizedBox(width: 10,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                sText("Banku & Okro soup",size: 12,weight: FontWeight.w600),
-                                const SizedBox(height: 5,),
-                                Row(
-                                  children: [
-                                    sText("Qty:",size: 12,weight: FontWeight.w400),
-                                    sText(" 5",size: 12,weight: FontWeight.w600),
-                                  ],
-                                ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: Image.network("${widget.orderData!.items![index].product_image}",width: 36,),
+                                  ),
+                                  const SizedBox(width: 10,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      sText("${widget.orderData!.items![index].product_name}",size: 12,weight: FontWeight.w600),
+                                      const SizedBox(height: 5,),
+                                      Row(
+                                        children: [
+                                          sText("Qty:",size: 12,weight: FontWeight.w400),
+                                          sText(" ${widget.orderData!.items![index].quantity}",size: 12,weight: FontWeight.w600),
+                                        ],
+                                      ),
 
-                              ],
+                                    ],
+                                  ),
+                                  Expanded(child: Container()),
+                                  sText("£${formattedAmount(amount: widget.orderData!.items![index].price.toString())}p",size: 14,weight: FontWeight.w900)
+                                ],
+                              ),
                             ),
-                            Expanded(child: Container()),
-                            sText("£10",size: 14,weight: FontWeight.w900)
+                             Container(
+                               color:  Color(0XFF879EA4),
+                               height: 0.2,
+                               width: appWidth(context),
+                             )
                           ],
                         ),
-                      ),
-                     const Divider(color:  Color(0XFF879EA4),thickness: 0.2,)
-                    ],
-                  );
-                }),
+                      ],
+                    ),
+                  ),
+
+                ],
               ),
             ),
             orderStatus == 1 ?
@@ -136,7 +151,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   Expanded(
                     child: mainButton(
                         width: appWidth(context),
-                        height: 50,
+                        height: 40,
                         radius: 30,
                         outlineColor: Colors.transparent,
                         shadowStrength: 0,
@@ -151,7 +166,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   Expanded(
                     child: mainButton(
                         width: appWidth(context),
-                        height: 50,
+                        height: 40,
                         radius: 30,
                         outlineColor: appMainRedColor,
                         shadowStrength: 0,
@@ -190,7 +205,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   const SizedBox(height: 20,),
                   mainButton(
                       width: appWidth(context),
-                      height: 50,
+                      height: 40,
                       radius: 30,
                       outlineColor: Colors.transparent,
                       shadowStrength: 0,
@@ -230,7 +245,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   const SizedBox(height: 20,),
                   mainButton(
                       width: appWidth(context),
-                      height: 50,
+                      height: 40,
                       radius: 30,
                       outlineColor: Colors.transparent,
                       shadowStrength: 0,
@@ -309,7 +324,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ) :
-                const SizedBox.shrink()
+            const SizedBox.shrink(),
           ],
         ),
       ),

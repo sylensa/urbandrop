@@ -43,7 +43,7 @@ class _MenuPageState extends State<MenuPage> {
                     ],
                   )
                   , onPressed:(){
-                    context.go(Routing.addProduct);
+                    context.push(Routing.addProduct,extra: null);
               }),
             ],
           ),

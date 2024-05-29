@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/models/orders_model.dart';
@@ -23,7 +25,7 @@ class _RecentOrderState extends State<RecentOrder> {
       ),
       child: Row(
         children: [
-          Image.asset("assets/images/food.png",width: 114,height: 127,),
+          ClipRRect(borderRadius:BorderRadius.circular(10),child: Image.network("${widget.recentOrder?.items?.first.product_image}",width: 114,height: 127,fit: BoxFit.cover,)),
           const SizedBox(width: 10,),
           SizedBox(
             height: 127,
@@ -31,24 +33,20 @@ class _RecentOrderState extends State<RecentOrder> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                sText("Order: #01234567",size: 12,weight: FontWeight.w900),
-                // const SizedBox(height:5 ,),
+                SizedBox(width: appWidth(context) * 0.5,child: sText("Order: #${widget.recentOrder?.id}",size: 12,weight: FontWeight.w900,maxLines: 1)),
                 Row(
                   children: [
                     sText("No. of items: ",size: 12,weight: FontWeight.w400),
-                    sText("5",size: 12,weight: FontWeight.w600),
+                    sText("${widget.recentOrder?.items?.length}",size: 12,weight: FontWeight.w600),
                   ],
                 ),
-                // const SizedBox(height:5 ,),
                 Row(
                   children: [
                     sText("Price: ",size: 12,weight: FontWeight.w400),
-                    sText("£14.50p",size: 12,weight: FontWeight.w600),
+                    sText("£${formattedAmount(amount: widget.recentOrder?.total.toString())}p",size: 12,weight: FontWeight.w600),
                   ],
                 ),
-                // const SizedBox(height:5 ,),
-                sText("3rd Jan. 2024; 4:35pm",size: 12,weight: FontWeight.w400),
-                // const SizedBox(height:10 ,),
+                sText(formatDateTime(widget.recentOrder!.createdAt!.isNotEmpty ? DateTime.parse("${widget.recentOrder?.createdAt}") : DateTime.now()),size: 12,weight: FontWeight.w400),
                 Row(
                   children: [
                     mainButton(
