@@ -24,6 +24,9 @@ import 'package:urbandrop/models/user.dart';
 import 'package:urbandrop/routes.dart';
 
 class AuthenticationController{
+String accountName = '';
+String accountNumber = '';
+String sortCode = '';
 String email = '';
 String businessName = '';
 String businessType = '';
@@ -87,6 +90,13 @@ validatePinCode(){
 }
 registrationEmptyFields(){
     if(email.isNotEmpty && password.isNotEmpty && verifyPassword.isNotEmpty){
+      return true;
+    }
+    errorMessage = "All fields are required";
+    return false;
+  }
+paymentEmptyFields(){
+    if(accountName.isNotEmpty && accountNumber.isNotEmpty && sortCode.isNotEmpty){
       return true;
     }
     errorMessage = "All fields are required";
@@ -173,9 +183,9 @@ login(BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async {
     }
   }
 
-update(BuildContext context, Map body) async {
+update(BuildContext context, Map body,{notLoadingDialog = false}) async {
   try {
-      var response = await _http.putRequest("${AppUrl.userUpdate}/${userInstance?.id}", body);
+      var response = await _http.putRequest("${AppUrl.userUpdate}", body);
       log("(response.body:$response");
       if (response["status"] == AppResponseCodes.success) {
         UserModel user = UserModel.fromJson(response['data']);
@@ -203,7 +213,7 @@ register(BuildContext context,bool isSocialMediaLoggedIn) async {
       showLoaderDialog(context);
       if(validateAllFields()){
         var response = await _http.postRequest(AppUrl.userRegister,{
-          "email":email,
+          "email":email.trim(),
           "password": password,
           "gcid": await getGoogleCloudId()
         });

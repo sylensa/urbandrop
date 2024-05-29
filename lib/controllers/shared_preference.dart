@@ -87,6 +87,7 @@ class UserPreferences {
     UserModel? userInfo;
     if(user != null){
       userInfo = UserModel.fromJson(jsonDecode(user));
+      userInstance = userInfo;
     }
     return userInfo;
   }

@@ -176,9 +176,9 @@ class Notifications {
   });
 
   factory Notifications.fromJson(Map<String, dynamic> json) => Notifications(
-    email: json["email"],
-    push: json["push"],
-    sms: json["sms"],
+    email: json["email"] == 1 ? true : false,
+    push: json["push"]  == 1 ? true : false,
+    sms: json["sms"]  == 1 ? true : false,
   );
 
   Map<String, dynamic> toJson() => {

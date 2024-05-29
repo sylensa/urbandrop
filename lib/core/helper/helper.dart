@@ -1298,7 +1298,7 @@ class ListNames {
 
 enum NotificationViewType { foreground, background }
 
-showLoaderDialog(BuildContext context, {String? message = "loading...", bool barrierDismissible = false}) {
+showLoaderDialog(BuildContext context, {String? message = "loading...", bool barrierDismissible = true}) {
   AlertDialog alert = AlertDialog(
     content:  Row(
       mainAxisAlignment: MainAxisAlignment.center,

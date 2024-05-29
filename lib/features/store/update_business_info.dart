@@ -63,176 +63,181 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
         elevation: 1,
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20,),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                CustomTextField(
-                  controller: businessName,
-                  placeholder: "Business name",
-                  onChange: (value){
-                    setState(() {
-                      authenticationController.businessName = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20,),
-                ClipRRect(
-                  borderRadius:  BorderRadius.circular(30),
-                  child: CustomDropdown<String>(
-                    hintText: 'Business type',
-                    headerBuilder: (context, selectedItem) {
-                      return sText(
-                        selectedItem.toString(),
-                        color:   Colors.black,
-                        size: 16,
-                        weight:  FontWeight.w500,
-
-                      );
-                    },
-                    hintBuilder: (context, selectedItem) {
-                      return sText(
-                        selectedItem.toString(),
-                        color:  const Color(0xFF879EA4),
-                        size: 16,
-                        weight:  FontWeight.w400,
-
-                      );
-                    },
-
-                    closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                    canCloseOutsideBounds: true,
-                    decoration: CustomDropdownDecoration(
-                      closedFillColor: Colors.white,
-                      closedBorderRadius: BorderRadius.circular(30),
-                      closedBorder: Border.all(color: const Color(0XFF1F546033)),
-                      closedShadow:[
-                        const BoxShadow(
-                            blurRadius: 1,
-                            color: Colors.white,
-                            offset: Offset(0, 0.0),
-                            spreadRadius: 1),
-                        const BoxShadow(
-                            blurRadius: 1,
-                            color: Colors.white,
-                            offset: Offset(0, 0.0),
-                            spreadRadius: 1)
-                      ],
-                    ),
-
-                    items: _list,
-                    onChanged: (value) {
-                      setState(() {
-                        authenticationController.businessType = value;
-                      });
-                      log('changing value to: $value');
-                    },
-                  ),
-                ),
-              
-                const SizedBox(height: 20,),
-                SizedBox(
-                  height: 200,
-                  child: CustomDescriptionField(
-                    placeholder: "Write description",
-                    maxLines: 5,
-                    controller: businessDescription,
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+        child: Column(
+          children: [
+            const SizedBox(height: 20,),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                children: [
+                  CustomTextField(
+                    controller: businessName,
+                    placeholder: "Business name",
                     onChange: (value){
                       setState(() {
-                        authenticationController.businessDescription = value;
+                        authenticationController.businessName = value;
                       });
                     },
                   ),
-                ),
-                const SizedBox(height: 20,),
-                sText("0/150",color: const Color(0XFF879EA4),size: 12),
-                const SizedBox(height: 20,),
-                CustomTextField(
-                  controller: businessAddress,
-                  placeholder: "Address",
-                  onChange: (value){
-                    setState(() {
-                      authenticationController.businessAddress = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20,),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: CustomTextField(
-                        placeholder: "City/Town",
-                        controller: businessCity,
-                        onChange: (value){
-                          setState(() {
-                            authenticationController.businessCity = value;
-                          });
-                        },
+                  const SizedBox(height: 20,),
+                  ClipRRect(
+                    borderRadius:  BorderRadius.circular(30),
+                    child: CustomDropdown<String>(
+                      hintText: 'Business type',
+                      headerBuilder: (context, selectedItem) {
+                        return sText(
+                          selectedItem.toString(),
+                          color:   Colors.black,
+                          size: 16,
+                          weight:  FontWeight.w500,
+
+                        );
+                      },
+                      hintBuilder: (context, selectedItem) {
+                        return sText(
+                          selectedItem.toString(),
+                          color:  const Color(0xFF879EA4),
+                          size: 16,
+                          weight:  FontWeight.w400,
+
+                        );
+                      },
+
+                      closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                      canCloseOutsideBounds: true,
+                      decoration: CustomDropdownDecoration(
+                        closedFillColor: Colors.white,
+                        closedBorderRadius: BorderRadius.circular(30),
+                        closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                        closedShadow:[
+                          const BoxShadow(
+                              blurRadius: 1,
+                              color: Colors.white,
+                              offset: Offset(0, 0.0),
+                              spreadRadius: 1),
+                          const BoxShadow(
+                              blurRadius: 1,
+                              color: Colors.white,
+                              offset: Offset(0, 0.0),
+                              spreadRadius: 1)
+                        ],
                       ),
+
+                      items: _list,
+                      onChanged: (value) {
+                        setState(() {
+                          authenticationController.businessType = value;
+                        });
+                        log('changing value to: $value');
+                      },
                     ),
-                    const SizedBox(width: 10,),
-                    Expanded(
-                      flex: 2,
-                      child: CustomTextField(
-                        placeholder: "Postcode",
-                        controller: businessPostcode,
-                        onChange: (value){
-                          setState(() {
-                            authenticationController.businessPostCode = value;
-                          });
-                        },
+                  ),
+
+                  const SizedBox(height: 20,),
+                  SizedBox(
+                    height: 200,
+                    child: CustomDescriptionField(
+                      placeholder: "Write description",
+                      maxLines: 5,
+                      controller: businessDescription,
+                      onChange: (value){
+                        setState(() {
+                          authenticationController.businessDescription = value;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  sText("0/150",color: const Color(0XFF879EA4),size: 12),
+                  const SizedBox(height: 20,),
+                  CustomTextField(
+                    controller: businessAddress,
+                    placeholder: "Address",
+                    onChange: (value){
+                      setState(() {
+                        authenticationController.businessAddress = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextField(
+                          placeholder: "City/Town",
+                          controller: businessCity,
+                          onChange: (value){
+                            setState(() {
+                              authenticationController.businessCity = value;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20,),
-                mainButton(
-                    content: sText("Save",color: Colors.white,size: 18,weight: FontWeight.w600),
-                    backgroundColor: authenticationController.validateBusinessInformation() && authenticationController.businessDescription.isNotEmpty  ? primaryColor : Colors.grey[400]!,
-                    shadowStrength: 0,
-                    height: 50,
-                    radius: 30,
-                    onPressed: ()async{
-                      try{
-                        if(authenticationController.validateBusinessInformation() && authenticationController.businessDescription.isNotEmpty){
-                          showLoaderDialog(context);
-                          var response = await  authenticationController.update(context,  {
-                            "address":authenticationController.businessAddress,
-                            "city":authenticationController.businessCity,
-                            "post_code":authenticationController.businessPostCode,
-                            "business_name":authenticationController.businessName,
-                            // "merchant_category":authenticationController.businessType,
-                            "merchant_category":"123456789",
-                            "business_description":authenticationController.businessDescription,
-                          });
-                          if(response){
-                            context.pop();
-                            toastSuccessMessage("Updated successfully", context);
+                      const SizedBox(width: 10,),
+                      Expanded(
+                        flex: 2,
+                        child: CustomTextField(
+                          placeholder: "Postcode",
+                          controller: businessPostcode,
+                          onChange: (value){
+                            setState(() {
+                              authenticationController.businessPostCode = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20,),
+                  mainButton(
+                      content: sText("Save",color: Colors.white,size: 18,weight: FontWeight.w600),
+                      backgroundColor: authenticationController.validateBusinessInformation() && authenticationController.businessDescription.isNotEmpty  ? primaryColor : Colors.grey[400]!,
+                      shadowStrength: 0,
+                      height: 50,
+                      radius: 30,
+                      onPressed: ()async{
+                        try{
+                          if(authenticationController.validateBusinessInformation() && authenticationController.businessDescription.isNotEmpty){
+                            showLoaderDialog(context);
+                            var response = await  authenticationController.update(context,  {
+                              "address":authenticationController.businessAddress,
+                              "city":authenticationController.businessCity,
+                              "post_code":authenticationController.businessPostCode,
+                              "business_name":authenticationController.businessName,
+                              // "merchant_category":authenticationController.businessType,
+                              "merchant_category":"123456789",
+                              "business_description":authenticationController.businessDescription,
+                            });
+                            if(response){
+                              context.pop();
+                              toastSuccessMessage("Updated successfully", context);
+                            }
+                            else{
+                              context.pop();
+                            }
                           }
                           else{
                             context.pop();
+                            toastMessage("All fields are required", context);
                           }
-                        }
-                        else{
+                        }catch(e){
                           context.pop();
-                          toastMessage("All fields are required", context);
+                          toastMessage(e.toString(), context);
                         }
-                      }catch(e){
-                        context.pop();
-                        toastMessage(e.toString(), context);
-                      }
-                    }),
-                const SizedBox(height: 20,),
+                      }),
+                  const SizedBox(height: 20,),
 
 
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

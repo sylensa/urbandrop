@@ -48,29 +48,30 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
                         onToggle: (val) {
+
                         },
-                        value: true,
+                        value: userInstance?.notifications?.email == true ? true  : false,
                       ),
                     ),
-                    const SizedBox(height: 20,),
-                    StoreWidget(
-                      image: "inapp.png",
-                      content: "In-App notifications ",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
-                      },
-                      icon:   OnAndOffSwitch(
-                        padding: 2,
-                        height: 25,
-                        width: 50,
-                        toggleSize: 20,
-                        toggleColor: Colors.white,
-                        activeColor: primaryColor,
-                        onToggle: (val) {
-                        },
-                        value: true,
-                      ),
-                    ),
+                    // const SizedBox(height: 20,),
+                    // StoreWidget(
+                    //   image: "inapp.png",
+                    //   content: "In-App notifications ",
+                    //   onTap: (){
+                    //     context.push(Routing.resetPassword);
+                    //   },
+                    //   icon:   OnAndOffSwitch(
+                    //     padding: 2,
+                    //     height: 25,
+                    //     width: 50,
+                    //     toggleSize: 20,
+                    //     toggleColor: Colors.white,
+                    //     activeColor: primaryColor,
+                    //     onToggle: (val) {
+                    //     },
+                    //     value: true,
+                    //   ),
+                    // ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "notification.png",

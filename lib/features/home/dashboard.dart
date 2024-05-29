@@ -53,9 +53,17 @@ class _DashboardPageState extends State<DashboardPage> {
                       padding: 3,
                       height: 25,
                       width: 55,
-                      onToggle: (val) {
+                      inactiveColor: Colors.white,
+                      activeColor: primaryRedColor,
+                      toggleColor:userInstance!.available == true ? Colors.white : primaryColor ,
+
+                      onToggle: (val) async{
+                        setState(() {
+                          userInstance?.available = val;
+                        });
+                        await state.offOnlineStatus(context,available: userInstance?.available);
                       },
-                      value: true,
+                      value: userInstance!.available == true ? true : false,
                     ),
                   ],
                 )

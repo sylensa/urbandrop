@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
@@ -20,6 +22,7 @@ class DashboardController extends GetxController{
   final Rx<String> errorMessage = Rx<String>("");
   final Rx<bool> loading = Rx<bool>(true);
   final Rx<bool> paginationLoading = Rx<bool>(false);
+  final AuthenticationController authenticationController = AuthenticationController();
 
   @override
   onReady() {
@@ -93,7 +96,11 @@ class DashboardController extends GetxController{
     }
     refreshData();
   }
-
+  offOnlineStatus(BuildContext context,{bool? available})async{
+   final response = await authenticationController.update(context,{
+      "available": available ?? false
+    }, );
+  }
 
 
   void onRefresh()async{
