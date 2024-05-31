@@ -143,7 +143,7 @@ ordersPlaceFilter(BuildContext context){
                     onPressed: () {
                       Navigator.pop(context);
                       if(selectedDate != null  || selectedDate != null){
-                        state.filterOrders(orderStatus ?? "", selectedDate != null ? dateFormat(selectedDate!) : "");
+                        // state.filterOrders(orderStatus ?? "", selectedDate != null ? dateFormat(selectedDate!) : "");
                       }
                     },
                     backgroundColor:  orderStatus != null  || selectedDate != null ? primaryColor: Colors.grey[400]!,
@@ -160,7 +160,7 @@ ordersPlaceFilter(BuildContext context){
                         Navigator.pop(context);
                         selectedDate = null;
                         orderStatus = null;
-                        state.filterOrders(orderStatus ?? "", selectedDate != null ? dateFormat(selectedDate!) : "");
+                        // state.filterOrders(orderStatus ?? "", selectedDate != null ? dateFormat(selectedDate!) : "");
                       });
                     },
                     child:Row(

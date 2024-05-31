@@ -18,7 +18,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   int orderStatus = 1;
   @override
   Widget build(BuildContext context) {
-    print("widget.orderData?.status:${widget.orderData?.status}");
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

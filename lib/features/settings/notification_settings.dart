@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
@@ -38,7 +39,6 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                       image: "email_noti.png",
                       content: "Email notifications ",
                       onTap: (){
-                        context.push(Routing.resetPassword);
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -47,8 +47,12 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
-
+                        onToggle: (val) async{
+                          userInstance?.notifications?.email =val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
                         value: userInstance?.notifications?.email == true ? true  : false,
                       ),
@@ -77,7 +81,6 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                       image: "notification.png",
                       content: "Push notifications ",
                       onTap: (){
-                        context.push(Routing.resetPassword);
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -86,18 +89,21 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.push =val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance?.notifications?.push == true ? true  : false,
                       ),
                     ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "sms.png",
                       content: "SMS notifications ",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
-                      },
+                      onTap: (){},
                       icon:   OnAndOffSwitch(
                         padding: 2,
                         height: 25,
@@ -105,9 +111,14 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.sms = val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance?.notifications?.sms == true ? true  : false,
                       ),
                     ),
                     const SizedBox(height: 20,),

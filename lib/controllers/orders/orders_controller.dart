@@ -227,10 +227,15 @@ class OrdersController extends GetxController{
     refreshData();
   }
 
-  filterOrders(String orderStatus,String date){
-    if(orderStatus.isNotEmpty  || date.isNotEmpty){
-      listOrders.value.clear();
-      listOrders.value = unFilteredListOrders.value.where((element) => element.status!.toLowerCase().contains(orderStatus.toLowerCase()) || formatDateTime(element.completedAt!.isNotEmpty ? DateTime.parse("${element.completedAt}") : DateTime.now()).toLowerCase().contains(date.toLowerCase())
+  filterOrders(String orderStatus,DateTime? dateTime){
+
+    if(dateTime != null){
+      String date = formatDateTime(dateTime);
+      date = date.split(";").first;
+      print("date:$date");
+
+          listOrders.value.clear();
+      listOrders.value = unFilteredListOrders.value.where((element) => formatDateTime(element.completedAt!.isNotEmpty ? DateTime.parse("${element.completedAt}") : DateTime.now()).toLowerCase().contains(date.toLowerCase())
           || formatDateTime(element.createdAt!.isNotEmpty ? DateTime.parse("${element.createdAt}") : DateTime.now()).toLowerCase().contains(date.toLowerCase())
       ).toList();
     }else{
@@ -252,6 +257,20 @@ class OrdersController extends GetxController{
     refreshData();
   }
 
+  changeOrderPendingState(OrderData orderData){
+    for(int mainIndex = 0; mainIndex < listOrders.value.length; mainIndex++){
+      if(listOrders.value[mainIndex].id  == orderData.id){
+        listOrders.value[mainIndex] = orderData;
+        unFilteredListOrders.value.clear();
+        unFilteredListOrders.value.addAll(listOrders.value);
+        loadAllOrderStatus(listOrders.value,onLoading: false);
+        unFilteredListOrders.refresh();
+        listOrders.refresh();
+        return;
+      }
+    }
+
+  }
 
   // refreshing and rebuild the UI when there is a change in data
   refreshData(){

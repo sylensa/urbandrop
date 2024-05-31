@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
@@ -84,43 +85,43 @@ class _AddProductState extends State<AddProduct> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: ()async{
-                  mediaPath = await authenticationController.attachFils();
-                  setState(() {
-
-                  });
-                },
-                child: Container(
-                  width: appWidth(context),
-                  height: mediaPath != null ||  widget.productData != null ? 250 : 150,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0XFF879EA4).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      mediaPath != null ?
-                      displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
-                      widget.productData != null ? 
-                      Image.network(widget.productData!.imageUrl!,width: appWidth(context),height: 210) :
-                     Column(
-                       children: [
-                         Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
-                         sText("Tap to add a new image",size: 9,weight: FontWeight.w400)
-                       ],
-                     )
-
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20,),
               Expanded(
                 child: ListView(
                   children: [
+                    GestureDetector(
+                      onTap: ()async{
+                        mediaPath = await authenticationController.attachFils();
+                        setState(() {
+
+                        });
+                      },
+                      child: Container(
+                        width: appWidth(context),
+                        height: mediaPath != null ||  widget.productData != null ? 250 : 150,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            color: const Color(0XFF879EA4).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            mediaPath != null ?
+                            displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
+                            widget.productData != null ?
+                            Image.network(widget.productData!.imageUrl!,width: appWidth(context),height: 210) :
+                            Column(
+                              children: [
+                                Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
+                                sText("Product Image",size: 9,weight: FontWeight.w400)
+                              ],
+                            )
+
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
                     Row(
                       children: [
                         Expanded(
@@ -139,7 +140,15 @@ class _AddProductState extends State<AddProduct> {
                       ],
                     ),
                     const SizedBox(height: 20,),
-                    sText("Tap here to select image",color: primaryColor,size: 12,weight: FontWeight.w600),
+                    GestureDetector(
+                      onTap:()async{
+                        mediaPath = await authenticationController.attachFils();
+                        setState(() {
+
+                        });
+                      },
+                      child: sText("Tap here to select image",color: primaryColor,size: 12,weight: FontWeight.w600,align: TextAlign.center),
+                    ),
                     const SizedBox(height: 20,),
                     CustomTextField(
                       controller: productNameController,

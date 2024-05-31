@@ -1500,7 +1500,7 @@ dateCalendar(BuildContext context, String orderStatus)async{
   if (dateSelected != null) {
       if (dateSelected.isNotEmpty) {
         selectedDate = dateSelected.first;
-        state.filterOrders(orderStatus,selectedDate != null ? dateFormat(selectedDate!) : "");
+        state.filterOrders(orderStatus,selectedDate);
       }
   }
 
