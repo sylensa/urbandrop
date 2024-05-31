@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:urbandrop/controllers/orders/orders_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
@@ -18,6 +20,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   int orderStatus = 1;
   @override
   Widget build(BuildContext context) {
+    final state = Get.put(OrdersController());
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -161,6 +164,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         onPressed:(){
                           widget.orderData?.status = OrderStatus.accepted;
                           setState(() {});
+                          state.changeOrderPendingState(widget.orderData!);
                         }),
                   ),
                   const SizedBox(width: 20,),
@@ -175,6 +179,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         content:  sText("Decline",color: appMainRedColor,weight: FontWeight.w600,size: 18),
                         onPressed:(){
                           widget.orderData?.status = OrderStatus.declined;
+                          state.changeOrderPendingState(widget.orderData!);
                           setState(() {});
                         }),
                   ),
@@ -216,6 +221,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         orderStatus = 3;
                         widget.orderData?.status = OrderStatus.delivering;
                         setState(() {});
+                        state.changeOrderPendingState(widget.orderData!);
                       }),
 
 
@@ -256,6 +262,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       onPressed:(){
                         widget.orderData?.status = OrderStatus.completed;
                         setState(() {});
+                        state.changeOrderPendingState(widget.orderData!);
                       }),
 
 

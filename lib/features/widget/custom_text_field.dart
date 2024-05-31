@@ -119,7 +119,9 @@ class _CustomDescriptionFieldState extends State<CustomDescriptionField> {
       textDirection:widget.textDirection,
       controller: widget.controller,
       onChanged: widget.onChange,
+      keyboardType: TextInputType.text,
       maxLength: 150,
+      maxLines: widget.maxLines,
       onSubmitted: widget.onSubmit,
       textAlignVertical: TextAlignVertical.top,
       prefix: widget.prefixImage != null ?

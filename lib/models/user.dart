@@ -117,7 +117,7 @@ class UserModel {
     mfaActive: json["mfa_active"] == 1 ? true : false,
     rating: json["rating"] ?? "",
     documentSubmitted: json["document_submitted"] == 1 ? true : false,
-    notifications: json["notifications"] == null ? null : Notifications.fromJson(jsonDecode(json["notifications"])),
+    notifications: json["notifications"] == null ? null : Notifications.fromJson(json["notifications"]),
     address: json["address"] ?? "",
     city: json["city"] ?? "",
     postCode: json["post_code"] ?? "",
