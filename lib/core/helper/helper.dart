@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:developer' as log;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:page_transition/page_transition.dart';
@@ -18,6 +20,7 @@ import 'package:recase/recase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/controllers/notifications/notification_controller.dart';
+import 'package:urbandrop/controllers/orders/orders_controller.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1477,6 +1480,30 @@ String formatDateTime(DateTime dateTime) {
   final suffix = getDaySuffix(int.parse(day));
   final formattedDate = DateFormat('d\'$suffix\' MMM. yyyy; h:mm a').format(dateTime);
   return formattedDate;
+}
+DateTime? selectedDate;
+dateCalendar(BuildContext context, String orderStatus)async{
+  final state = Get.put(OrdersController());
+  final dateSelected =
+  await showCalendarDatePicker2Dialog(
+    value: [selectedDate ?? DateTime.now()],
+    context: context,
+    config:
+    CalendarDatePicker2WithActionButtonsConfig(
+        currentDate: selectedDate,
+        calendarType:
+        CalendarDatePicker2Type.single),
+    dialogSize: const Size(325, 400),
+    // value: _dates,
+    borderRadius: BorderRadius.circular(15),
+  );
+  if (dateSelected != null) {
+      if (dateSelected.isNotEmpty) {
+        selectedDate = dateSelected.first;
+        state.filterOrders(orderStatus,selectedDate != null ? dateFormat(selectedDate!) : "");
+      }
+  }
+
 }
 
 String getDaySuffix(int day) {

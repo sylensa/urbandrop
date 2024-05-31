@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/core/utils/response_codes.dart';
 import 'package:urbandrop/models/orders_model.dart';
 
 class OrderDetailsPage extends StatefulWidget {
@@ -17,6 +18,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   int orderStatus = 1;
   @override
   Widget build(BuildContext context) {
+    print("widget.orderData?.status:${widget.orderData?.status}");
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -143,7 +145,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ),
-            orderStatus == 1 ?
+            widget.orderData?.status == OrderStatus.pending ?
             Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 20),
               child: Row(
@@ -158,7 +160,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         backgroundColor: primaryColor,
                         content:  sText("Accept",color: Colors.white,weight: FontWeight.w600,size: 18),
                         onPressed:(){
-                          orderStatus = 2;
+                          widget.orderData?.status = OrderStatus.accepted;
                           setState(() {});
                         }),
                   ),
@@ -173,14 +175,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         backgroundColor: Colors.white,
                         content:  sText("Decline",color: appMainRedColor,weight: FontWeight.w600,size: 18),
                         onPressed:(){
-                          orderStatus = 5;
+                          widget.orderData?.status = OrderStatus.declined;
                           setState(() {});
                         }),
                   ),
                 ],
               ),
             ) :
-            orderStatus == 2 ?
+             widget.orderData?.status == OrderStatus.accepted ?
             Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 20),
               child: Column(
@@ -213,6 +215,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       content:  sText("Out for delivery",color: Colors.white,weight: FontWeight.w600,size: 18),
                       onPressed:(){
                         orderStatus = 3;
+                        widget.orderData?.status = OrderStatus.delivering;
                         setState(() {});
                       }),
 
@@ -220,7 +223,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ) :
-            orderStatus == 3 ?
+             widget.orderData?.status == OrderStatus.delivering ?
             Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 20),
               child: Column(
@@ -252,7 +255,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       backgroundColor: primaryColor,
                       content:  sText("Order Delivered",color: Colors.white,weight: FontWeight.w600,size: 18),
                       onPressed:(){
-                        orderStatus = 4;
+                        widget.orderData?.status = OrderStatus.completed;
                         setState(() {});
                       }),
 
@@ -260,7 +263,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ) :
-            orderStatus == 4 ?
+             widget.orderData?.status == OrderStatus.completed ?
             Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 20),
               child: Column(
@@ -283,7 +286,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         ],
                       ),
                       onPressed:(){
-                        orderStatus = 1;
                         setState(() {});
                       }),
                   SizedBox(height: 10,),
@@ -293,7 +295,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ) :
-            orderStatus == 5 ?
+             widget.orderData?.status == OrderStatus.declined ?
             Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 20),
               child: Column(
@@ -310,11 +312,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         children: [
                           Image.asset("assets/images/notify.png",width: 6,color: appMainRedColor,),
                           const SizedBox(width: 10,),
-                          sText("Order canceled",color: Colors.white,weight: FontWeight.w600,size: 12),
+                          sText("Order declined",color: Colors.white,weight: FontWeight.w600,size: 12),
                         ],
                       ),
                       onPressed:(){
-                        orderStatus = 1;
                         setState(() {});
                       }),
                   SizedBox(height: 10,),
@@ -324,6 +325,36 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ) :
+             widget.orderData?.status == OrderStatus.cancelled ?
+             Padding(
+               padding: const EdgeInsets.only(left: 20,right: 20,top: 10,bottom: 20),
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                 children: [
+                   mainButton(
+                       width: 150,
+                       height: 30,
+                       radius: 5,
+                       outlineColor: Colors.transparent,
+                       shadowStrength: 0,
+                       backgroundColor: appMainRedColor.withOpacity(0.3),
+                       content:  Row(
+                         children: [
+                           Image.asset("assets/images/notify.png",width: 6,color: appMainRedColor,),
+                           const SizedBox(width: 10,),
+                           sText("Order cancelled",color: Colors.white,weight: FontWeight.w600,size: 12),
+                         ],
+                       ),
+                       onPressed:(){
+                         setState(() {});
+                       }),
+                   SizedBox(height: 10,),
+
+
+
+                 ],
+               ),
+             ) :
             const SizedBox.shrink(),
           ],
         ),

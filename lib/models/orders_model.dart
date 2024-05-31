@@ -67,13 +67,14 @@ class OrderData {
     merchantId: json["merchant_id"],
     customerId: json["customer_id"],
     riderId: json["rider_id"],
+    // status: "pending",
     status: json["status"],
     total: json["total"],
     items: json["items"] == null ? [] : List<OrderProduct>.from(json["items"]!.map((x) => OrderProduct.fromJson(x))),
     riderAssigned: json["rider_assigned"] == 1 ? true : false,
     completed: json["completed"]  == 1 ? true : false,
-    completedAt: json["completed_at"] != null  ? dateFormat(DateTime.parse(json["completed_at"])) : "",
-    createdAt: json["created_at"] != null  ? dateFormat(DateTime.parse(json["created_at"])) : "",
+    completedAt: json["completed_at"] != null  ? DateTime.parse(json["completed_at"]).toString() : "",
+    createdAt: json["created_at"] != null  ? DateTime.parse(json["created_at"]).toString() : "",
   );
 
   Map<String, dynamic> toJson() => {

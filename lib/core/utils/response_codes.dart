@@ -11,3 +11,12 @@ class AppResponseCodes {
 
 
 }
+
+class OrderStatus{
+  static const pending = 'pending';
+  static const accepted = 'accepted';
+  static const declined = 'declined';
+  static const delivering = 'delivering';
+  static const cancelled =  'cancelled';
+  static const completed = 'completed' ;
+}

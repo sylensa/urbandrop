@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/features/widget/filter_bottom_sheet.dart';
 
 class CustomTextField extends StatefulWidget {
   final String placeholder;
@@ -155,6 +156,7 @@ class CustomTextSearchField extends StatefulWidget {
   bool? obscureText;
   final bool? checkMark;
   final String? prefixImage;
+  final String? orderStatus;
   final int? maxLines;
   final TextDirection? textDirection;
   final List<TextInputFormatter> inputFormatters;
@@ -162,7 +164,7 @@ class CustomTextSearchField extends StatefulWidget {
   final ValueChanged<String>? onChange;
   final ValueChanged<String>? onSubmit;
 
-  CustomTextSearchField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines})
+  CustomTextSearchField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines, this.orderStatus = "All"})
       : super(key: key);
 
   @override
@@ -209,19 +211,24 @@ class _CustomTextSearchFieldState extends State<CustomTextSearchField> {
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: const Color(0XFF1F546033)),
       ),
-      suffix: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              Container(
-                height: 30,
-                width: 1,
-                color: Colors.grey[300],
-              ),
-              const SizedBox(width: 10,),
-              Image.asset("assets/images/filter.png",width: 22,height: 20,),
-            ],
-          )
+      suffix: GestureDetector(
+        onTap: (){
+          dateCalendar(context,widget.orderStatus!);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Container(
+                  height: 30,
+                  width: 1,
+                  color: Colors.grey[300],
+                ),
+                const SizedBox(width: 10,),
+                Image.asset("assets/images/filter.png",width: 22,height: 20,),
+              ],
+            )
+        ),
       )
       ,
     );
