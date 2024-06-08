@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
@@ -11,6 +12,7 @@ class TwoFactor extends StatefulWidget {
 }
 
 class _TwoFactorState extends State<TwoFactor> {
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -37,14 +39,19 @@ class _TwoFactorState extends State<TwoFactor> {
 
                   const SizedBox(height: 40,),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    padding:  EdgeInsets.symmetric(horizontal: 0),
                     child: mainButton(
-                        content: sText("Enable",color: Colors.white,size: 18,weight: FontWeight.w600),
+                        content: sText(userInstance!.mfaActive! ? "Disable"  : "Enable",color: Colors.white,size: 18,weight: FontWeight.w600),
                         backgroundColor: primaryColor,
                         shadowStrength: 0,
                         height: 50,
                         radius: 30,
-                        onPressed: (){
+                        onPressed: ()async{
+                          userInstance?.mfaActive = !userInstance!.mfaActive!;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "mfa_active":userInstance?.mfaActive!
+                          });
                         }),
                   ),
                   const SizedBox(height: 20,),

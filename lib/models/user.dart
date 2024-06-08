@@ -53,6 +53,7 @@ class UserModel {
   int? rating;
   bool? documentSubmitted;
   Notifications? notifications;
+  NotificationsChannels? notification_channels;
   String? address;
   String? city;
   String? postCode;
@@ -84,6 +85,7 @@ class UserModel {
     this.rating,
     this.documentSubmitted,
     this.notifications,
+    this.notification_channels,
     this.address,
     this.city,
     this.postCode,
@@ -118,6 +120,7 @@ class UserModel {
     rating: json["rating"] ?? "",
     documentSubmitted: json["document_submitted"] == 1 ? true : false,
     notifications: json["notifications"] == null ? null : Notifications.fromJson(json["notifications"]),
+    notification_channels: json["notification_channels"] == null ? null : NotificationsChannels.fromJson(json["notification_channels"]),
     address: json["address"] ?? "",
     city: json["city"] ?? "",
     postCode: json["post_code"] ?? "",
@@ -151,6 +154,7 @@ class UserModel {
     "rating": rating,
     "document_submitted": documentSubmitted,
     "notifications": notifications?.toJson(),
+    "notification_channels": notification_channels?.toJson(),
     "address": address,
     "city": city,
     "post_code": postCode,
@@ -164,26 +168,58 @@ class UserModel {
   };
 }
 
-class Notifications {
+class NotificationsChannels {
   bool? email;
   bool? push;
   bool? sms;
 
-  Notifications({
+  NotificationsChannels({
     this.email,
     this.push,
     this.sms,
   });
 
-  factory Notifications.fromJson(Map<String, dynamic> json) => Notifications(
-    email: json["email"] == 1 ? true : false,
-    push: json["push"]  == 1 ? true : false,
-    sms: json["sms"]  == 1 ? true : false,
+  factory NotificationsChannels.fromJson(Map<String, dynamic> json) => NotificationsChannels(
+    email: json["email"] ?? false,
+    push: json["push"] ?? false,
+    sms: json["sms"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
     "email": email,
     "push": push,
     "sms": sms,
+  };
+}
+
+class Notifications {
+  bool? orders;
+  bool? inquiry;
+  bool? order_complete;
+  bool? security;
+  bool? inventory;
+
+  Notifications({
+    this.orders,
+    this.inquiry,
+    this.order_complete,
+    this.security,
+    this.inventory,
+  });
+
+  factory Notifications.fromJson(Map<String, dynamic> json) => Notifications(
+    orders: json["orders"] ?? false,
+    inquiry: json["inquiry"]  ?? false,
+    order_complete: json["order_complete"]  ?? false,
+    security: json["security"] ?? false,
+    inventory: json["inventory"]  ?? false,
+  );
+
+  Map<String, dynamic> toJson() => {
+    "orders": orders,
+    "inquiry": inquiry,
+    "order_complete": order_complete,
+    "security": security,
+    "inventory": inventory,
   };
 }

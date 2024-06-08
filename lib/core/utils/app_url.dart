@@ -35,6 +35,7 @@ class AppUrl {
   static String resendWeavrEmailVerification = "$baseURL/auth/resend-weavr-verification-code";
   static String getUser = "$baseURL/merchant";
   static String config = "$baseURL/config";
+  static String faq = "$baseURL/base/faq";
   static String readNotification = "$baseURL/notifications/mark-read";
   static String getUserNotifications = "$baseURL/notifications/list";
   static String checkStageName = "$baseURL/merchant/check-profile-name";

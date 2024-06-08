@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:http/http.dart' as http;
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,12 +15,14 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:images_picker/images_picker.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
+import 'package:urbandrop/models/faq_model.dart';
 import 'package:urbandrop/models/user.dart';
 import 'package:urbandrop/routes.dart';
 
@@ -449,6 +452,18 @@ getUserConfig() async {
     var response = await _http.getRequest(AppUrl.config);
     // var response  = await _http.getRequest('${AppUrl.config}');
     if (response["status"] == AppResponseCodes.success) {
+    }
+
+  } catch (e) {}
+}
+getFaq() async {
+  final stateDashboard = Get.put(DashboardController());
+
+  try {
+    var response = await _http.getRequest(AppUrl.faq);
+    FaqModel faqModel = FaqModel.fromJson(response);
+    if (faqModel.status == AppResponseCodes.success) {
+      stateDashboard.listFaqData.value!.addAll(faqModel.data ?? []);
     }
 
   } catch (e) {}

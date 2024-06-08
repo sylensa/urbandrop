@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
@@ -37,8 +38,12 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                     StoreWidget(
                       image: "new_order.png",
                       content: "New orders ",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
+                      onTap: ()async{
+                        userInstance?.notifications?.orders = !userInstance!.notifications!.orders!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notifications":userInstance?.notifications!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -47,17 +52,26 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.orders = val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance!.notifications!.orders!,
                       ),
                     ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "support.png",
                       content: "Customer inquiry ",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
+                      onTap: ()async{
+                        userInstance?.notifications?.inquiry = !userInstance!.notifications!.inquiry!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notifications":userInstance?.notifications!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -66,17 +80,26 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.inquiry = val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance!.notifications!.inquiry!,
                       ),
                     ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "completed.png",
                       content: "Order completion confirmation ",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
+                      onTap: ()async{
+                        userInstance?.notifications?.order_complete = !userInstance!.notifications!.order_complete!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notifications":userInstance?.notifications!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -85,17 +108,26 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.order_complete = val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance!.notifications!.order_complete!,
                       ),
                     ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "security.png",
                       content: "Security alerts",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
+                      onTap: ()async{
+                        userInstance?.notifications?.security = !userInstance!.notifications!.security!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notifications":userInstance?.notifications!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -104,17 +136,26 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.security = val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance!.notifications!.security!,
                       ),
                     ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "inven.png",
                       content: "Low inventory alerts",
-                      onTap: (){
-                        context.push(Routing.resetPassword);
+                      onTap: ()async{
+                        userInstance?.notifications?.inventory = !userInstance!.notifications!.inventory!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notifications":userInstance?.notifications!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -123,9 +164,14 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                         toggleSize: 20,
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
-                        onToggle: (val) {
+                        onToggle: (val) async{
+                          userInstance?.notifications?.inventory = val;
+                          setState(() {});
+                          await AuthenticationController().update(context,{
+                            "notifications":userInstance?.notifications!.toJson()
+                          });
                         },
-                        value: true,
+                        value: userInstance!.notifications!.inventory!
                       ),
                     ),
                     const SizedBox(height: 20,),

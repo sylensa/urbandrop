@@ -31,7 +31,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: sText("Add Product",size: 15,weight: FontWeight.w600),
+        title: sText("Opening and Closing time",size: 15,weight: FontWeight.w600),
         centerTitle: true,
         elevation: 1,
         backgroundColor: Colors.white,

@@ -38,7 +38,12 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                     StoreWidget(
                       image: "email_noti.png",
                       content: "Email notifications ",
-                      onTap: (){
+                      onTap: ()async{
+                        userInstance?.notification_channels?.email = !userInstance!.notification_channels!.email!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notification_channels":userInstance?.notification_channels!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -48,13 +53,13 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
                         onToggle: (val) async{
-                          userInstance?.notifications?.email =val;
+                          userInstance?.notification_channels?.email =val;
                           setState(() {});
                           await AuthenticationController().update(context,{
-                            "notifications":userInstance?.notifications!.toJson()
+                            "notification_channels":userInstance?.notification_channels!.toJson()
                           });
                         },
-                        value: userInstance?.notifications?.email == true ? true  : false,
+                        value: userInstance!.notification_channels!.email!,
                       ),
                     ),
                     // const SizedBox(height: 20,),
@@ -80,7 +85,12 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                     StoreWidget(
                       image: "notification.png",
                       content: "Push notifications ",
-                      onTap: (){
+                      onTap: ()async{
+                        userInstance?.notification_channels?.push = !userInstance!.notification_channels!.push!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notification_channels":userInstance?.notification_channels!.toJson()
+                        });
                       },
                       icon:   OnAndOffSwitch(
                         padding: 2,
@@ -90,20 +100,26 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
                         onToggle: (val) async{
-                          userInstance?.notifications?.push =val;
+                          userInstance?.notification_channels?.push =val;
                           setState(() {});
                           await AuthenticationController().update(context,{
-                            "notifications":userInstance?.notifications!.toJson()
+                            "notification_channels":userInstance?.notification_channels!.toJson()
                           });
                         },
-                        value: userInstance?.notifications?.push == true ? true  : false,
+                        value: userInstance!.notification_channels!.push!,
                       ),
                     ),
                     const SizedBox(height: 20,),
                     StoreWidget(
                       image: "sms.png",
                       content: "SMS notifications ",
-                      onTap: (){},
+                      onTap: ()async{
+                        userInstance?.notification_channels?.sms = !userInstance!.notification_channels!.sms!;
+                        setState(() {});
+                        await AuthenticationController().update(context,{
+                          "notification_channels":userInstance?.notification_channels!.toJson()
+                        });
+                      },
                       icon:   OnAndOffSwitch(
                         padding: 2,
                         height: 25,
@@ -112,13 +128,13 @@ class _NotificationSettingPageState extends State<NotificationSettingPage> {
                         toggleColor: Colors.white,
                         activeColor: primaryColor,
                         onToggle: (val) async{
-                          userInstance?.notifications?.sms = val;
+                          userInstance?.notification_channels?.sms = val;
                           setState(() {});
                           await AuthenticationController().update(context,{
-                            "notifications":userInstance?.notifications!.toJson()
+                            "notification_channels":userInstance?.notification_channels!.toJson()
                           });
                         },
-                        value: userInstance?.notifications?.sms == true ? true  : false,
+                        value: userInstance!.notification_channels!.sms!,
                       ),
                     ),
                     const SizedBox(height: 20,),
