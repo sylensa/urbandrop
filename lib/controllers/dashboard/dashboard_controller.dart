@@ -7,6 +7,7 @@ import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
+import 'package:urbandrop/models/config_model.dart';
 import 'package:urbandrop/models/faq_model.dart';
 import 'package:urbandrop/models/order_summary_model.dart';
 import 'package:urbandrop/models/orders_model.dart';
@@ -24,7 +25,8 @@ class DashboardController extends GetxController{
   final Rx<bool> loading = Rx<bool>(true);
   final Rx<bool> paginationLoading = Rx<bool>(false);
   final AuthenticationController authenticationController = AuthenticationController();
-  final Rx<List<FaqData>?> listFaqData = Rx<List<FaqData>>([]);
+  final Rx<List<FaqData>> listFaqData = Rx<List<FaqData>>([]);
+  final Rx<ConfigModel?> configModel = Rx<ConfigModel?>(null);
 
   @override
   onReady() {

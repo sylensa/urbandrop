@@ -22,6 +22,7 @@ import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
+import 'package:urbandrop/models/config_model.dart';
 import 'package:urbandrop/models/faq_model.dart';
 import 'package:urbandrop/models/user.dart';
 import 'package:urbandrop/routes.dart';
@@ -58,13 +59,25 @@ String? idNumber;
 String? countryName;
 File? frontImageFile;
 File? backImageFile;
-
+List<ListNames> data = [
+  ListNames(name: "Found a better alternative",enable: false),
+  ListNames(name: "Dissatisfied with service/features",enable: false),
+  ListNames(name: "Moving to a different location",enable: false),
+  ListNames(name: "Account compromised/security concerns",enable: false),
+  ListNames(name: "Personal reasons / Financial reasons",enable: false),
+  ListNames(name: "Other (enter reason below)",enable: false),
+];
+ListNames? deactivateOptions;
+ListNames? deleteOptions;
+TextEditingController deactivateDescription = TextEditingController();
+TextEditingController deleteDescription = TextEditingController();
 final ImagePicker _picker = ImagePicker();
 
 final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: []);
 final userPreferences = UserPreferences();
 final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 final HttpClientWrapper _http = HttpClientWrapper();
+final stateDashboard = Get.put(DashboardController());
 
 
 getGoogleCloudId()async{
@@ -188,7 +201,7 @@ login(BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async {
 
 update(BuildContext context, Map body,{notLoadingDialog = false}) async {
   try {
-      var response = await _http.putRequest("${AppUrl.userUpdate}", body);
+      var response = await _http.putRequest(AppUrl.userUpdate, body);
       log("(response.body:$response");
       if (response["status"] == AppResponseCodes.success) {
         UserModel user = UserModel.fromJson(response['data']);
@@ -205,6 +218,75 @@ update(BuildContext context, Map body,{notLoadingDialog = false}) async {
 
   } catch (e) {
     print(e.toString());
+    errorMessage = e.toString();
+    toastMessage(errorMessage, context);
+  }
+  return false;
+}
+contactSupport(BuildContext context, Map body) async {
+  try {
+    showLoaderDialog(context);
+      var response = await _http.postRequest(AppUrl.contactSupport, body);
+      log("(response.body:$response");
+      if (response["status"] == AppResponseCodes.success) {
+        toastSuccessMessage(response["message"], context);
+        context.pop();
+      }
+     else{
+        toastMessage(response['message'], context);
+        context.pop();
+      }
+  } catch (e) {
+    print(e.toString());
+    errorMessage = e.toString();
+    toastMessage(errorMessage, context);
+    context.pop();
+  }
+}
+deactivate(BuildContext context, Map body) async {
+  try {
+    showLoaderDialog(context);
+      var response = await _http.putRequest(AppUrl.deactivate, body);
+      log("(response.body:$response");
+      if (response["status"] == AppResponseCodes.success) {
+        toastSuccessMessage(response['message'], context);
+        await UserPreferences().logout();
+        context.go(Routing.splashScreen);
+        context.pop();
+      }
+     else{
+        toastMessage(response['message'], context);
+        context.pop();
+      }
+
+  } catch (e) {
+    print(e.toString());
+    errorMessage = e.toString();
+    toastMessage(errorMessage, context);
+    context.pop();
+  }
+  return false;
+}
+delete(BuildContext context, Map body) async {
+  try {
+      showLoaderDialog(context);
+      var response = await _http.deleteRequest(AppUrl.delete, body: body);
+      log("(response.body:$response");
+      if (response["status"] == AppResponseCodes.success) {
+        toastSuccessMessage(response['message'], context);
+        await UserPreferences().logout();
+        context.pop();
+        context.go(Routing.splashScreen);
+      }
+     else{
+        context.pop();
+        toastMessage(response['message'], context);
+
+      }
+
+  } catch (e) {
+    print(e.toString());
+    context.pop();
     errorMessage = e.toString();
     toastMessage(errorMessage, context);
   }
@@ -425,7 +507,7 @@ user({String userId = ''}) async {
       await userPreferences.setToken(user.token!);
       await userPreferences.setRefreshToken(user.refreshToken!);
       userInstance = user;
-      // await AuthenticationController().getUserConfig();
+      await AuthenticationController().getUserConfig();
       return userInstance;
     }
 
@@ -450,14 +532,12 @@ getUser({String userId = ''}) async {
 getUserConfig() async {
   try {
     var response = await _http.getRequest(AppUrl.config);
-    // var response  = await _http.getRequest('${AppUrl.config}');
     if (response["status"] == AppResponseCodes.success) {
+      stateDashboard.configModel.value = ConfigModel.fromJson(response["data"]);
     }
-
   } catch (e) {}
 }
 getFaq() async {
-  final stateDashboard = Get.put(DashboardController());
 
   try {
     var response = await _http.getRequest(AppUrl.faq);

@@ -14,6 +14,9 @@ class AppUrl {
   static String userGoogleLogin = "$baseURL/auth/google-login";
   static String userRegister = "$baseURL/auth/signup";
   static String userUpdate = "$baseURL/merchant";
+  static String contactSupport = "$baseURL/base/query";
+  static String deactivate = "$baseURL/merchant/deactivate";
+  static String delete = "$baseURL/merchant";
   static String orders = "$baseURL/order";
   static String products = "$baseURL/product";
   static String createFolder = "$baseURL/folder/create";
@@ -34,7 +37,7 @@ class AppUrl {
   static String resendVerification = "$baseURL/auth/resend-verification-code";
   static String resendWeavrEmailVerification = "$baseURL/auth/resend-weavr-verification-code";
   static String getUser = "$baseURL/merchant";
-  static String config = "$baseURL/config";
+  static String config = "$baseURL/base/config";
   static String faq = "$baseURL/base/faq";
   static String readNotification = "$baseURL/notifications/mark-read";
   static String getUserNotifications = "$baseURL/notifications/list";

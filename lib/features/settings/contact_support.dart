@@ -28,9 +28,11 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
   AuthenticationController authenticationController = AuthenticationController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   TextEditingController phoneNumbersController = TextEditingController();
-  c.Country? country;
-  Country? getCountry;
-  String countryCode = "+44";
+  TextEditingController description = TextEditingController();
+  TextEditingController firstName = TextEditingController();
+  TextEditingController businessName = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController subject = TextEditingController();
   String mask = '00-000-0000';
   String phoneNumber = '';
   @override
@@ -52,6 +54,7 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
                 CustomTextField(
+                  controller: firstName,
                   placeholder: "Full Name",
                   onChange: (value){
                     setState(() {
@@ -62,6 +65,7 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
                 ),
                 const SizedBox(height: 20,),
                 CustomTextField(
+                  controller: businessName,
                   placeholder: "Business Name",
                   onChange: (value){
                     setState(() {
@@ -71,17 +75,74 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
                   },
                 ),
                 const SizedBox(height: 20,),
-                CustomTextField(
-                  placeholder: "Phone Number",
-                  onChange: (value){
-                    setState(() {
-                      authenticationController.emailValid = EmailValidator.validate(value);
-                      authenticationController.email = value;
-                    });
-                  },
+                IntlPhoneField(
+                    decoration:   const InputDecoration(
+                        counterStyle: TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF1F546033), width: 1),
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF1F546033), width: 1),
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color:Color(0xFF1F546033), width: 1),
+                          borderRadius:  BorderRadius.all(Radius.circular(30)),
+                        ),
+                        fillColor: Colors.white,
+                        filled: true
+
+
+                    ),
+                    dropdownIcon: const Icon(Icons.arrow_drop_down_rounded,color: Colors.black,),
+                    controller: phoneNumbersController,
+
+                    initialCountryCode: authenticationController.isoCountryCodes ,
+                    disableLengthCheck: true,
+                    dropdownTextStyle: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                    dropdownIconPosition: IconPosition.trailing,
+                    textInputAction: TextInputAction.go,
+                    autofocus: false,
+                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                    flagsButtonPadding: const EdgeInsets.only(left: 8),
+                    textAlignVertical: TextAlignVertical.center,
+                    inputFormatters: [
+                      MaskedTextInputFormatter(mask: mask),
+                    ],
+                    validator: (phone) {
+                      final isValid = phone?.completeNumber.isEmpty;
+                      if(isValid != null && isValid) {
+                        return 'invalid phone number';
+                      }
+                      return null;
+                    },
+                    onChanged: (phone) {
+                      setState(() {
+                        authenticationController.mobileNumber = phone.completeNumber.split("-").join("");
+                        authenticationController.mcc = phone.countryCode;
+                        authenticationController.mobileNumberWithoutCountryCode = phone.number.split("-").join("");
+                        authenticationController.isoCountryCodes = phone.countryISOCode;
+                        print("phoneNumber:${authenticationController.mobileNumber}");
+                        print("countryCode:${authenticationController.mcc}");
+                        print("isoCountryCodes:${authenticationController.isoCountryCodes}");
+                        print("maxLength:${intl.countries.firstWhere((element) => element.code == phone.countryISOCode).maxLength}");
+                        if(intl.countries.firstWhere((element) => element.code == phone.countryISOCode).maxLength == 9){
+                          mask = "00-000-0000";
+                        }else if(intl.countries.firstWhere((element) => element.code == phone.countryISOCode).maxLength == 10){
+                          mask = '00-0000-0000';
+                        }else if(intl.countries.firstWhere((element) => element.code == phone.countryISOCode).maxLength == 11){
+                          mask = '000-0000-0000';
+                        }else{
+                          mask = '0000-0000-0000';
+                        }
+                      });
+                    }
+                  // },
                 ),
                 const SizedBox(height: 20,),
                 CustomTextField(
+                  controller: email,
                   placeholder: "Email Address",
                   onChange: (value){
                     setState(() {
@@ -91,27 +152,22 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
                   },
                 ),
                 const SizedBox(height: 20,),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 17),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: const Color(0XFF1F546033)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      sText("Subject/Category",color: const Color(0xFF879EA4)),
-                      const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
-                    ],
-                  ),
+                CustomTextField(
+                  controller: subject,
+                  placeholder: "Subject",
+                  onChange: (value){
+                    setState(() {
+
+                    });
+                  },
                 ),
 
                 const SizedBox(height: 20,),
                 SizedBox(
                   height: 200,
                   child: CustomDescriptionField(
+                    controller:description ,
                     placeholder: "Write description",
-                    maxLines: 5,
                     onChange: (value){
                       setState(() {
                       });
@@ -128,7 +184,20 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
                     shadowStrength: 0,
                     height: 50,
                     radius: 30,
-                    onPressed: (){
+                    onPressed: ()async{
+                      if(firstName.text.isNotEmpty && businessName.text.isNotEmpty && authenticationController.mobileNumber.isNotEmpty && email.text.isNotEmpty && subject.text.isNotEmpty && description.text.isNotEmpty){
+                       await  authenticationController.contactSupport(context, {
+                          "full_name": firstName.text,
+                          "business_name": businessName.text,
+                          "email": email.text,
+                          "mobile_number":authenticationController.mobileNumber,
+                          "subject": subject.text,
+                          "message": description.text
+                        });
+                      }else{
+                        toastMessage("All fields are required", context);
+                      }
+                      
                     }),
                 const SizedBox(height: 20,),
 

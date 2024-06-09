@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/bottomsheet_ex.dart';
@@ -15,14 +17,7 @@ class DeactivateAccount extends StatefulWidget {
 }
 
 class _DeactivateAccountState extends State<DeactivateAccount> {
-  List<ListNames> data = [
-    ListNames(name: "Found a better alternative",enable: false),
-    ListNames(name: "Dissatisfied with service/features",enable: false),
-    ListNames(name: "Moving to a different location",enable: false),
-    ListNames(name: "Account compromised/security concerns",enable: false),
-    ListNames(name: "Personal reasons / Financial reasons",enable: false),
-    ListNames(name: "Other (enter reason below)",enable: false),
-  ];
+AuthenticationController authenticationController =  AuthenticationController();
   @override
   Widget build(BuildContext context) {
 
@@ -50,20 +45,17 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 children: [
-                  for(int index = 0 ; index < data.length; index++)
+                  for(int index = 0 ; index < authenticationController.data.length; index++)
                     Column(
                       children: [
                         RadioTextWidget(
                             onTap: (){
                               setState(() {
-                                for(int i =0; i < data.length;i++){
-                                  data[i].enable = false;
-                                }
-                                data[index].enable = true;
+                                authenticationController.deactivateOptions = authenticationController.data[index];
                               });
                             },
-                            selected:data[index].enable ,
-                            text:data[index].name
+                            selected:authenticationController.deactivateOptions?.name == authenticationController.data[index].name ,
+                            text:authenticationController.data[index].name
                         ),
                         const SizedBox(height: 20,),
                       ],
@@ -72,10 +64,11 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
                   SizedBox(
                     height: 200,
                     child: CustomDescriptionField(
+                      controller: authenticationController.deactivateDescription,
                       placeholder: "Write description",
-                      maxLines: 5,
                       onChange: (value){
                         setState(() {
+
                         });
                       },
                     ),
@@ -90,11 +83,12 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
                 radius: 30,
                 outlineColor: Colors.transparent,
                 shadowStrength: 0,
-                backgroundColor: appMainRedColor,
+                backgroundColor: authenticationController.deactivateDescription.text.isNotEmpty && authenticationController.deactivateOptions != null ? appMainRedColor : Colors.grey,
                 content:  sText("Deactivate account",color: Colors.white,weight: FontWeight.w600,size: 18),
                 onPressed:(){
-                  const DeleteAccountSheet(title: "Deactivate account").asFixedBottomSheet(context, title: "Delete account", showCotrols: false);
-
+                  if(authenticationController.deactivateDescription.text.isNotEmpty && authenticationController.deactivateOptions != null) {
+                    DeleteAccountSheet(title: "Deactivate account",authenticationController: authenticationController,isDelete: false,).asFixedBottomSheet(context, title: "Delete account", showCotrols: false,);
+                  }
                 }),
 
           ],
