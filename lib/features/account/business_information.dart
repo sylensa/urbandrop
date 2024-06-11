@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/features/widget/social_login_widgets.dart';
+import 'package:urbandrop/models/config_model.dart';
 import 'package:urbandrop/routes.dart';
 
 class BusinessInformationPage extends StatefulWidget {
@@ -29,12 +32,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
   TextEditingController businessCity = TextEditingController();
   TextEditingController businessPostcode = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-   final List<String> _list = [
-    'Developer',
-    'Designer',
-    'Consultant',
-    'Student',
-  ];
+
    @override
   void initState() {
     // TODO: implement initState
@@ -51,6 +49,8 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
   }
   @override
   Widget build(BuildContext context) {
+    final stateDashboard = Get.put(DashboardController());
+
     return  Scaffold(
       key: scaffoldKey,
       body: Column(
@@ -94,11 +94,12 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                 const SizedBox(height: 20,),
                 ClipRRect(
                   borderRadius:  BorderRadius.circular(30),
-                  child: CustomDropdown<String>(
+                  child: CustomDropdown<TCategory>(
                     hintText: 'Business type',
+                      initialItem:   authenticationController.businessType,
                       headerBuilder: (context, selectedItem) {
                         return sText(
-                          selectedItem.toString(),
+                          selectedItem.categoryName.toString(),
                           color:   Colors.black,
                           size: 16,
                           weight:  FontWeight.w500,
@@ -135,7 +136,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                       ],
                     ),
 
-                    items: _list,
+                    items: stateDashboard.configModel.value!.merchantCategories,
                     onChanged: (value) {
                       setState(() {
                         authenticationController.businessType = value;

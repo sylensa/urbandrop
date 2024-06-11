@@ -179,17 +179,7 @@ class UserPreferences {
   }
 
   logout() async {
-    final dashboardState = Get.put(DashboardController());
-    final ordersState = Get.put(OrdersController());
-    final productsState = Get.put(ProductsController());
-    productsState.listProducts.value = [];
-    productsState.unFilteredListProducts.value = [];
-    ordersState.listOrders.value = [];
-    ordersState.unFilteredListOrders.value = [];
-    dashboardState.topProducts.value = [];
-    dashboardState.recentOrderDelivery.value = null;
-    dashboardState.recentOrderData.value = null;
-    dashboardState.orderSummary.value = null;
+    Get.reset();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
     await clearPrefs();

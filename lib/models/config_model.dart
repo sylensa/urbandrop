@@ -9,19 +9,43 @@ ConfigModel configModelFromJson(String str) => ConfigModel.fromJson(json.decode(
 String configModelToJson(ConfigModel data) => json.encode(data.toJson());
 
 class ConfigModel {
-  List<MerchantCategory>? merchantCategories;
-  List<ProductCategory>? productCategories;
-  List<DeactivationReason>? deactivationReasons;
+  String? status;
+  ConfigData? data;
+  String? message;
 
   ConfigModel({
+    this.status,
+    this.data,
+    this.message,
+  });
+
+  factory ConfigModel.fromJson(Map<String, dynamic> json) => ConfigModel(
+    status: json["status"],
+    data: json["data"] == null ? null : ConfigData.fromJson(json["data"]),
+    message: json["message"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "data": data?.toJson(),
+    "message": message,
+  };
+}
+
+class ConfigData {
+  List<TCategory>? merchantCategories;
+  List<TCategory>? productCategories;
+  List<DeactivationReason>? deactivationReasons;
+
+  ConfigData({
     this.merchantCategories,
     this.productCategories,
     this.deactivationReasons,
   });
 
-  factory ConfigModel.fromJson(Map<String, dynamic> json) => ConfigModel(
-    merchantCategories: json["merchant_categories"] == null ? [] : List<MerchantCategory>.from(json["merchant_categories"]!.map((x) => MerchantCategory.fromJson(x))),
-    productCategories: json["product_categories"] == null ? [] : List<ProductCategory>.from(json["product_categories"]!.map((x) => ProductCategory.fromJson(x))),
+  factory ConfigData.fromJson(Map<String, dynamic> json) => ConfigData(
+    merchantCategories: json["merchant_categories"] == null ? [] : List<TCategory>.from(json["merchant_categories"]!.map((x) => TCategory.fromJson(x))),
+    productCategories: json["product_categories"] == null ? [] : List<TCategory>.from(json["product_categories"]!.map((x) => TCategory.fromJson(x))),
     deactivationReasons: json["deactivation_reasons"] == null ? [] : List<DeactivationReason>.from(json["deactivation_reasons"]!.map((x) => DeactivationReason.fromJson(x))),
   );
 
@@ -52,46 +76,22 @@ class DeactivationReason {
   };
 }
 
-class MerchantCategory {
-  String? id;
-  String? name;
-
-  MerchantCategory({
-    this.id,
-    this.name,
-  });
-
-  factory MerchantCategory.fromJson(Map<String, dynamic> json) => MerchantCategory(
-    id: json["id"],
-    name: json["name"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-  };
-}
-
-class ProductCategory {
+class TCategory {
   String? id;
   String? categoryName;
-  String? imageUrl;
 
-  ProductCategory({
+  TCategory({
     this.id,
     this.categoryName,
-    this.imageUrl,
   });
 
-  factory ProductCategory.fromJson(Map<String, dynamic> json) => ProductCategory(
+  factory TCategory.fromJson(Map<String, dynamic> json) => TCategory(
     id: json["id"],
     categoryName: json["category_name"],
-    imageUrl: json["image_url"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "category_name": categoryName,
-    "image_url": imageUrl,
   };
 }

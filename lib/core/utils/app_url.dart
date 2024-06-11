@@ -33,7 +33,7 @@ class AppUrl {
   static String userSendOTP = "$baseURL/auth/send-otp";
   static String verifyPasscode = "$baseURL/auth/verify-passcode";
   static String changePasscode = "$baseURL/merchant/change-passcode";
-  static String changePassword = "$baseURL/merchant/change-password";
+  static String changePassword = "$baseURL/auth/change-password";
   static String resendVerification = "$baseURL/auth/resend-verification-code";
   static String resendWeavrEmailVerification = "$baseURL/auth/resend-weavr-verification-code";
   static String getUser = "$baseURL/merchant";

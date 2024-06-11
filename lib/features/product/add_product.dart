@@ -13,6 +13,7 @@ import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
+import 'package:urbandrop/models/config_model.dart';
 import 'package:urbandrop/models/product_model.dart';
 
 class AddProduct extends StatefulWidget {
@@ -24,12 +25,7 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  final List<String> _list = [
-    'Developer',
-    'Designer',
-    'Consultant',
-    'Student',
-  ];
+
   final List<String> weightList = [
     'KG',
     'ml',
@@ -42,7 +38,7 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  String? category;
+  TCategory? category;
   String? weight;
   validateField(){
     if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && quantityController.text.isNotEmpty && (mediaPath != null || widget.productData != null) && weight != null){
@@ -56,11 +52,17 @@ class _AddProductState extends State<AddProduct> {
     // TODO: implement initState
     super.initState();
     if(widget.productData != null){
+      final stateDashboard = Get.put(DashboardController());
       productNameController.text ="${widget.productData?.productName}";
       productDescriptionController.text ="${widget.productData?.productDescription}";
       amountController.text ="${widget.productData?.price}";
       quantityController.text ="${widget.productData?.stock}";
       weight = widget.productData?.unit ;
+      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+        if(element.id == widget.productData?.categoryId ){
+          category = element;
+        }
+      });
     }
 
 
@@ -68,6 +70,8 @@ class _AddProductState extends State<AddProduct> {
   @override
   Widget build(BuildContext context) {
     final state = Get.put(ProductsController());
+    final stateDashboard = Get.put(DashboardController());
+
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -192,11 +196,12 @@ class _AddProductState extends State<AddProduct> {
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(color: const Color(0XFF1F546033))
                         ),
-                        child: CustomDropdown<String>(
+                        child: CustomDropdown<TCategory>(
                           hintText: 'Select category',
+                          initialItem: category,
                           headerBuilder: (context, selectedItem) {
                             return sText(
-                              selectedItem.toString(),
+                              selectedItem.categoryName.toString(),
                               color:   Colors.black,
                               size: 16,
                               weight:  FontWeight.w500,
@@ -232,7 +237,7 @@ class _AddProductState extends State<AddProduct> {
                             ],
                           ),
 
-                          items: _list,
+                          items: stateDashboard.configModel.value!.productCategories,
                           onChanged: (value) {
                             setState(() {
                               category = value;
@@ -307,8 +312,7 @@ class _AddProductState extends State<AddProduct> {
                             Map<String, String> body = {
                               "product_name":productNameController.text,
                               "product_description": productDescriptionController.text,
-                              // "category_id":"$category",
-                              "category_id":"123456789",
+                              "category_id":"${category?.id}",
                               "price":amountController.text,
                               "stock":quantityController.text,
                               "unit":"$weight",

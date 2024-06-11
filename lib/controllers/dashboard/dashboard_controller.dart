@@ -24,9 +24,8 @@ class DashboardController extends GetxController{
   final Rx<String> errorMessage = Rx<String>("");
   final Rx<bool> loading = Rx<bool>(true);
   final Rx<bool> paginationLoading = Rx<bool>(false);
-  final AuthenticationController authenticationController = AuthenticationController();
   final Rx<List<FaqData>> listFaqData = Rx<List<FaqData>>([]);
-  final Rx<ConfigModel?> configModel = Rx<ConfigModel?>(null);
+  final Rx<ConfigData?> configModel = Rx<ConfigData?>(null);
 
   @override
   onReady() {
@@ -74,7 +73,7 @@ class DashboardController extends GetxController{
     try{
       var response  =  await _http.getRequest("${AppUrl.products}/top");
       productModel = ProductModel.fromJson(response);
-      if(productModel.status?.toUpperCase() == AppResponseCodes.success){
+      if(productModel.status!.toUpperCase() == AppResponseCodes.success){
         topProducts.value.addAll(productModel.data!);
       }else{
         errorMessage.value = productModel.message!;
@@ -101,7 +100,8 @@ class DashboardController extends GetxController{
     refreshData();
   }
   offOnlineStatus(BuildContext context,{bool? available})async{
-   final response = await authenticationController.update(context,{
+    final AuthenticationController authenticationController = AuthenticationController();
+    final response = await authenticationController.update(context,{
       "available": available ?? false
     }, );
   }

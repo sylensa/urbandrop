@@ -6,12 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
 import 'package:urbandrop/features/widget/social_login_widgets.dart';
+import 'package:urbandrop/models/config_model.dart';
 import 'package:urbandrop/routes.dart';
 
 class UpdateBusinessInformationPage extends StatefulWidget {
@@ -30,17 +33,13 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
   TextEditingController businessPostcode = TextEditingController();
   TextEditingController businessDescription = TextEditingController();
 
-  final List<String> _list = [
-    'Developer',
-    'Designer',
-    'Consultant',
-    'Student',
-  ];
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    final stateDashboard = Get.put(DashboardController());
     businessName.text = userInstance?.businessName ?? "";
     authenticationController.businessName = userInstance?.businessName ?? "";
     businessAddress.text = userInstance?.address ?? "";
@@ -51,9 +50,17 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
     authenticationController.businessPostCode = userInstance?.postCode ?? "";
     businessDescription.text = userInstance?.businessDescription ?? "";
     authenticationController.businessDescription = userInstance?.businessDescription ?? "";
+    stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+      if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
+        authenticationController.businessType = element;
+      }
+    });
+
   }
   @override
   Widget build(BuildContext context) {
+    final stateDashboard = Get.put(DashboardController());
+
     return  Scaffold(
       backgroundColor: Colors.white,
       key: scaffoldKey,
@@ -86,11 +93,12 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                   const SizedBox(height: 20,),
                   ClipRRect(
                     borderRadius:  BorderRadius.circular(30),
-                    child: CustomDropdown<String>(
+                    child: CustomDropdown<TCategory>(
                       hintText: 'Business type',
+                      initialItem:   authenticationController.businessType,
                       headerBuilder: (context, selectedItem) {
                         return sText(
-                          selectedItem.toString(),
+                          selectedItem.categoryName.toString(),
                           color:   Colors.black,
                           size: 16,
                           weight:  FontWeight.w500,
@@ -127,7 +135,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                         ],
                       ),
 
-                      items: _list,
+                      items: stateDashboard.configModel.value!.merchantCategories,
                       onChanged: (value) {
                         setState(() {
                           authenticationController.businessType = value;
@@ -209,8 +217,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                               "city":authenticationController.businessCity,
                               "post_code":authenticationController.businessPostCode,
                               "business_name":authenticationController.businessName,
-                              // "merchant_category":authenticationController.businessType,
-                              "merchant_category":"123456789",
+                              "merchant_category":authenticationController.businessType?.id,
                               "business_description":authenticationController.businessDescription,
                             });
                             if(response){

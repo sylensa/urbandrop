@@ -27,6 +27,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   pageRedirect() async{
     try{
       userInstance = await UserPreferences().getUser();
+      await AuthenticationController().getUserConfig();
+
       if(userInstance != null){
           userInstance =  await AuthenticationController().user();
         if(userInstance == null){

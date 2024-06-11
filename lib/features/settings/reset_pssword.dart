@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
@@ -11,6 +12,9 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
+  TextEditingController currentPassword = TextEditingController();
+  TextEditingController newPassword = TextEditingController();
+  TextEditingController confirmNewPassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -32,16 +36,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                 children: [
                   const SizedBox(height: 20,),
                   CustomTextField(
+                    controller: currentPassword,
                     placeholder: "Current Password",
                     prefixImage: "lock.png",
                     obscureText: true,
                     onChange: (value){
                       setState(() {
+
                       });
                     },
                   ),
                   const SizedBox(height: 20,),
                   CustomTextField(
+                    controller: newPassword,
                     placeholder: "New Password",
                     prefixImage: "lock.png",
                     obscureText: true,
@@ -52,6 +59,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   ),
                   const SizedBox(height: 20,),
                   CustomTextField(
+                    controller: confirmNewPassword,
                     placeholder: "Confirm Password",
                     prefixImage: "lock.png",
                     obscureText: true,
@@ -66,11 +74,20 @@ class _ResetPasswordState extends State<ResetPassword> {
                     padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: mainButton(
                         content: sText("Save",color: Colors.white,size: 18,weight: FontWeight.w600),
-                        backgroundColor: primaryColor,
+                        backgroundColor: currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty && confirmNewPassword.text.isNotEmpty ? primaryColor : Colors.grey,
                         shadowStrength: 0,
                         height: 50,
                         radius: 30,
-                        onPressed: (){
+                        onPressed: ()async{
+                          if(currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty && confirmNewPassword.text.isNotEmpty){
+                            if(confirmNewPassword.text == newPassword.text){
+                              await AuthenticationController().changePassword(context,currentPassword: currentPassword.text,newPassword: newPassword.text);
+                            }else{
+                              toastMessage("New and confirm password does not match", context);
+                            }
+                          }else{
+                            toastMessage("All fields are required", context);
+                          }
                         }),
                   ),
                   const SizedBox(height: 20,),

@@ -33,7 +33,7 @@ String accountNumber = '';
 String sortCode = '';
 String email = '';
 String businessName = '';
-String businessType = '';
+TCategory? businessType;
 String businessDescription = '';
 String businessAddress= '';
 String businessCity= '';
@@ -77,7 +77,7 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: []);
 final userPreferences = UserPreferences();
 final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 final HttpClientWrapper _http = HttpClientWrapper();
-final stateDashboard = Get.put(DashboardController());
+
 
 
 getGoogleCloudId()async{
@@ -126,7 +126,7 @@ loginEmptyFields(){
     return false;
   }
 validateBusinessInformation(){
-  if(businessName.isNotEmpty && businessAddress.isNotEmpty && businessCity.isNotEmpty && businessPostCode.isNotEmpty && businessType.isNotEmpty){
+  if(businessName.isNotEmpty && businessAddress.isNotEmpty && businessCity.isNotEmpty && businessPostCode.isNotEmpty && businessType != null){
     return true;
   }
   return false;
@@ -190,6 +190,31 @@ login(BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async {
         context.pop();
         toastMessage(errorMessage, context);
       }
+
+    } catch (e) {
+      print(e.toString());
+      errorMessage = e.toString();
+      context.pop();
+      toastMessage(errorMessage, context);
+    }
+  }
+changePassword(BuildContext context,{String? currentPassword, String? newPassword}) async {
+    try {
+      showLoaderDialog(context);
+        var response = await _http.putRequest(AppUrl.changePassword,{
+          "current_password": currentPassword,
+          "password": newPassword
+        });
+        log("(response.body:$response");
+        if (response["status"] == AppResponseCodes.success) {
+          await UserPreferences().logout();
+          context.pop();
+          context.push(Routing.splashScreen,extra: true);
+        }
+        else{
+          toastMessage(response['message'], context);
+          context.pop();
+        }
 
     } catch (e) {
       print(e.toString());
@@ -507,7 +532,7 @@ user({String userId = ''}) async {
       await userPreferences.setToken(user.token!);
       await userPreferences.setRefreshToken(user.refreshToken!);
       userInstance = user;
-      await AuthenticationController().getUserConfig();
+      // await AuthenticationController().getUserConfig();
       return userInstance;
     }
 
@@ -533,17 +558,20 @@ getUserConfig() async {
   try {
     var response = await _http.getRequest(AppUrl.config);
     if (response["status"] == AppResponseCodes.success) {
-      stateDashboard.configModel.value = ConfigModel.fromJson(response["data"]);
+      final stateDashboard = Get.put(DashboardController());
+      stateDashboard.configModel.value = ConfigData.fromJson(response["data"]);
+      print("stateDashboard.configModel.value:${stateDashboard.configModel.value!.merchantCategories!.length}");
+      stateDashboard.configModel.refresh();
     }
   } catch (e) {}
 }
 getFaq() async {
-
+  final stateDashboard = Get.put(DashboardController());
   try {
     var response = await _http.getRequest(AppUrl.faq);
     FaqModel faqModel = FaqModel.fromJson(response);
     if (faqModel.status == AppResponseCodes.success) {
-      stateDashboard.listFaqData.value!.addAll(faqModel.data ?? []);
+      stateDashboard.listFaqData.value.addAll(faqModel.data ?? []);
     }
 
   } catch (e) {}
