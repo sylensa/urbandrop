@@ -12,7 +12,7 @@ import 'package:urbandrop/firebase_options.dart';
 import 'package:urbandrop/flavor_settings.dart';
 import 'package:urbandrop/routes.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 late List<CameraDescription> cameras;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -68,6 +68,11 @@ class MyApp extends ConsumerWidget {
           child: child!,
         );
       },
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       routerConfig: ref.watch(routerProvider),
       debugShowCheckedModeBanner: false,
       theme: lightThemeData,

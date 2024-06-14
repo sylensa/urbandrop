@@ -33,7 +33,8 @@ String accountNumber = '';
 String sortCode = '';
 String email = '';
 String businessName = '';
-TCategory? businessType;
+String? businessType;
+String? businessTypeId;
 String businessDescription = '';
 String businessAddress= '';
 String businessCity= '';
@@ -67,6 +68,58 @@ List<ListNames> data = [
   ListNames(name: "Personal reasons / Financial reasons",enable: false),
   ListNames(name: "Other (enter reason below)",enable: false),
 ];
+List<StoreTime> storeTimes = <StoreTime> [
+  StoreTime(
+    day: "1",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Monday",
+  ),
+  StoreTime(
+    day: "2",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Tuesday",
+  ),
+  StoreTime(
+    day: "3",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Wednesday",
+  ),
+  StoreTime(
+    day: "4",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Thursday",
+  ),
+  StoreTime(
+    day: "4",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Thursday",
+  ),
+  StoreTime(
+    day: "5",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Friday",
+  ),
+  StoreTime(
+    day: "6",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Saturday",
+  ),
+  StoreTime(
+    day: "7",
+    openingTime: "",
+    closingTime: "",
+    weekDays: "Sunday",
+  ),
+
+];
+
 ListNames? deactivateOptions;
 ListNames? deleteOptions;
 TextEditingController deactivateDescription = TextEditingController();

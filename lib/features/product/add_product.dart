@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -38,8 +39,10 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  TCategory? category;
+  String? category;
+  String? categoryId;
   String? weight;
+   List<String> _list = [];
   validateField(){
     if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && quantityController.text.isNotEmpty && (mediaPath != null || widget.productData != null) && weight != null){
       return true;
@@ -51,20 +54,22 @@ class _AddProductState extends State<AddProduct> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    final stateDashboard = Get.put(DashboardController());
     if(widget.productData != null){
-      final stateDashboard = Get.put(DashboardController());
       productNameController.text ="${widget.productData?.productName}";
       productDescriptionController.text ="${widget.productData?.productDescription}";
       amountController.text ="${widget.productData?.price}";
       quantityController.text ="${widget.productData?.stock}";
       weight = widget.productData?.unit ;
+
+    }
       stateDashboard.configModel.value!.productCategories!.forEach((element) {
+        _list.add(element.categoryName!);
         if(element.id == widget.productData?.categoryId ){
-          category = element;
+          category = element.categoryName;
+          categoryId = element.id;
         }
       });
-    }
-
 
   }
   @override
@@ -196,21 +201,22 @@ class _AddProductState extends State<AddProduct> {
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(color: const Color(0XFF1F546033))
                         ),
-                        child: CustomDropdown<TCategory>(
+                        child: CustomDropdown<String>.search(
                           hintText: 'Select category',
                           initialItem: category,
-                          headerBuilder: (context, selectedItem) {
+
+                          headerBuilder: (context, selectedItem,v) {
                             return sText(
-                              selectedItem.categoryName.toString(),
+                              selectedItem.toString(),
                               color:   Colors.black,
                               size: 16,
                               weight:  FontWeight.w500,
 
                             );
                           },
-                          hintBuilder: (context, selectedItem) {
+                          hintBuilder: (context, selectedItem,v) {
                             return sText(
-                              selectedItem.toString(),
+                              selectedItem,
                               color:  const Color(0xFF879EA4),
                               size: 16,
                               weight:  FontWeight.w400,
@@ -237,7 +243,7 @@ class _AddProductState extends State<AddProduct> {
                             ],
                           ),
 
-                          items: stateDashboard.configModel.value!.productCategories,
+                          items: _list,
                           onChanged: (value) {
                             setState(() {
                               category = value;
@@ -309,10 +315,16 @@ class _AddProductState extends State<AddProduct> {
                         content:  sText(widget.productData == null ? "Ad product" : "Save",color: Colors.white,weight: FontWeight.w600,size: 18),
                         onPressed:(){
                           if(validateField()){
+                            stateDashboard.configModel.value!.productCategories!.forEach((element) {
+                              if(element.categoryName == category ){
+                                category = element.categoryName;
+                                categoryId = element.id;
+                              }
+                            });
                             Map<String, String> body = {
                               "product_name":productNameController.text,
                               "product_description": productDescriptionController.text,
-                              "category_id":"${category?.id}",
+                              "category_id":"$categoryId",
                               "price":amountController.text,
                               "stock":quantityController.text,
                               "unit":"$weight",

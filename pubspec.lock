@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: animated_custom_dropdown
-      sha256: "9e286defa42f2e774285015d7ff29523a24260888d53f79a3635328fad5bdad7"
+      sha256: "5a72dc209041bb53f6c7164bc2e366552d5197cdb032b1c9b2c36e3013024486"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.1"
   animated_text_kit:
     dependency: "direct main"
     description:
@@ -2018,6 +2018,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+  time_picker_spinner_pop_up:
+    dependency: "direct main"
+    description:
+      name: time_picker_spinner_pop_up
+      sha256: e9133d3e475d2d2b68bea1bfe70ccf1cd1445294f81e29e03e5621d35b3ac112
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.0"
   timer_count_down:
     dependency: "direct main"
     description:

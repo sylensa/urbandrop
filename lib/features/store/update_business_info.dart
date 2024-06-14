@@ -32,7 +32,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
   TextEditingController businessCity = TextEditingController();
   TextEditingController businessPostcode = TextEditingController();
   TextEditingController businessDescription = TextEditingController();
-
+  List<String> _list = [];
 
 
   @override
@@ -51,8 +51,10 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
     businessDescription.text = userInstance?.businessDescription ?? "";
     authenticationController.businessDescription = userInstance?.businessDescription ?? "";
     stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+      _list.add(element.categoryName!);
       if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
-        authenticationController.businessType = element;
+        authenticationController.businessType = element.categoryName;
+        authenticationController.businessTypeId = element.id;
       }
     });
 
@@ -91,57 +93,64 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                     },
                   ),
                   const SizedBox(height: 20,),
-                  ClipRRect(
-                    borderRadius:  BorderRadius.circular(30),
-                    child: CustomDropdown<TCategory>(
-                      hintText: 'Business type',
-                      initialItem:   authenticationController.businessType,
-                      headerBuilder: (context, selectedItem) {
-                        return sText(
-                          selectedItem.categoryName.toString(),
-                          color:   Colors.black,
-                          size: 16,
-                          weight:  FontWeight.w500,
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius:  BorderRadius.circular(30),
+                      border: Border.all(color: const Color(0XFF1F546033)),
 
-                        );
-                      },
-                      hintBuilder: (context, selectedItem) {
-                        return sText(
-                          selectedItem.toString(),
-                          color:  const Color(0xFF879EA4),
-                          size: 16,
-                          weight:  FontWeight.w400,
+                    ),
+                    child: ClipRRect(
+                      borderRadius:  BorderRadius.circular(30),
+                      child: CustomDropdown<String>.search(
+                        hintText: 'Business type',
+                        initialItem:   authenticationController.businessType,
+                        headerBuilder: (context, selectedItem,v) {
+                          return sText(
+                            selectedItem.toString(),
+                            color:   Colors.black,
+                            size: 16,
+                            weight:  FontWeight.w500,
 
-                        );
-                      },
+                          );
+                        },
+                        hintBuilder: (context, selectedItem,v) {
+                          return sText(
+                            selectedItem.toString(),
+                            color:  const Color(0xFF879EA4),
+                            size: 16,
+                            weight:  FontWeight.w400,
 
-                      closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                      canCloseOutsideBounds: true,
-                      decoration: CustomDropdownDecoration(
-                        closedFillColor: Colors.white,
-                        closedBorderRadius: BorderRadius.circular(30),
-                        closedBorder: Border.all(color: const Color(0XFF1F546033)),
-                        closedShadow:[
-                          const BoxShadow(
-                              blurRadius: 1,
-                              color: Colors.white,
-                              offset: Offset(0, 0.0),
-                              spreadRadius: 1),
-                          const BoxShadow(
-                              blurRadius: 1,
-                              color: Colors.white,
-                              offset: Offset(0, 0.0),
-                              spreadRadius: 1)
-                        ],
+                          );
+                        },
+
+                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        canCloseOutsideBounds: true,
+                        decoration: CustomDropdownDecoration(
+                          closedFillColor: Colors.white,
+                          closedBorderRadius: BorderRadius.circular(30),
+                          // closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                          closedShadow:[
+                            const BoxShadow(
+                                blurRadius: 1,
+                                color: Colors.white,
+                                offset: Offset(0, 0.0),
+                                spreadRadius: 1),
+                            const BoxShadow(
+                                blurRadius: 1,
+                                color: Colors.white,
+                                offset: Offset(0, 0.0),
+                                spreadRadius: 1)
+                          ],
+                        ),
+
+                        items: _list,
+                        onChanged: (value) {
+                          setState(() {
+                            authenticationController.businessType = value;
+                          });
+                          log('changing value to: $value');
+                        },
                       ),
-
-                      items: stateDashboard.configModel.value!.merchantCategories,
-                      onChanged: (value) {
-                        setState(() {
-                          authenticationController.businessType = value;
-                        });
-                        log('changing value to: $value');
-                      },
                     ),
                   ),
 
@@ -211,13 +220,19 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                       onPressed: ()async{
                         try{
                           if(authenticationController.validateBusinessInformation() && authenticationController.businessDescription.isNotEmpty){
+                            stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+                              if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
+                                authenticationController.businessType = element.categoryName;
+                                authenticationController.businessTypeId = element.id;
+                              }
+                            });
                             showLoaderDialog(context);
                             var response = await  authenticationController.update(context,  {
                               "address":authenticationController.businessAddress,
                               "city":authenticationController.businessCity,
                               "post_code":authenticationController.businessPostCode,
                               "business_name":authenticationController.businessName,
-                              "merchant_category":authenticationController.businessType?.id,
+                              "merchant_category":authenticationController.businessTypeId,
                               "business_description":authenticationController.businessDescription,
                             });
                             if(response){

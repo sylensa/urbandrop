@@ -64,6 +64,8 @@ class UserModel {
   String? bankBranch;
   String? token;
   String? refreshToken;
+  List<StoreTime>? storeTimes;
+
 
   UserModel({
     this.id,
@@ -97,6 +99,7 @@ class UserModel {
     this.token,
     this.refreshToken,
     this.isActive,
+    this.storeTimes,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -130,6 +133,7 @@ class UserModel {
     sortCode: json["sort_code"] ?? "",
     bankBranch: json["bank_branch"] ?? "",
     token: json["token"] ?? "",
+    storeTimes: json["store_times"] == null ? [] : List<StoreTime>.from(json["store_times"]!.map((x) => StoreTime.fromJson(x))),
     refreshToken: json["refresh_token"] ?? "",
   );
 
@@ -155,6 +159,7 @@ class UserModel {
     "document_submitted": documentSubmitted,
     "notifications": notifications?.toJson(),
     "notification_channels": notification_channels?.toJson(),
+    "store_times": storeTimes == null ? [] : List<dynamic>.from(storeTimes!.map((x) => x.toJson())),
     "address": address,
     "city": city,
     "post_code": postCode,
@@ -221,5 +226,31 @@ class Notifications {
     "order_complete": order_complete,
     "security": security,
     "inventory": inventory,
+  };
+}
+
+class StoreTime {
+  String? day;
+  String? openingTime;
+  String? closingTime;
+  String? weekDays;
+
+  StoreTime({
+    this.day,
+    this.openingTime,
+    this.closingTime,
+    this.weekDays,
+  });
+
+  factory StoreTime.fromJson(Map<String, dynamic> json) => StoreTime(
+    day: json["day"],
+    openingTime: json["opening_time"],
+    closingTime: json["closing_time"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "day": day,
+    "opening_time": openingTime,
+    "closing_time": closingTime,
   };
 }

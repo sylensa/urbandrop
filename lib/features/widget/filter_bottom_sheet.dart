@@ -49,9 +49,9 @@ ordersPlaceFilter(BuildContext context){
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(color: const Color(0XFF1F546033))
                       ),
-                      child: CustomDropdown<String>(
+                      child: CustomDropdown<String>.search(
                         hintText: 'Select order status',
-                        headerBuilder: (context, selectedItem) {
+                        headerBuilder: (context, selectedItem,v) {
                           return sText(
                             selectedItem.toString(),
                             color:   Colors.black,
@@ -60,7 +60,7 @@ ordersPlaceFilter(BuildContext context){
 
                           );
                         },
-                        hintBuilder: (context, selectedItem) {
+                        hintBuilder: (context, selectedItem,v) {
                           return sText(
                             selectedItem.toString(),
                             color:  const Color(0xFF879EA4),

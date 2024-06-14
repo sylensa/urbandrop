@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
@@ -26,9 +25,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool loading = true;
   pageRedirect() async{
     try{
+      Get.reset();
       userInstance = await UserPreferences().getUser();
       await AuthenticationController().getUserConfig();
-
       if(userInstance != null){
           userInstance =  await AuthenticationController().user();
         if(userInstance == null){

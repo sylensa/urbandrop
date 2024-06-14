@@ -32,11 +32,13 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
   TextEditingController businessCity = TextEditingController();
   TextEditingController businessPostcode = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-
+  List<String> _list = [];
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    final stateDashboard = Get.put(DashboardController());
+
     businessName.text = userInstance?.businessName ?? "";
     authenticationController.businessName = userInstance?.businessName ?? "";
     businessAddress.text = userInstance?.address ?? "";
@@ -45,7 +47,10 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
     authenticationController.businessCity = userInstance?.city ?? "";
     businessPostcode.text = userInstance?.postCode ?? "";
     authenticationController.businessPostCode = userInstance?.postCode ?? "";
+    stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+      _list.add(element.categoryName!);
 
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -94,19 +99,19 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                 const SizedBox(height: 20,),
                 ClipRRect(
                   borderRadius:  BorderRadius.circular(30),
-                  child: CustomDropdown<TCategory>(
+                  child: CustomDropdown<String>.search(
                     hintText: 'Business type',
                       initialItem:   authenticationController.businessType,
-                      headerBuilder: (context, selectedItem) {
+                      headerBuilder: (context, selectedItem,v) {
                         return sText(
-                          selectedItem.categoryName.toString(),
+                          selectedItem.toString(),
                           color:   Colors.black,
                           size: 16,
                           weight:  FontWeight.w500,
 
                         );
                       },
-                    hintBuilder: (context, selectedItem) {
+                    hintBuilder: (context, selectedItem,v) {
                       return sText(
                         selectedItem.toString(),
                         color:  const Color(0xFF879EA4),
@@ -136,7 +141,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                       ],
                     ),
 
-                    items: stateDashboard.configModel.value!.merchantCategories,
+                    items: _list,
                     onChanged: (value) {
                       setState(() {
                         authenticationController.businessType = value;
@@ -196,14 +201,19 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                     onPressed: ()async{
                      try{
                        if(authenticationController.validateBusinessInformation()){
+                         stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+                           if(element.categoryName == authenticationController.businessType ){
+                             authenticationController.businessType = element.categoryName;
+                             authenticationController.businessTypeId = element.id;
+                           }
+                         });
                          showLoaderDialog(context);
                          var response = await authenticationController.update(context, {
                            "address":authenticationController.businessAddress,
                            "city":authenticationController.businessCity,
                            "post_code":authenticationController.businessPostCode,
                            "business_name":authenticationController.businessName,
-                           // "merchant_category":authenticationController.businessType,
-                           "merchant_category":"123456789",
+                           "merchant_category":authenticationController.businessTypeId,
                          });
                          if(response){
                            context.pop();

@@ -139,6 +139,7 @@ dependencies:
   global_bottom_navigation_bar: ^0.0.8
   animated_custom_dropdown: ^3.0.0
   images_picker: ^1.2.11
+  time_picker_spinner_pop_up: ^1.5.0
 
 
 dev_dependencies:
