@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "715284850839",
+    "project_id": "urbandrop-a2c9d",
+    "storage_bucket": "urbandrop-a2c9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715284850839:android:0dc880771e6f1722f7a1d2",
+        "android_client_info": {
+          "package_name": "io.urbandrop.merchant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715284850839-9gv36pank75bkuk33oh2m26q6qoqurhq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.urbandrop.merchant",
+            "certificate_hash": "045103716335005b1058edf10c225dbcf7ba90d4"
+          }
+        },
+        {
+          "client_id": "715284850839-3b9tt9t5gj27ehtsp736m06kaq66fj27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5cE3TVXoD6iLCZmb5YY1ylmWRqnBH9yc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715284850839-3b9tt9t5gj27ehtsp736m06kaq66fj27.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "715284850839-qu89tab6ehqm91hj2dvojushs1dd4qso.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.urbandrop.merchant"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
