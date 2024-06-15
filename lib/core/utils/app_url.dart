@@ -14,6 +14,7 @@ class AppUrl {
   static String userGoogleLogin = "$baseURL/auth/google-login";
   static String userRegister = "$baseURL/auth/signup";
   static String userUpdate = "$baseURL/merchant";
+  static String storeTimes = "$baseURL/merchant/store-times";
   static String contactSupport = "$baseURL/base/query";
   static String deactivate = "$baseURL/merchant/deactivate";
   static String delete = "$baseURL/merchant";

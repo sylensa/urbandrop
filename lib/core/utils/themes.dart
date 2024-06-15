@@ -7,7 +7,6 @@ final lightThemeData = ThemeData(
   fontFamily: 'Red Hat Display',
   scaffoldBackgroundColor: scaffoldBackgroundColor,
   primarySwatch: MaterialColor(appMainColor.value, getSwatch(primaryColor)),
-  backgroundColor: Colors.white,
   textTheme: TextTheme(
     headlineMedium: const TextStyle(
       color: Colors.black,

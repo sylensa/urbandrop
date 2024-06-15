@@ -175,7 +175,7 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
                   ),
                 ),
                 const SizedBox(height: 20,),
-                sText("0/250",color: const Color(0XFF879EA4),size: 12),
+                sText("${description.text.length}/250",color: const Color(0XFF879EA4),size: 12),
 
                 const SizedBox(height: 20,),
                 mainButton(

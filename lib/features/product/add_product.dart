@@ -162,6 +162,7 @@ class _AddProductState extends State<AddProduct> {
                     CustomTextField(
                       controller: productNameController,
                       placeholder: "Product Name",
+                      maxLength: 80,
                       onChange: (value){
                         setState(() {
 
@@ -172,7 +173,7 @@ class _AddProductState extends State<AddProduct> {
                     const SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: sText("0 / 80 characters",color: const Color(0XFF879EA4),size: 12),
+                      child: sText("${productNameController.text.length} / 80 characters",color: const Color(0XFF879EA4),size: 12),
                     ),
                     const SizedBox(height: 20,),
                     SizedBox(
@@ -180,6 +181,7 @@ class _AddProductState extends State<AddProduct> {
                       child: CustomDescriptionField(
                         placeholder: "Write description",
                         maxLines: 5,
+                        maxLength: 150,
                         controller: productDescriptionController,
                         onChange: (value){
                           setState(() {
@@ -191,7 +193,7 @@ class _AddProductState extends State<AddProduct> {
                     const SizedBox(height: 20,),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: sText("0/150",color: const Color(0XFF879EA4),size: 12),
+                      child: sText("${productDescriptionController.text.length}/150",color: const Color(0XFF879EA4),size: 12),
                     ),
                     const SizedBox(height: 20,),
                     ClipRRect(

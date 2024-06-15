@@ -26,8 +26,8 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
 AuthenticationController authenticationController = AuthenticationController();
- String? selectedDay;
- int? selectedIndex;
+ String? selectedDay = "1";
+ int? selectedIndex = 0;
  @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +36,9 @@ AuthenticationController authenticationController = AuthenticationController();
       for(int i =0; i < userInstance!.storeTimes!.length; i++){
         for(int t =0 ; t < authenticationController.storeTimes.length; t++){
           if(userInstance!.storeTimes![i].day == authenticationController.storeTimes[t].day){
-            authenticationController.storeTimes[t] = userInstance!.storeTimes![i];
+            log("userInstance:${userInstance!.storeTimes![i].toJson()}");
+            authenticationController.storeTimes[t].closingTime = userInstance!.storeTimes![i].closingTime;
+            authenticationController.storeTimes[t].openingTime = userInstance!.storeTimes![i].openingTime;
           }
         }
       }
@@ -200,6 +202,25 @@ AuthenticationController authenticationController = AuthenticationController();
              ),
            ),
 
+            InkWell(
+              onTap: (){
+              setState(() {
+                authenticationController.storeTimes[selectedIndex!].openingTime = '';
+                authenticationController.storeTimes[selectedIndex!].closingTime = '';
+              });
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                 children: [
+                   sText("clear",color: primaryRedColor,size: 16),
+                   Icon(Icons.clear,color: primaryRedColor,size: 18,)
+                 ],
+
+                ),
+              ),
+            ),
 
 
 
@@ -215,9 +236,9 @@ AuthenticationController authenticationController = AuthenticationController();
                   onPressed: ()async{
                     try{
                       showLoaderDialog(context);
-                      var response = await authenticationController.update(context, {
-                        "store_times":  List<dynamic>.from(authenticationController.storeTimes.where((x) => x.closingTime!.isNotEmpty && x.openingTime!.isNotEmpty).map((x) => x.toJson()))
-                      });
+                      var response = await authenticationController.setTime(context,
+                        List<dynamic>.from(authenticationController.storeTimes.where((x) => x.closingTime!.isNotEmpty && x.openingTime!.isNotEmpty).map((x) => x.toJson()))
+                      );
                       if(response){
                         context.pop();
                         toastSuccessMessage("Opening and Closing time updated successfully ", context);

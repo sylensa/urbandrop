@@ -301,6 +301,26 @@ update(BuildContext context, Map body,{notLoadingDialog = false}) async {
   }
   return false;
 }
+setTime(BuildContext context, var body,) async {
+  try {
+      var response = await _http.putRequest(AppUrl.storeTimes, jsonEncode(body));
+      log("(response.body:$response");
+      if (response["status"] == AppResponseCodes.success) {
+        await user();
+        return true;
+      }
+     else{
+        toastMessage(response['message'], context);
+      }
+
+
+  } catch (e) {
+    print(e.toString());
+    errorMessage = e.toString();
+    toastMessage(errorMessage, context);
+  }
+  return false;
+}
 contactSupport(BuildContext context, Map body) async {
   try {
     showLoaderDialog(context);
@@ -308,6 +328,7 @@ contactSupport(BuildContext context, Map body) async {
       log("(response.body:$response");
       if (response["status"] == AppResponseCodes.success) {
         toastSuccessMessage(response["message"], context);
+        context.pop();
         context.pop();
       }
      else{

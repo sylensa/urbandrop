@@ -49,6 +49,7 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
                   placeholder: "Write description",
                   controller: businessDescription,
                   maxLines: 5,
+                  maxLength: 150,
                   onChange: (value){
                     setState(() {
                       authenticationController.businessDescription = value;
@@ -57,7 +58,7 @@ class _BusinessDescriptionPageState extends State<BusinessDescriptionPage> {
                 ),
               ),
               const SizedBox(height: 20,),
-              sText("0/150",color: const Color(0XFF879EA4),size: 12),
+              sText("${businessDescription.text.length}/150",color: const Color(0XFF879EA4),size: 12),
               const SizedBox(height: 40,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),

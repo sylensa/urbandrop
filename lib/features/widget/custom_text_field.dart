@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   final bool? checkMark;
   final String? prefixImage;
   final int? maxLines;
+  final int? maxLength;
   final TextDirection? textDirection;
   final TextInputType? keyboardType;
   final List<TextInputFormatter> inputFormatters;
@@ -19,7 +20,7 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onChange;
   final ValueChanged<String>? onSubmit;
 
-   CustomTextField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines, this.keyboardType})
+   CustomTextField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines, this.keyboardType, this.maxLength})
       : super(key: key);
 
   @override
@@ -41,6 +42,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller,
       onChanged: widget.onChange,
       onSubmitted: widget.onSubmit,
+      maxLength: widget.maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
       keyboardType: widget.keyboardType,
       prefix: widget.prefixImage != null ?
       Padding(
@@ -92,13 +95,14 @@ class CustomDescriptionField extends StatefulWidget {
   final bool? checkMark;
   final String? prefixImage;
   final int? maxLines;
+  final int? maxLength;
   final TextDirection? textDirection;
   final List<TextInputFormatter> inputFormatters;
   final TextEditingController? controller;
   final ValueChanged<String>? onChange;
   final ValueChanged<String>? onSubmit;
 
-  CustomDescriptionField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines})
+  CustomDescriptionField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines, this.maxLength})
       : super(key: key);
 
   @override
@@ -120,7 +124,8 @@ class _CustomDescriptionFieldState extends State<CustomDescriptionField> {
       controller: widget.controller,
       onChanged: widget.onChange,
       keyboardType: TextInputType.text,
-      maxLength: 150,
+      maxLength: 250,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
       maxLines: widget.maxLines,
       onSubmitted: widget.onSubmit,
       textAlignVertical: TextAlignVertical.top,

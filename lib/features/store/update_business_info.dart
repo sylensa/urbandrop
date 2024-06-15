@@ -160,6 +160,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                     child: CustomDescriptionField(
                       placeholder: "Write description",
                       maxLines: 5,
+                      maxLength: 150,
                       controller: businessDescription,
                       onChange: (value){
                         setState(() {
@@ -169,7 +170,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                     ),
                   ),
                   const SizedBox(height: 20,),
-                  sText("0/150",color: const Color(0XFF879EA4),size: 12),
+                  sText("${businessDescription.text.length}/150",color: const Color(0XFF879EA4),size: 12),
                   const SizedBox(height: 20,),
                   CustomTextField(
                     controller: businessAddress,
