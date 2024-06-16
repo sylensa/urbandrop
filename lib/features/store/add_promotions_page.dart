@@ -1,16 +1,43 @@
+import 'dart:developer';
+
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
+import 'package:urbandrop/models/promotions_model.dart';
 
 class AddPromotionsPage extends StatefulWidget {
-  const AddPromotionsPage({super.key});
+  final PromotionsData? promotionsData;
+  const AddPromotionsPage({super.key, this.promotionsData});
 
   @override
   State<AddPromotionsPage> createState() => _AddPromotionsPageState();
 }
 
 class _AddPromotionsPageState extends State<AddPromotionsPage> {
+  List<String> _productList = [];
+  List<String> _promotionList = [];
+  String? productName;
+  String? promotionType;
+  String? promotionId;
+  String? productId;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final stateProduct = Get.put(ProductsController());
+
+    stateProduct.listProducts.value.forEach((element) {
+      _productList.add(element.productName!);
+      if(element.id == widget.promotionsData?.id ){
+        promotionType = element.productName;
+        promotionId = element.id;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -47,6 +74,64 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
             Expanded(
               child: ListView(
                 children: [
+                  ClipRRect(
+                    borderRadius:  BorderRadius.circular(30),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: const Color(0XFF1F546033))
+                      ),
+                      child: CustomDropdown<String>.search(
+                        hintText: 'Promotion types',
+                        initialItem: promotionType,
+
+                        headerBuilder: (context, selectedItem,v) {
+                          return sText(
+                            selectedItem.toString(),
+                            color:   Colors.black,
+                            size: 16,
+                            weight:  FontWeight.w500,
+
+                          );
+                        },
+                        hintBuilder: (context, selectedItem,v) {
+                          return sText(
+                            selectedItem,
+                            color:  const Color(0xFF879EA4),
+                            size: 16,
+                            weight:  FontWeight.w400,
+
+                          );
+                        },
+                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        canCloseOutsideBounds: true,
+                        decoration: CustomDropdownDecoration(
+                          closedFillColor: Colors.white,
+                          closedBorderRadius: BorderRadius.circular(30),
+                          closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                          closedShadow:[
+                            const BoxShadow(
+                                blurRadius: 1,
+                                color: Colors.white,
+                                offset: Offset(0, 0.0),
+                                spreadRadius: 9),
+                            const BoxShadow(
+                                blurRadius: 1,
+                                color: Colors.white,
+                                offset: Offset(0, 0.0),
+                                spreadRadius: 9)
+                          ],
+                        ),
+                        items: _productList,
+                        onChanged: (value) {
+                          setState(() {
+                            promotionType = value;
+                          });
+                          log('changing value to: $value');
+                        },
+                      ),
+                    ),
+                  ),
                   CustomTextField(
                     placeholder: "Promotion Name",
                     onChange: (value){

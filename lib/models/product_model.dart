@@ -41,6 +41,7 @@ class ProductData {
   String? productDescription;
   var price;
   var stock;
+  var quantity;
   String? unit;
   bool? inPromo;
   String? promoExpiry;
@@ -55,6 +56,7 @@ class ProductData {
     this.price,
     this.stock,
     this.unit,
+    this.quantity,
     this.inPromo,
     this.promoExpiry,
   });
@@ -69,6 +71,7 @@ class ProductData {
     price: json["price"],
     stock: json["stock"],
     unit: json["unit"],
+    quantity: json["quantity"],
     inPromo: json["in_promo"] == 0 ? false : true,
     promoExpiry: json["promo_expiry"],
   );
@@ -83,6 +86,7 @@ class ProductData {
     "price": price,
     "stock": stock,
     "unit": unit,
+    "quantity": quantity,
     "in_promo": inPromo,
     "promo_expiry": promoExpiry,
   };

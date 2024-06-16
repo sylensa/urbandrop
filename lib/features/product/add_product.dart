@@ -39,12 +39,13 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
+  TextEditingController stockController = TextEditingController();
   String? category;
   String? categoryId;
   String? weight;
    List<String> _list = [];
   validateField(){
-    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && quantityController.text.isNotEmpty && (mediaPath != null || widget.productData != null) && weight != null){
+    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && stockController.text.isNotEmpty && (mediaPath != null || widget.productData != null) && weight != null){
       return true;
     }
     return false;
@@ -59,7 +60,8 @@ class _AddProductState extends State<AddProduct> {
       productNameController.text ="${widget.productData?.productName}";
       productDescriptionController.text ="${widget.productData?.productDescription}";
       amountController.text ="${widget.productData?.price}";
-      quantityController.text ="${widget.productData?.stock}";
+      quantityController.text ="${widget.productData?.quantity ?? ''}";
+      stockController.text ="${widget.productData?.stock ?? ''}";
       weight = widget.productData?.unit ;
 
     }
@@ -180,7 +182,6 @@ class _AddProductState extends State<AddProduct> {
                       height: 200,
                       child: CustomDescriptionField(
                         placeholder: "Write description",
-                        maxLines: 5,
                         maxLength: 150,
                         controller: productDescriptionController,
                         onChange: (value){
@@ -276,6 +277,21 @@ class _AddProductState extends State<AddProduct> {
                         });
                       },
                     ),
+
+
+                    const SizedBox(height: 20,),
+                    CustomTextField(
+                      keyboardType: TextInputType.number,
+                      controller: stockController,
+                      placeholder: "Stock",
+                      onChange: (value){
+                        setState(() {
+
+                        });
+                      },
+                    ),
+
+
                     const SizedBox(height: 20,),
                     Container(
                       height: 50,
@@ -328,7 +344,8 @@ class _AddProductState extends State<AddProduct> {
                               "product_description": productDescriptionController.text,
                               "category_id":"$categoryId",
                               "price":amountController.text,
-                              "stock":quantityController.text,
+                              "stock":stockController.text,
+                              "quantity":quantityController.text,
                               "unit":"$weight",
                             };
                             var response = state.uploadProduct(context, body, mediaPath,widget.productData);
