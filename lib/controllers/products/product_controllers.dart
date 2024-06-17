@@ -39,6 +39,7 @@ class ProductsController extends GetxController{
     start();
   }
 
+
   Future start({updateLoader = false}) async {
     return Future.wait([getProducts()]);
   }
@@ -51,6 +52,7 @@ class ProductsController extends GetxController{
       var response  =  await _http.getRequest("${AppUrl.products}/list?limit=$limit&offset=$offset");
       productModel = ProductModel.fromJson(response);
       if(productModel.status?.toUpperCase() == AppResponseCodes.success){
+        listProducts.value.clear();
         listProducts.value.addAll(productModel.data!);
         unFilteredListProducts.value.addAll(productModel.data!);
       }else{

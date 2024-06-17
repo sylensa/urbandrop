@@ -43,7 +43,7 @@ class PromotionsController extends GetxController{
     PromotionsModel? promotionsModel;
     errorMessage.value = "";
     try{
-      var response  =  await _http.getRequest("${AppUrl.promotions}}");
+      var response  =  await _http.getRequest("${AppUrl.promotions}");
       promotionsModel = PromotionsModel.fromJson(response);
       if(promotionsModel.status?.toUpperCase() == AppResponseCodes.success){
         listPromotions.value.addAll(promotionsModel.data ?? []);

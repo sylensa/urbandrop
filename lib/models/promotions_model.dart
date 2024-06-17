@@ -35,10 +35,12 @@ class PromotionsModel {
 class PromotionsData {
   String? id;
   String? imageUrl;
+  String? promoCategory;
   String? promoName;
   String? promoDescription;
-  int? promoAmount;
-  int? promoPercentage;
+  String? promoType;
+  dynamic promoValue;
+  List<String>? promoProducts;
   DateTime? promoStart;
   DateTime? promoExpiry;
   DateTime? createdAt;
@@ -46,10 +48,12 @@ class PromotionsData {
   PromotionsData({
     this.id,
     this.imageUrl,
+    this.promoCategory,
     this.promoName,
     this.promoDescription,
-    this.promoAmount,
-    this.promoPercentage,
+    this.promoType,
+    this.promoValue,
+    this.promoProducts,
     this.promoStart,
     this.promoExpiry,
     this.createdAt,
@@ -58,10 +62,12 @@ class PromotionsData {
   factory PromotionsData.fromJson(Map<String, dynamic> json) => PromotionsData(
     id: json["id"],
     imageUrl: json["image_url"],
+    promoCategory: json["promo_category"],
     promoName: json["promo_name"],
     promoDescription: json["promo_description"],
-    promoAmount: json["promo_amount"],
-    promoPercentage: json["promo_percentage"],
+    promoType: json["promo_type"],
+    promoValue: json["promo_value"],
+    promoProducts: json["promo_products"] == null ? [] : List<String>.from(json["promo_products"]!.map((x) => x)),
     promoStart: json["promo_start"] == null ? null : DateTime.parse(json["promo_start"]),
     promoExpiry: json["promo_expiry"] == null ? null : DateTime.parse(json["promo_expiry"]),
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
@@ -70,10 +76,12 @@ class PromotionsData {
   Map<String, dynamic> toJson() => {
     "id": id,
     "image_url": imageUrl,
+    "promo_category": promoCategory,
     "promo_name": promoName,
     "promo_description": promoDescription,
-    "promo_amount": promoAmount,
-    "promo_percentage": promoPercentage,
+    "promo_type": promoType,
+    "promo_value": promoValue,
+    "promo_products": promoProducts == null ? [] : List<dynamic>.from(promoProducts!.map((x) => x)),
     "promo_start": promoStart?.toIso8601String(),
     "promo_expiry": promoExpiry?.toIso8601String(),
     "created_at": createdAt?.toIso8601String(),

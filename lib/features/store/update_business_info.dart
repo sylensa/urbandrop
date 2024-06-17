@@ -40,23 +40,32 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
     // TODO: implement initState
     super.initState();
     final stateDashboard = Get.put(DashboardController());
-    businessName.text = userInstance?.businessName ?? "";
-    authenticationController.businessName = userInstance?.businessName ?? "";
-    businessAddress.text = userInstance?.address ?? "";
-    authenticationController.businessAddress = userInstance?.address ?? "";
-    businessCity.text = userInstance?.city ?? "";
-    authenticationController.businessCity = userInstance?.city ?? "";
-    businessPostcode.text = userInstance?.postCode ?? "";
-    authenticationController.businessPostCode = userInstance?.postCode ?? "";
-    businessDescription.text = userInstance?.businessDescription ?? "";
-    authenticationController.businessDescription = userInstance?.businessDescription ?? "";
-    stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
-      _list.add(element.categoryName!);
-      if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
-        authenticationController.businessType = element.categoryName;
-        authenticationController.businessTypeId = element.id;
+    Future.delayed(const Duration(seconds: 1),()async{
+      if(stateDashboard.configModel.value == null){
+        await AuthenticationController().getUserConfig();
+        setState(() {
+
+        });
       }
+      businessName.text = userInstance?.businessName ?? "";
+      authenticationController.businessName = userInstance?.businessName ?? "";
+      businessAddress.text = userInstance?.address ?? "";
+      authenticationController.businessAddress = userInstance?.address ?? "";
+      businessCity.text = userInstance?.city ?? "";
+      authenticationController.businessCity = userInstance?.city ?? "";
+      businessPostcode.text = userInstance?.postCode ?? "";
+      authenticationController.businessPostCode = userInstance?.postCode ?? "";
+      businessDescription.text = userInstance?.businessDescription ?? "";
+      authenticationController.businessDescription = userInstance?.businessDescription ?? "";
+      stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+        _list.add(element.categoryName!);
+        if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
+          authenticationController.businessType = element.categoryName;
+          authenticationController.businessTypeId = element.id;
+        }
+      });
     });
+
 
   }
   @override

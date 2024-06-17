@@ -35,22 +35,26 @@ class ConfigModel {
 class ConfigData {
   List<TCategory>? merchantCategories;
   List<TCategory>? productCategories;
+  List<TCategory>? promotionCategories;
   List<DeactivationReason>? deactivationReasons;
 
   ConfigData({
     this.merchantCategories,
     this.productCategories,
     this.deactivationReasons,
+    this.promotionCategories,
   });
 
   factory ConfigData.fromJson(Map<String, dynamic> json) => ConfigData(
     merchantCategories: json["merchant_categories"] == null ? [] : List<TCategory>.from(json["merchant_categories"]!.map((x) => TCategory.fromJson(x))),
+    promotionCategories: json["promotion_categories"] == null ? [] : List<TCategory>.from(json["promotion_categories"]!.map((x) => TCategory.fromJson(x))),
     productCategories: json["product_categories"] == null ? [] : List<TCategory>.from(json["product_categories"]!.map((x) => TCategory.fromJson(x))),
     deactivationReasons: json["deactivation_reasons"] == null ? [] : List<DeactivationReason>.from(json["deactivation_reasons"]!.map((x) => DeactivationReason.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "merchant_categories": merchantCategories == null ? [] : List<dynamic>.from(merchantCategories!.map((x) => x.toJson())),
+    "promotion_categories": promotionCategories == null ? [] : List<dynamic>.from(promotionCategories!.map((x) => x.toJson())),
     "product_categories": productCategories == null ? [] : List<dynamic>.from(productCategories!.map((x) => x.toJson())),
     "deactivation_reasons": deactivationReasons == null ? [] : List<dynamic>.from(deactivationReasons!.map((x) => x.toJson())),
   };
@@ -79,19 +83,27 @@ class DeactivationReason {
 class TCategory {
   String? id;
   String? categoryName;
+  String? name;
+  String? description;
 
   TCategory({
     this.id,
     this.categoryName,
+    this.description,
+    this.name,
   });
 
   factory TCategory.fromJson(Map<String, dynamic> json) => TCategory(
     id: json["id"],
     categoryName: json["category_name"],
+    name: json["name"],
+    description: json["description"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "category_name": categoryName,
+    "description": description,
+    "name": name,
   };
 }

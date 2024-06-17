@@ -1482,7 +1482,7 @@ String formatDateTime(DateTime dateTime) {
   return formattedDate;
 }
 DateTime? selectedDate;
-dateCalendar(BuildContext context, String orderStatus)async{
+dateCalendar(BuildContext context, String? orderStatus)async{
   final state = Get.put(OrdersController());
   final dateSelected =
   await showCalendarDatePicker2Dialog(
@@ -1500,7 +1500,12 @@ dateCalendar(BuildContext context, String orderStatus)async{
   if (dateSelected != null) {
       if (dateSelected.isNotEmpty) {
         selectedDate = dateSelected.first;
-        state.filterOrders(orderStatus,selectedDate);
+        if(orderStatus != null){
+          state.filterOrders(orderStatus,selectedDate);
+        }
+        else{
+          return selectedDate;
+        }
       }
   }
 

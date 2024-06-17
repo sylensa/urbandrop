@@ -48,7 +48,7 @@ class _PromotionsPageState extends State<PromotionsPage> {
                       ],
                     )
                     , onPressed:(){
-                  context.go(Routing.addPromotionsPage);
+                  context.push(Routing.addPromotionsPage);
                 }),
               ],
             ),
