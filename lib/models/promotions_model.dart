@@ -39,6 +39,7 @@ class PromotionsData {
   String? promoName;
   String? promoDescription;
   String? promoType;
+  String? product_category_id;
   dynamic promoValue;
   List<String>? promoProducts;
   DateTime? promoStart;
@@ -57,6 +58,7 @@ class PromotionsData {
     this.promoStart,
     this.promoExpiry,
     this.createdAt,
+    this.product_category_id,
   });
 
   factory PromotionsData.fromJson(Map<String, dynamic> json) => PromotionsData(
@@ -65,9 +67,10 @@ class PromotionsData {
     promoCategory: json["promo_category"],
     promoName: json["promo_name"],
     promoDescription: json["promo_description"],
+    product_category_id: json["product_category_id"] ?? "sdah8943ujed",
     promoType: json["promo_type"],
     promoValue: json["promo_value"],
-    promoProducts: json["promo_products"] == null ? [] : List<String>.from(json["promo_products"]!.map((x) => x)),
+    promoProducts: json["promo_products"] == null ? [] : List<String>.from(jsonDecode(json["promo_products"])!.map((x) => x)),
     promoStart: json["promo_start"] == null ? null : DateTime.parse(json["promo_start"]),
     promoExpiry: json["promo_expiry"] == null ? null : DateTime.parse(json["promo_expiry"]),
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
@@ -81,6 +84,7 @@ class PromotionsData {
     "promo_description": promoDescription,
     "promo_type": promoType,
     "promo_value": promoValue,
+    "product_category_id": product_category_id,
     "promo_products": promoProducts == null ? [] : List<dynamic>.from(promoProducts!.map((x) => x)),
     "promo_start": promoStart?.toIso8601String(),
     "promo_expiry": promoExpiry?.toIso8601String(),

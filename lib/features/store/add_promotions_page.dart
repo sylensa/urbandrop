@@ -33,9 +33,12 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   ];
   List<String> productName = [];
   List<String> productId = [];
+  List<String> productCategories = [];
   String? promotionCategory;
+  String? productCategory;
   String? promotionDescription;
   String? promotionCategoryId;
+  String? productCategoryId;
   String? promotionType;
   String? promotionTypeId;
   DateTime? startDate;
@@ -51,64 +54,90 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
     return false;
   }
 
+  filterProductByCategory({bool filterCategory = true}){
+    final stateProduct = Get.put(ProductsController());
+    final stateDashboard = Get.put(DashboardController());
+    if(filterCategory){
+      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+        if(element.categoryName == productCategory ){
+          print("element.id:${element.id}");
+          productCategoryId = element.id;
+        }
+      });
+    }
+
+    stateProduct.listProducts.value = stateProduct.unFilteredListProducts.value.where((element) => element.categoryId == productCategoryId).toList();
+    productList.clear();
+    productName.clear();
+    productId.clear();
+    stateProduct.listProducts.value.forEach((element) {
+      productList.add(element.productName!);
+
+    });
+    setState(() {
+
+    });
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    log("widget.promotionsData!.imageUrl:${widget.promotionsData!.toJson()}");
     Future.delayed(const Duration(seconds: 1),()async{
-      productList.clear();
-      promotionCategory = null;
-      promotionCategoryId = null;
-      promotionTypeId = null;
-      productName.clear();
-      productId.clear();
-      promotionType = null;
-      promotionNameController.text = '';
-      promotionOfferController.text = '';
-      startDate = null;
-      endDate = null;
       final stateProduct = Get.put(ProductsController());
       final stateDashboard = Get.put(DashboardController());
+      stateProduct.listProducts.value.clear();
+      stateProduct.listProducts.value.addAll(stateProduct.unFilteredListProducts.value);
       if(stateDashboard.configModel.value == null){
         await AuthenticationController().getUserConfig();
         setState(() {
 
         });
       }
-
       if( stateProduct.listProducts.value.isEmpty){
         await stateProduct.getProducts();
       }
 
       if(widget.promotionsData != null){
-        promotionType = widget.promotionsData!.promoType;
+        promotionType = "${properCase(widget.promotionsData!.promoType!)} Off";
         promotionNameController.text = widget.promotionsData!.promoName!;
         promotionOfferController.text = widget.promotionsData!.promoValue!.toString();
         startDate = widget.promotionsData!.promoStart;
         endDate = widget.promotionsData!.promoExpiry;
       }
 
-      stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
-        promotionCategories.add(element.name!);
-        if(element.id == widget.promotionsData?.promoCategory ){
-          promotionCategory = element.name;
-          promotionCategoryId = element.id;
+      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+        productCategories.add(element.categoryName!);
+        if(element.id == widget.promotionsData?.product_category_id ){
+          productCategory = element.categoryName;
+          productCategoryId = element.id;
+          filterProductByCategory(filterCategory: false);
         }
       });
 
-      stateProduct.listProducts.value.forEach((element) {
-        print("productList:$element");
-        productList.add(element.productName!);
+      stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
+        promotionCategories.add(element.name!);
+        print("promo element.name:${element.name}");
+        if(element.id == widget.promotionsData?.promoCategory ){
+          promotionCategory = element.name;
+          promotionCategoryId = element.id;
+          print("promo element.id:${promotionCategoryId}");
+        }
+      });
+
+      stateProduct.unFilteredListProducts.value.forEach((element) {
         if(widget.promotionsData != null){
           for(int i =0;  i < widget.promotionsData!.promoProducts!.length; i++){
             if(element.id == widget.promotionsData!.promoProducts![i] ){
               productName.add(element.productName!) ;
               productId.add(element.id!);
+              print("productList:${productName}");
+
             }
           }
+        }else{
+          productList.add(element.productName!);
         }
-
-
       });
       setState(() {
 
@@ -152,7 +181,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                   children: [
                     mediaPath != null ?
                     displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
-                    widget.promotionsData != null ?
+                    widget.promotionsData != null && widget.promotionsData?.imageUrl != null ?
                     Image.network(widget.promotionsData!.imageUrl!,width: appWidth(context),height: 210) :
                     Column(
                       children: [
@@ -222,7 +251,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                           setState(() {
                             promotionCategory = value;
                           });
-                          log('changing value to: $value');
+                          // log('changing value to: $value');
                         },
                       ),
                     ),
@@ -305,6 +334,66 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                     },
                   ),
 
+                  const SizedBox(height: 20,),
+                  ClipRRect(
+                    borderRadius:  BorderRadius.circular(30),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: const Color(0XFF1F546033))
+                      ),
+                      child: CustomDropdown<String>.search(
+                        hintText: 'Product category',
+                        initialItem: productCategory,
+
+                        headerBuilder: (context, selectedItem,v) {
+                          return sText(
+                            selectedItem.toString(),
+                            color:   Colors.black,
+                            size: 16,
+                            weight:  FontWeight.w500,
+
+                          );
+                        },
+                        hintBuilder: (context, selectedItem,v) {
+                          return sText(
+                            selectedItem,
+                            color:  const Color(0xFF879EA4),
+                            size: 16,
+                            weight:  FontWeight.w400,
+
+                          );
+                        },
+                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        canCloseOutsideBounds: true,
+                        decoration: CustomDropdownDecoration(
+                          closedFillColor: Colors.white,
+                          closedBorderRadius: BorderRadius.circular(30),
+                          closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                          closedShadow:[
+                            const BoxShadow(
+                                blurRadius: 1,
+                                color: Colors.white,
+                                offset: Offset(0, 0.0),
+                                spreadRadius: 9),
+                            const BoxShadow(
+                                blurRadius: 1,
+                                color: Colors.white,
+                                offset: Offset(0, 0.0),
+                                spreadRadius: 9)
+                          ],
+                        ),
+                        items: productCategories,
+                        onChanged: (value) {
+                          setState(() {
+                            productCategory = value;
+                            filterProductByCategory();
+                          });
+                          log('changing value to: $value');
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20,),
                   ClipRRect(
                     borderRadius:  BorderRadius.circular(30),
@@ -473,7 +562,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                         final stateProduct = Get.put(ProductsController());
                         final stateDashboard = Get.put(DashboardController());
                         if( validateField() ){
-                          stateDashboard.configModel.value!.productCategories!.forEach((element) {
+                          stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
                             if(element.name == promotionCategory ){
                               promotionCategory= element.name;
                               promotionCategoryId = element.id;
@@ -482,21 +571,21 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                           });
                           stateProduct.listProducts.value.forEach((element) {
                             for(int i =0;  i < productName.length; i++){
-                              if(element.id == productName[i] ){
+                              if(element.productName == productName[i] ){
                                 productId.add(element.id!);
                               }
                             }
                           });
                           
                           await state.uploadPromotion(context, {
-                            "promo_category":"${promotionCategoryId}",
+                            "promo_category":"$promotionCategoryId",
                             "promo_name":promotionNameController.text,
-                            "promo_description":"${promotionDescription}",
+                            "promo_description":"$promotionDescription",
                             "promo_value":promotionOfferController.text,
-                            "promo_type":"${promotionType}",
+                            "promo_type":promotionType!.split(" ").first.toLowerCase(),
                             "promo_products":jsonEncode(productId),
-                            "promo_start":"${startDate}",
-                            "promo_expiry":"${endDate}",
+                            "promo_start":"$startDate",
+                            "promo_expiry":"$endDate",
                           }, mediaPath, widget.promotionsData);
                         }else{
                           toastSuccessMessage("All fields are required", context);

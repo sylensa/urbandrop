@@ -43,7 +43,7 @@ class PromotionsController extends GetxController{
     PromotionsModel? promotionsModel;
     errorMessage.value = "";
     try{
-      var response  =  await _http.getRequest("${AppUrl.promotions}");
+      var response  =  await _http.getRequest(AppUrl.promotions);
       promotionsModel = PromotionsModel.fromJson(response);
       if(promotionsModel.status?.toUpperCase() == AppResponseCodes.success){
         listPromotions.value.addAll(promotionsModel.data ?? []);
@@ -52,6 +52,7 @@ class PromotionsController extends GetxController{
       }
     }catch(e){
       errorMessage.value = e.toString();
+      print(" errorMessage.value:${ errorMessage.value}");
     }
     refreshData();
   }
@@ -138,6 +139,7 @@ class PromotionsController extends GetxController{
         listPromotions.refresh();
         toastSuccessMessage(responseMap["message"], context);
         context.pop();
+        context.pop();
       } else  if(responseMap["status"] == AppResponseCodes.invalidToken){
         var bodys = {
           "id": userInstance!.id,
@@ -175,6 +177,14 @@ class PromotionsController extends GetxController{
     await start();
     refreshData();
     refreshController.loadComplete();
+  }
+
+  void onLoading()async{
+    paginationLoading.value = true;
+    paginationLoading.refresh();
+    await getPromotions(limit: 10,offset:  listPromotions.value.length);
+    refreshData();
+    refreshController.refreshCompleted();
   }
   refreshData(){
     listPromotions.refresh();

@@ -44,7 +44,7 @@ class ProductsController extends GetxController{
     return Future.wait([getProducts()]);
   }
 
-  Future<void> getProducts({int limit = 10, int offset = 0})async{
+  Future<void> getProducts({int limit = 10, int offset = 0, bool refreshing = true})async{
     ProductModel? productModel;
     listProducts.value.clear();
     errorMessage.value = "";
@@ -52,7 +52,10 @@ class ProductsController extends GetxController{
       var response  =  await _http.getRequest("${AppUrl.products}/list?limit=$limit&offset=$offset");
       productModel = ProductModel.fromJson(response);
       if(productModel.status?.toUpperCase() == AppResponseCodes.success){
-        listProducts.value.clear();
+        if(refreshing){
+          listProducts.value.clear();
+          unFilteredListProducts.value.clear();
+        }
         listProducts.value.addAll(productModel.data!);
         unFilteredListProducts.value.addAll(productModel.data!);
       }else{
@@ -178,6 +181,7 @@ class ProductsController extends GetxController{
         stateDashboard.topProducts.refresh();
         toastSuccessMessage(responseMap["message"], context);
         context.pop();
+        context.pop();
       } else  if(responseMap["status"] == AppResponseCodes.invalidToken){
         var bodys = {
           "id": userInstance!.id,
@@ -220,7 +224,7 @@ class ProductsController extends GetxController{
   void onLoading()async{
     paginationLoading.value = true;
     paginationLoading.refresh();
-    await getProducts(limit: 10,offset:  listProducts.value.length);
+    await getProducts(limit: 10,offset:  listProducts.value.length,refreshing: false);
     refreshData();
     refreshController.refreshCompleted();
   }

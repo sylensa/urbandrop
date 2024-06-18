@@ -40,6 +40,7 @@ import 'package:urbandrop/features/store/update_business_info.dart';
 import 'package:urbandrop/main.dart';
 import 'package:urbandrop/models/orders_model.dart';
 import 'package:urbandrop/models/product_model.dart';
+import 'package:urbandrop/models/promotions_model.dart';
 
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -160,7 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                             GoRoute(
                               path: 'addPromotionsPage',
                               pageBuilder: (context, state) =>
-                              const NoTransitionPage(child: AddPromotionsPage()),
+                               NoTransitionPage(child: AddPromotionsPage(promotionsData: state.extra == null ? null :  state.extra as PromotionsData,)),
                             ),
                           ]
                         ),
