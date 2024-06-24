@@ -44,7 +44,7 @@ formattedAmount({amount = "0"}){
   return MoneyFormatter(amount: double.parse(amount ?? "0")).output.nonSymbol.toString();
 }
 checkOutStock({String? stock = "0"}){
-  return stock == null || stock == "0" ? true : false;
+  return stock == null || stock == "0" || stock == "" ? false : true;
 }
 
 
