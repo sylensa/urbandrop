@@ -1093,7 +1093,7 @@ toastMessage(String message,BuildContext context,) {
         ),
         showCloseIcon: true,
         dismissDirection: DismissDirection.down,
-        duration: const Duration(seconds: 10),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20)
     ),
@@ -1123,7 +1123,7 @@ toastSuccessMessage(String message,BuildContext context,) {
         showCloseIcon: true,
         closeIconColor: Colors.white,
         dismissDirection: DismissDirection.down,
-        duration: const Duration(seconds: 10),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20)
     ),

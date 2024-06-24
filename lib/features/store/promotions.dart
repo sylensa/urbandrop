@@ -109,7 +109,7 @@ class _PromotionsPageState extends State<PromotionsPage> {
                                         sText("${state.listPromotions.value[index].promoName}",color: Colors.white,size: 12,weight: FontWeight.w600)
                                       ],
                                     ),
-                                    Image.asset("assets/images/ellipse.png",width: 84,)
+                                    displayImage("${state.listPromotions.value[index].imageUrl}",width: 84,radius: 30,height: 84)
 
                                   ],
                                 ),
@@ -117,7 +117,15 @@ class _PromotionsPageState extends State<PromotionsPage> {
                             ),
                             Positioned(
                                 right:40,
-                                child: Image.asset("assets/images/delete_promo.png",width: 27,)
+                                child: InkWell(
+                                  onTap: ()async{
+                                    state.deletePromotion(promotionId: state.listPromotions.value[index].id);
+                                    setState(() {
+                                      state.listPromotions.value.removeAt(index);
+                                    });
+                                  },
+                                  child: Image.asset("assets/images/delete_promo.png",width: 27,),
+                                )
                             ),
 
                           ],

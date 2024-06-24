@@ -247,6 +247,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                             });
                             if(response){
                               context.pop();
+                              context.pop();
                               toastSuccessMessage("Updated successfully", context);
                             }
                             else{

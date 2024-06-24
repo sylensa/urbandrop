@@ -66,8 +66,11 @@ class _StorePageState extends State<StorePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
                       children:[
                         StoreWidget(
-                          onTap: (){
-                            context.push(Routing.updateBusinessInformationPage);
+                          onTap: ()async{
+                           await  context.push(Routing.updateBusinessInformationPage);
+                           setState(() {
+
+                           });
 
                           },
                         ),

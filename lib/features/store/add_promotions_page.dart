@@ -37,6 +37,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   String? promotionCategory;
   String? productCategory;
   String? promotionDescription;
+  bool? onChange;
   String? promotionCategoryId;
   String? productCategoryId;
   String? promotionType;
@@ -54,7 +55,9 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
     return false;
   }
 
-  filterProductByCategory({bool filterCategory = true}){
+  filterProductByCategory({bool filterCategory = false}){
+    print("filterCategory:$filterCategory");
+
     final stateProduct = Get.put(ProductsController());
     final stateDashboard = Get.put(DashboardController());
     if(filterCategory){
@@ -65,15 +68,19 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
         }
       });
     }
-
-    stateProduct.listProducts.value = stateProduct.unFilteredListProducts.value.where((element) => element.categoryId == productCategoryId).toList();
     productList.clear();
-    productName.clear();
-    productId.clear();
-    stateProduct.listProducts.value.forEach((element) {
-      productList.add(element.productName!);
+    if(productCategoryId != null){
+      stateProduct.listProducts.value = stateProduct.unFilteredListProducts.value.where((element) => element.categoryId == productCategoryId).toList();
+      stateProduct.listProducts.value.forEach((element) {
+        productList.add(element.productName!);
+      });
+      print("productList:${productList}");
+    }else{
+      stateProduct.unFilteredListProducts.value.forEach((element) {
+        productList.add(element.productName!);
+      });
+    }
 
-    });
     setState(() {
 
     });
@@ -82,7 +89,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    log("widget.promotionsData!.imageUrl:${widget.promotionsData!.toJson()}");
+    log("widget.promotionsData!.imageUrl:${widget.promotionsData?.toJson()}");
     Future.delayed(const Duration(seconds: 1),()async{
       final stateProduct = Get.put(ProductsController());
       final stateDashboard = Get.put(DashboardController());
@@ -96,6 +103,9 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
       }
       if( stateProduct.listProducts.value.isEmpty){
         await stateProduct.getProducts();
+        setState(() {
+
+        });
       }
 
       if(widget.promotionsData != null){
@@ -105,15 +115,6 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
         startDate = widget.promotionsData!.promoStart;
         endDate = widget.promotionsData!.promoExpiry;
       }
-
-      stateDashboard.configModel.value!.productCategories!.forEach((element) {
-        productCategories.add(element.categoryName!);
-        if(element.id == widget.promotionsData?.product_category_id ){
-          productCategory = element.categoryName;
-          productCategoryId = element.id;
-          filterProductByCategory(filterCategory: false);
-        }
-      });
 
       stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
         promotionCategories.add(element.name!);
@@ -125,16 +126,30 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
         }
       });
 
+      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+        productCategories.add(element.categoryName!);
+        log("productCategories:$productCategories");
+        if(widget.promotionsData != null){
+          if(widget.promotionsData!.promo_product_categories!.isNotEmpty){
+            if(element.id == widget.promotionsData?.promo_product_categories!.first ){
+              productCategory = element.categoryName;
+              productCategoryId = element.id;
+            }
+          }
+        }
+
+      });
+
       stateProduct.unFilteredListProducts.value.forEach((element) {
         if(widget.promotionsData != null){
           for(int i =0;  i < widget.promotionsData!.promoProducts!.length; i++){
             if(element.id == widget.promotionsData!.promoProducts![i] ){
               productName.add(element.productName!) ;
               productId.add(element.id!);
-              print("productList:${productName}");
-
+              print("productName:${productName}");
             }
           }
+          filterProductByCategory(filterCategory: false);
         }else{
           productList.add(element.productName!);
         }
@@ -147,7 +162,6 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   @override
   Widget build(BuildContext context) {
     final state = Get.put(PromotionsController());
-
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -156,447 +170,467 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
         elevation: 1,
         backgroundColor: Colors.white,
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: ()async{
-                mediaPath = await authenticationController.attachFils();
-                setState(() {
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: ()async{
+                  mediaPath = await authenticationController.attachFils();
+                  setState(() {
 
-                });
-              },
-              child: Container(
-                width: appWidth(context),
-                height: mediaPath != null ||  widget.promotionsData != null ? 250 : 150,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: const Color(0XFF879EA4).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10)
+                  });
+                },
+                child: Container(
+                  width: appWidth(context),
+                  height: mediaPath != null ||  widget.promotionsData != null ? 250 : 150,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: const Color(0XFF879EA4).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      mediaPath != null ?
+                      displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
+                      widget.promotionsData != null && widget.promotionsData?.imageUrl != null ?
+                      Image.network(widget.promotionsData!.imageUrl!,width: appWidth(context),height: 210) :
+                      Column(
+                        children: [
+                          Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
+                          sText("Product Image",size: 9,weight: FontWeight.w400)
+                        ],
+                      )
+
+                    ],
+                  ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              const SizedBox(height: 20,),
+              Expanded(
+                child: ListView(
                   children: [
-                    mediaPath != null ?
-                    displayLocalImageDevice(mediaPath!.path,radius: 0,height:210,width: appWidth(context)) :
-                    widget.promotionsData != null && widget.promotionsData?.imageUrl != null ?
-                    Image.network(widget.promotionsData!.imageUrl!,width: appWidth(context),height: 210) :
-                    Column(
-                      children: [
-                        Image.asset("assets/images/upload_product.png",width: 40,height: 40,),
-                        sText("Product Image",size: 9,weight: FontWeight.w400)
-                      ],
-                    )
+                    ClipRRect(
+                      borderRadius:  BorderRadius.circular(30),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: const Color(0XFF1F546033))
+                        ),
+                        child: CustomDropdown<String>.search(
+                          hintText: 'Promotion Category',
+                          initialItem: promotionCategory,
 
+                          headerBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:   Colors.black,
+                              size: 16,
+                              weight:  FontWeight.w500,
+
+                            );
+                          },
+                          hintBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem,
+                              color:  const Color(0xFF879EA4),
+                              size: 16,
+                              weight:  FontWeight.w400,
+
+                            );
+                          },
+                          closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                          canCloseOutsideBounds: true,
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: Colors.white,
+                            closedBorderRadius: BorderRadius.circular(30),
+                            closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                            closedShadow:[
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9),
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9)
+                            ],
+                          ),
+                          items: promotionCategories,
+                          onChanged: (value) {
+                            setState(() {
+                              promotionCategory = value;
+                            });
+                            // log('changing value to: $value');
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+
+                    ClipRRect(
+                      borderRadius:  BorderRadius.circular(30),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: const Color(0XFF1F546033))
+                        ),
+                        child: CustomDropdown<String>.search(
+                          hintText: 'Promotion types',
+                          initialItem: promotionType,
+
+                          headerBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:   Colors.black,
+                              size: 16,
+                              weight:  FontWeight.w500,
+
+                            );
+                          },
+                          hintBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem,
+                              color:  const Color(0xFF879EA4),
+                              size: 16,
+                              weight:  FontWeight.w400,
+
+                            );
+                          },
+                          closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                          canCloseOutsideBounds: true,
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: Colors.white,
+                            closedBorderRadius: BorderRadius.circular(30),
+                            closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                            closedShadow:[
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9),
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9)
+                            ],
+                          ),
+                          items: promotionTypes,
+                          onChanged: (value) {
+                            setState(() {
+                              promotionType = value;
+                            });
+                            log('changing value to: $value');
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+                    CustomTextField(
+                      controller: promotionNameController,
+                      placeholder: "Promotion Name",
+                      onChange: (value){
+
+                      },
+                    ),
+                    const SizedBox(height: 20,),
+                    CustomTextField(
+                      controller: promotionOfferController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      placeholder: "Promotion Offer",
+                      onChange: (value){
+
+                      },
+                    ),
+
+                    const SizedBox(height: 20,),
+                    ClipRRect(
+                      borderRadius:  BorderRadius.circular(30),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: const Color(0XFF1F546033))
+                        ),
+                        child: CustomDropdown<String>.search(
+                          hintText: 'Product category',
+                          initialItem: productCategory,
+
+                          headerBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:   Colors.black,
+                              size: 16,
+                              weight:  FontWeight.w500,
+
+                            );
+                          },
+                          hintBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem,
+                              color:  const Color(0xFF879EA4),
+                              size: 16,
+                              weight:  FontWeight.w400,
+
+                            );
+                          },
+                          closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                          canCloseOutsideBounds: true,
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: Colors.white,
+                            closedBorderRadius: BorderRadius.circular(30),
+                            closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                            closedShadow:[
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9),
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9)
+                            ],
+                          ),
+                          items: productCategories,
+                          onChanged: (value) {
+                            setState(() {
+                              productCategory = value;
+                                filterProductByCategory(filterCategory: true);
+                            });
+                            log('changing value to: $value');
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+                    ClipRRect(
+                      borderRadius:  BorderRadius.circular(30),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: const Color(0XFF1F546033))
+                        ),
+                        child: CustomDropdown<String>.multiSelectSearch(
+                          hintText: 'Promotion Products',
+                          initialItems: productName,
+                          headerListBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:   Colors.black,
+                              size: 16,
+                              weight:  FontWeight.w500,
+
+                            );
+                          },
+                          listItemBuilder: (context, selectedItem,v,f) {
+                            return sText(
+                              selectedItem.toString(),
+                              color:   Colors.black,
+                              size: 16,
+                              weight:  FontWeight.w500,
+
+                            );
+                          },
+                          hintBuilder: (context, selectedItem,v) {
+                            return sText(
+                              selectedItem,
+                              color:  const Color(0xFF879EA4),
+                              size: 16,
+                              weight:  FontWeight.w400,
+
+                            );
+                          },
+                          closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                          canCloseOutsideBounds: true,
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: Colors.white,
+                            closedBorderRadius: BorderRadius.circular(30),
+                            closedBorder: Border.all(color: const Color(0XFF1F546033)),
+                            closedShadow:[
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9),
+                              const BoxShadow(
+                                  blurRadius: 1,
+                                  color: Colors.white,
+                                  offset: Offset(0, 0.0),
+                                  spreadRadius: 9)
+                            ],
+                          ),
+                          items: productList,
+                          onListChanged: (value) {
+                            setState(() {
+                              productName = value;
+                            });
+                            log('changing value to: $value');
+                          },
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height:20,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: sText("Start date",size: 12,weight: FontWeight.w600,color:  Color(0xFF879EA4)),
+                        ),
+                        const SizedBox(height: 20,),
+                        TimePickerSpinnerPopUp(
+                          mode: CupertinoDatePickerMode.dateAndTime,
+                          initTime: DateTime.now(),
+                          barrierColor: Colors.black12, //Barrier Color when pop up show
+                          minuteInterval: 1,
+                          padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                          cancelText : 'Cancel',
+                          confirmText : 'OK',
+                          pressType: PressType.singlePress,
+                          timeFormat: 'd MMM. yyyy; h:mm a',
+                          // Customize your time widget
+                          timeWidgetBuilder: (dateTime) {
+                            return Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 17),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(color: const Color(0XFF1F546033)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  sText(startDate != null ? formatDateTime(startDate!) : "Pick start date" ,color: const Color(0xFF879EA4)),
+                                  const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
+                                ],
+                              ),
+                            );
+                          },
+                          onChange: (dateTime) {
+                            print("dateTime:$dateTime");
+                            setState(() {
+                              startDate = dateTime;
+                            });
+                            // Implement your logic with select dateTime
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height:20,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: sText("End date",size: 12,weight: FontWeight.w600,color:  Color(0xFF879EA4)),
+                        ),
+                        const SizedBox(height: 20,),
+                        TimePickerSpinnerPopUp(
+                          mode: CupertinoDatePickerMode.dateAndTime,
+                          initTime: DateTime.now(),
+                          barrierColor: Colors.black12, //Barrier Color when pop up show
+                          minuteInterval: 1,
+                          padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                          cancelText : 'Cancel',
+                          confirmText : 'OK',
+                          pressType: PressType.singlePress,
+                          timeFormat: 'd MMM. yyyy; h:mm a',
+                          // Customize your time widget
+                          timeWidgetBuilder: (dateTime) {
+                            return Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(color: const Color(0XFF1F546033)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  sText(endDate != null ? formatDateTime(endDate!) : "Pick end date",color: const Color(0xFF879EA4)),
+                                  const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
+                                ],
+                              ),
+                            );
+                          },
+                          onChange: (dateTime) {
+                            print("dateTime:$dateTime");
+                            setState(() {
+                              endDate = dateTime;
+                            });
+                            // Implement your logic with select dateTime
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 40,),
+                    mainButton(
+                        width: appWidth(context),
+                        height: 50,
+                        radius: 30,
+                        outlineColor: Colors.transparent,
+                        shadowStrength: 0,
+                        backgroundColor: validateField() ? primaryColor : Colors.grey,
+                        content:  sText(widget.promotionsData == null ? "Create Promotions" : "Update Promotions",color: Colors.white,weight: FontWeight.w600,size: 18),
+                        onPressed:()async{
+                          final stateProduct = Get.put(ProductsController());
+                          final stateDashboard = Get.put(DashboardController());
+                          if( validateField() ){
+                            stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
+                              if(element.name == promotionCategory ){
+                                promotionCategory= element.name;
+                                promotionCategoryId = element.id;
+                                promotionDescription = element.description;
+                              }
+                            });
+                            stateDashboard.configModel.value!.productCategories!.forEach((element) {
+                              if(element.name == productCategory ){
+                                productCategory= element.name;
+                                productCategoryId = element.id;
+                              }
+                            });
+                            productId.clear();
+                            stateProduct.listProducts.value.forEach((element) {
+                              for(int i =0;  i < productName.length; i++){
+                                if(element.productName == productName[i] ){
+                                  productId.add(element.id!);
+                                }
+                              }
+                            });
+
+                            await state.uploadPromotion(context, {
+                              "promo_category":"$promotionCategoryId",
+                              "promo_name":promotionNameController.text,
+                              "promo_description":"$promotionDescription",
+                              "promo_product_categories":jsonEncode([productCategoryId]),
+                              "promo_value":promotionOfferController.text,
+                              "promo_type":promotionType!.split(" ").first.toLowerCase(),
+                              "promo_products":jsonEncode(productId),
+                              "promo_start":"$startDate",
+                              "promo_expiry":"$endDate",
+                            }, mediaPath, widget.promotionsData);
+                          }else{
+                            toastSuccessMessage("All fields are required", context);
+                          }
+
+                        }),
+                     SizedBox(height: appHeight(context),),
                   ],
                 ),
-              ),
-            ),
-            const SizedBox(height: 20,),
-            Expanded(
-              child: ListView(
-                children: [
-                  ClipRRect(
-                    borderRadius:  BorderRadius.circular(30),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: const Color(0XFF1F546033))
-                      ),
-                      child: CustomDropdown<String>.search(
-                        hintText: 'Promotion Category',
-                        initialItem: promotionCategory,
-
-                        headerBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem.toString(),
-                            color:   Colors.black,
-                            size: 16,
-                            weight:  FontWeight.w500,
-
-                          );
-                        },
-                        hintBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem,
-                            color:  const Color(0xFF879EA4),
-                            size: 16,
-                            weight:  FontWeight.w400,
-
-                          );
-                        },
-                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                        canCloseOutsideBounds: true,
-                        decoration: CustomDropdownDecoration(
-                          closedFillColor: Colors.white,
-                          closedBorderRadius: BorderRadius.circular(30),
-                          closedBorder: Border.all(color: const Color(0XFF1F546033)),
-                          closedShadow:[
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9),
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9)
-                          ],
-                        ),
-                        items: promotionCategories,
-                        onChanged: (value) {
-                          setState(() {
-                            promotionCategory = value;
-                          });
-                          // log('changing value to: $value');
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-
-                  ClipRRect(
-                    borderRadius:  BorderRadius.circular(30),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: const Color(0XFF1F546033))
-                      ),
-                      child: CustomDropdown<String>.search(
-                        hintText: 'Promotion types',
-                        initialItem: promotionType,
-
-                        headerBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem.toString(),
-                            color:   Colors.black,
-                            size: 16,
-                            weight:  FontWeight.w500,
-
-                          );
-                        },
-                        hintBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem,
-                            color:  const Color(0xFF879EA4),
-                            size: 16,
-                            weight:  FontWeight.w400,
-
-                          );
-                        },
-                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                        canCloseOutsideBounds: true,
-                        decoration: CustomDropdownDecoration(
-                          closedFillColor: Colors.white,
-                          closedBorderRadius: BorderRadius.circular(30),
-                          closedBorder: Border.all(color: const Color(0XFF1F546033)),
-                          closedShadow:[
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9),
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9)
-                          ],
-                        ),
-                        items: promotionTypes,
-                        onChanged: (value) {
-                          setState(() {
-                            promotionType = value;
-                          });
-                          log('changing value to: $value');
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  CustomTextField(
-                    controller: promotionNameController,
-                    placeholder: "Promotion Name",
-                    onChange: (value){
-
-                    },
-                  ),
-                  const SizedBox(height: 20,),
-                  CustomTextField(
-                    controller: promotionOfferController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    placeholder: "Promotion Offer",
-                    onChange: (value){
-
-                    },
-                  ),
-
-                  const SizedBox(height: 20,),
-                  ClipRRect(
-                    borderRadius:  BorderRadius.circular(30),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: const Color(0XFF1F546033))
-                      ),
-                      child: CustomDropdown<String>.search(
-                        hintText: 'Product category',
-                        initialItem: productCategory,
-
-                        headerBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem.toString(),
-                            color:   Colors.black,
-                            size: 16,
-                            weight:  FontWeight.w500,
-
-                          );
-                        },
-                        hintBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem,
-                            color:  const Color(0xFF879EA4),
-                            size: 16,
-                            weight:  FontWeight.w400,
-
-                          );
-                        },
-                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                        canCloseOutsideBounds: true,
-                        decoration: CustomDropdownDecoration(
-                          closedFillColor: Colors.white,
-                          closedBorderRadius: BorderRadius.circular(30),
-                          closedBorder: Border.all(color: const Color(0XFF1F546033)),
-                          closedShadow:[
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9),
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9)
-                          ],
-                        ),
-                        items: productCategories,
-                        onChanged: (value) {
-                          setState(() {
-                            productCategory = value;
-                            filterProductByCategory();
-                          });
-                          log('changing value to: $value');
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  ClipRRect(
-                    borderRadius:  BorderRadius.circular(30),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: const Color(0XFF1F546033))
-                      ),
-                      child: CustomDropdown<String>.multiSelectSearch(
-                        hintText: 'Promotion Products',
-                        initialItems: productName,
-
-
-                        listItemBuilder: (context, selectedItem,v,f) {
-                          return sText(
-                            selectedItem.toString(),
-                            color:   Colors.black,
-                            size: 16,
-                            weight:  FontWeight.w500,
-
-                          );
-                        },
-                        hintBuilder: (context, selectedItem,v) {
-                          return sText(
-                            selectedItem,
-                            color:  const Color(0xFF879EA4),
-                            size: 16,
-                            weight:  FontWeight.w400,
-
-                          );
-                        },
-                        closedHeaderPadding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                        canCloseOutsideBounds: true,
-                        decoration: CustomDropdownDecoration(
-                          closedFillColor: Colors.white,
-                          closedBorderRadius: BorderRadius.circular(30),
-                          closedBorder: Border.all(color: const Color(0XFF1F546033)),
-                          closedShadow:[
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9),
-                            const BoxShadow(
-                                blurRadius: 1,
-                                color: Colors.white,
-                                offset: Offset(0, 0.0),
-                                spreadRadius: 9)
-                          ],
-                        ),
-                        items: productList,
-                        onListChanged: (value) {
-                          setState(() {
-                            productName = value;
-                          });
-                          log('changing value to: $value');
-                        },
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height:20,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: sText("Start date",size: 12,weight: FontWeight.w600,color:  Color(0xFF879EA4)),
-                      ),
-                      const SizedBox(height: 20,),
-                      TimePickerSpinnerPopUp(
-                        mode: CupertinoDatePickerMode.dateAndTime,
-                        initTime: DateTime.now(),
-                        barrierColor: Colors.black12, //Barrier Color when pop up show
-                        minuteInterval: 1,
-                        padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                        cancelText : 'Cancel',
-                        confirmText : 'OK',
-                        pressType: PressType.singlePress,
-                        timeFormat: 'd MMM. yyyy; h:mm a',
-                        // Customize your time widget
-                        timeWidgetBuilder: (dateTime) {
-                          return Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 17),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: const Color(0XFF1F546033)),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                sText(startDate != null ? formatDateTime(startDate!) : "Pick start date" ,color: const Color(0xFF879EA4)),
-                                const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
-                              ],
-                            ),
-                          );
-                        },
-                        onChange: (dateTime) {
-                          print("dateTime:$dateTime");
-                          setState(() {
-                            startDate = dateTime;
-                          });
-                          // Implement your logic with select dateTime
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height:20,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: sText("End date",size: 12,weight: FontWeight.w600,color:  Color(0xFF879EA4)),
-                      ),
-                      const SizedBox(height: 20,),
-                      TimePickerSpinnerPopUp(
-                        mode: CupertinoDatePickerMode.dateAndTime,
-                        initTime: DateTime.now(),
-                        barrierColor: Colors.black12, //Barrier Color when pop up show
-                        minuteInterval: 1,
-                        padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                        cancelText : 'Cancel',
-                        confirmText : 'OK',
-                        pressType: PressType.singlePress,
-                        timeFormat: 'd MMM. yyyy; h:mm a',
-                        // Customize your time widget
-                        timeWidgetBuilder: (dateTime) {
-                          return Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: const Color(0XFF1F546033)),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                sText(endDate != null ? formatDateTime(endDate!) : "Pick end date",color: const Color(0xFF879EA4)),
-                                const Icon(Icons.keyboard_arrow_down,color: Color(0XFF879EA4),)
-                              ],
-                            ),
-                          );
-                        },
-                        onChange: (dateTime) {
-                          print("dateTime:$dateTime");
-                          setState(() {
-                            endDate = dateTime;
-                          });
-                          // Implement your logic with select dateTime
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40,),
-                  mainButton(
-                      width: appWidth(context),
-                      height: 50,
-                      radius: 30,
-                      outlineColor: Colors.transparent,
-                      shadowStrength: 0,
-                      backgroundColor: validateField() ? primaryColor : Colors.grey,
-                      content:  sText("Create Promotions",color: Colors.white,weight: FontWeight.w600,size: 18),
-                      onPressed:()async{
-                        final stateProduct = Get.put(ProductsController());
-                        final stateDashboard = Get.put(DashboardController());
-                        if( validateField() ){
-                          stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
-                            if(element.name == promotionCategory ){
-                              promotionCategory= element.name;
-                              promotionCategoryId = element.id;
-                              promotionDescription = element.description;
-                            }
-                          });
-                          stateProduct.listProducts.value.forEach((element) {
-                            for(int i =0;  i < productName.length; i++){
-                              if(element.productName == productName[i] ){
-                                productId.add(element.id!);
-                              }
-                            }
-                          });
-                          
-                          await state.uploadPromotion(context, {
-                            "promo_category":"$promotionCategoryId",
-                            "promo_name":promotionNameController.text,
-                            "promo_description":"$promotionDescription",
-                            "promo_value":promotionOfferController.text,
-                            "promo_type":promotionType!.split(" ").first.toLowerCase(),
-                            "promo_products":jsonEncode(productId),
-                            "promo_start":"$startDate",
-                            "promo_expiry":"$endDate",
-                          }, mediaPath, widget.promotionsData);
-                        }else{
-                          toastSuccessMessage("All fields are required", context);
-                        }
-                        
-                      }),
-                   SizedBox(height: appHeight(context),),
-                ],
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

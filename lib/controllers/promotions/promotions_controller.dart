@@ -75,6 +75,7 @@ class PromotionsController extends GetxController{
     try{
       var response  =  await _http.deleteRequest("${AppUrl.promotions}/$promotionId");
       if(response["status"].toUpperCase() == AppResponseCodes.success){
+        listPromotions.refresh();
         return true;
       }
     }catch(e){
