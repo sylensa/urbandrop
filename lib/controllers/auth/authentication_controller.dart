@@ -94,12 +94,6 @@ List<StoreTime> storeTimes = <StoreTime> [
     weekDays: "Thursday",
   ),
   StoreTime(
-    day: "4",
-    openingTime: "",
-    closingTime: "",
-    weekDays: "Thursday",
-  ),
-  StoreTime(
     day: "5",
     openingTime: "",
     closingTime: "",

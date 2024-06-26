@@ -1,21 +1,12 @@
-import 'dart:convert';
 import 'dart:developer';
-
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
-import 'package:urbandrop/features/widget/custom_text_field.dart';
-import 'package:urbandrop/features/widget/recent_order_widget.dart';
-import 'package:urbandrop/features/widget/tab_bar_slider.dart';
-import 'package:urbandrop/models/user.dart';
-import 'package:urbandrop/routes.dart';
+
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
