@@ -492,6 +492,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                         TimePickerSpinnerPopUp(
                           mode: CupertinoDatePickerMode.dateAndTime,
                           initTime: DateTime.now(),
+                          minTime: DateTime.now() ,
                           barrierColor: Colors.black12, //Barrier Color when pop up show
                           minuteInterval: 1,
                           padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),

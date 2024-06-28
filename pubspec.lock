@@ -13,10 +13,10 @@ packages:
     dependency: "direct main"
     description:
       name: adaptive_dialog
-      sha256: "910debe8766eff4b378ed5164bb470debb87c53a3bdf6adee03c79f64fbf7348"
+      sha256: "817ff9b4bb441434d1fcb39a8d4492e50be456cd3507e4f19c5c7455c9e279e0"
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.1"
+    version: "2.1.0"
   animate_do:
     dependency: "direct main"
     description:
@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.0"
+  awesome_dialog:
+    dependency: "direct main"
+    description:
+      name: awesome_dialog
+      sha256: "41c41ae4b30b5c7f26bb3d9f9c87010ed1cab0bb4d4ac0cc513e5799c37e9d82"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   base32:
     dependency: transitive
     description:
@@ -1061,6 +1069,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  graphs:
+    dependency: transitive
+    description:
+      name: graphs
+      sha256: aedc5a15e78fc65a6e23bcd927f24c64dd995062bcd1ca6eda65a3cff92a4d19
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
   grouped_list:
     dependency: "direct main"
     description:
@@ -1773,6 +1789,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0+1"
+  rive:
+    dependency: transitive
+    description:
+      name: rive
+      sha256: "255ab7892a77494458846cecee1376a017e64fd6b4130b51ec21424d12ffa6fe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.4"
+  rive_common:
+    dependency: transitive
+    description:
+      name: rive_common
+      sha256: "3a0d95f529d52caef535d8ff32d75629ca37f7ab4707b13c83e9552a322557bc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.8"
   riverpod:
     dependency: transitive
     description:

@@ -41,7 +41,6 @@ dependencies:
   carousel_slider: ^4.1.1
   flutter_carousel_widget: ^1.2.0
   shimmer: ^2.0.0
-  adaptive_dialog: ^1.8.0+1
   another_flushbar: ^1.12.29
   animated_text_kit: ^4.2.2
   grouped_list: ^5.1.2
@@ -140,6 +139,8 @@ dependencies:
   animated_custom_dropdown: ^3.0.0
   images_picker: ^1.2.11
   time_picker_spinner_pop_up: ^2.0.0
+  adaptive_dialog: ^2.1.0
+  awesome_dialog: ^3.2.1
 
 
 dev_dependencies:

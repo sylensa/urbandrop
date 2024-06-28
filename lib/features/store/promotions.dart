@@ -1,3 +1,5 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -104,7 +106,7 @@ class _PromotionsPageState extends State<PromotionsPage> {
                                             child: sText("${getPromotionCategory(promotionCategory: state.listPromotions.value[index].promoCategory)}",size: 10,weight: FontWeight.w600,color: Colors.white)
                                         ),
                                         const SizedBox(height: 10,),
-                                        sText("${getPromotionType(promotionType: state.listPromotions.value[index].promoType) ? "${state.listPromotions.value[index].promoValue}%" : "${state.listPromotions.value[index].promoValue}"} OFF",size: 30,color: const Color(0XFF183A37),weight: FontWeight.w900),
+                                        sText("${getPromotionType(promotionType: state.listPromotions.value[index].promoType) ? "${state.listPromotions.value[index].promoValue}%" : "£${state.listPromotions.value[index].promoValue}"} OFF",size: 30,color: const Color(0XFF183A37),weight: FontWeight.w900),
                                         const SizedBox(height: 10,),
                                         sText("${state.listPromotions.value[index].promoName}",color: Colors.white,size: 12,weight: FontWeight.w600)
                                       ],
@@ -119,10 +121,25 @@ class _PromotionsPageState extends State<PromotionsPage> {
                                 right:40,
                                 child: InkWell(
                                   onTap: ()async{
-                                    state.deletePromotion(promotionId: state.listPromotions.value[index].id);
-                                    setState(() {
-                                      state.listPromotions.value.removeAt(index);
-                                    });
+                                    AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.noHeader,
+                                        animType: AnimType.rightSlide,
+                                        title: 'Alert',
+                                        desc: 'Are you sure you want to delete?',
+                                        btnCancelOnPress: () {
+                                          Get.back();
+                                        },
+                                        btnOkOnPress: () {
+                                          Get.back();
+                                          state.deletePromotion(promotionId: state.listPromotions.value[index].id);
+                                          setState(() {
+                                            state.listPromotions.value.removeAt(index);
+                                          });
+                                        },
+                                        ).show();
+
+
                                   },
                                   child: Image.asset("assets/images/delete_promo.png",width: 27,),
                                 )
