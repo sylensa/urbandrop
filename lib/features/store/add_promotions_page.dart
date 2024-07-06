@@ -6,6 +6,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:recase/recase.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
@@ -47,6 +48,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   File? mediaPath;
   TextEditingController promotionNameController = TextEditingController();
   TextEditingController promotionOfferController = TextEditingController();
+  TextEditingController minimumController = TextEditingController();
 
   validateField(){
     if(promotionNameController.text.isNotEmpty && endDate != null && startDate != null && promotionOfferController.text.isNotEmpty && promotionCategory != null && promotionType != null && productName != null && (mediaPath != null || widget.promotionsData != null) ){
@@ -111,6 +113,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
       if(widget.promotionsData != null){
         promotionType = "${properCase(widget.promotionsData!.promoType!)} Off";
         promotionNameController.text = widget.promotionsData!.promoName!;
+        minimumController.text= widget.promotionsData!.minimum_sale!;
         promotionOfferController.text = widget.promotionsData!.promoValue!.toString();
         startDate = widget.promotionsData!.promoStart;
         endDate = widget.promotionsData!.promoExpiry;
@@ -268,6 +271,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                           onChanged: (value) {
                             setState(() {
                               promotionCategory = value;
+                              print("promotionCategory:$promotionCategory");
                             });
                             // log('changing value to: $value');
                           },
@@ -275,6 +279,20 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                       ),
                     ),
                     const SizedBox(height: 20,),
+                    if(promotionCategory?.contains("Minimum") == true)
+                    Column(
+                      children: [
+                        CustomTextField(
+                          controller: minimumController,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          placeholder: "Enter $promotionCategory".sentenceCase,
+                          onChange: (value){
+
+                          },
+                        ),
+                        const SizedBox(height: 20,),
+                      ],
+                    ),
 
                     ClipRRect(
                       borderRadius:  BorderRadius.circular(30),
@@ -486,13 +504,14 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                       children: [
                         Container(
                           padding: const EdgeInsets.only(left: 20),
-                          child: sText("Start date",size: 12,weight: FontWeight.w600,color:  Color(0xFF879EA4)),
+                          child: sText("Start date",size: 12,weight: FontWeight.w600,color:  const Color(0xFF879EA4)),
                         ),
                         const SizedBox(height: 20,),
                         TimePickerSpinnerPopUp(
                           mode: CupertinoDatePickerMode.dateAndTime,
-                          initTime: DateTime.now(),
                           minTime: DateTime.now() ,
+                          initTime: DateTime.now(),
+
                           barrierColor: Colors.black12, //Barrier Color when pop up show
                           minuteInterval: 1,
                           padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -528,18 +547,21 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height:20,),
+
+                    if(startDate != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height:20,),
                         Container(
                           padding: const EdgeInsets.only(left: 20),
-                          child: sText("End date",size: 12,weight: FontWeight.w600,color:  Color(0xFF879EA4)),
+                          child: sText("End date",size: 12,weight: FontWeight.w600,color:  const Color(0xFF879EA4)),
                         ),
                         const SizedBox(height: 20,),
                         TimePickerSpinnerPopUp(
                           mode: CupertinoDatePickerMode.dateAndTime,
-                          initTime: DateTime.now(),
+                          initTime: startDate!.add(const Duration(hours: 1)),
+                          minTime: startDate!.add(const Duration(hours: 1)) ,
                           barrierColor: Colors.black12, //Barrier Color when pop up show
                           minuteInterval: 1,
                           padding : const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -588,6 +610,12 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                           final stateProduct = Get.put(ProductsController());
                           final stateDashboard = Get.put(DashboardController());
                           if( validateField() ){
+                            if(promotionCategory?.contains("Minimum") == true){
+                              if(minimumController.text.isEmpty){
+                                toastMessage("Enter $promotionCategory".sentenceCase, context);
+                                return;
+                              }
+                            }
                             stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
                               if(element.name == promotionCategory ){
                                 promotionCategory= element.name;
@@ -620,6 +648,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                               "promo_products":jsonEncode(productId),
                               "promo_start":"$startDate",
                               "promo_expiry":"$endDate",
+                              "minimum_sale":minimumController.text,
                             }, mediaPath, widget.promotionsData);
                           }else{
                             toastSuccessMessage("All fields are required", context);

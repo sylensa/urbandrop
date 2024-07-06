@@ -249,13 +249,14 @@ class CustomTextAmountField extends StatefulWidget {
   final bool? checkMark;
   final String? prefixImage;
   final int? maxLines;
+  final Widget? suffix;
   final TextDirection? textDirection;
   final List<TextInputFormatter> inputFormatters;
   final TextEditingController? controller;
   final ValueChanged<String>? onChange;
   final ValueChanged<String>? onSubmit;
 
-  CustomTextAmountField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines})
+  CustomTextAmountField({Key? key, required this.placeholder, this.onChange, this.obscureText,this.onSubmit, this.controller,this.inputFormatters = const[], this.checkMark,this.textDirection = TextDirection.ltr , this.prefixImage, this.maxLines, this.suffix})
       : super(key: key);
 
   @override
@@ -312,8 +313,8 @@ class _CustomTextAmountFieldState extends State<CustomTextAmountField> {
 
             ],
           )
-      )
-      ,
+      ),
+      suffix: widget.suffix,
     );
   }
 }

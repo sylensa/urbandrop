@@ -31,7 +31,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       if(userInstance != null){
           userInstance =  await AuthenticationController().user();
         if(userInstance == null){
-          context.go(Routing.registrationPage);
+          context.go(Routing.loginPage);
         }else{
           if (!userInstance!.emailVerified!) {
             context.go(Routing.confirmOTP,extra: true);
@@ -53,7 +53,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         }
       }
       else{
-        context.go(Routing.registrationPage);
+        context.go(Routing.loginPage);
       }
     }
     catch(e){

@@ -36,6 +36,7 @@ class PromotionsData {
   String? id;
   String? imageUrl;
   String? promoCategory;
+  String? minimum_sale;
   String? promoName;
   String? promoDescription;
   String? promoType;
@@ -58,6 +59,7 @@ class PromotionsData {
     this.promoStart,
     this.promoExpiry,
     this.createdAt,
+    this.minimum_sale,
     this.promo_product_categories,
   });
 
@@ -66,6 +68,7 @@ class PromotionsData {
     imageUrl: json["image_url"],
     promoCategory: json["promo_category"],
     promoName: json["promo_name"],
+    minimum_sale: json["minimum_sale"] ?? "",
     promoDescription: json["promo_description"],
     promoType: json["promo_type"],
     promoValue: json["promo_value"],

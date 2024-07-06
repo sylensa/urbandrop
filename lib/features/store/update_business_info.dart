@@ -59,10 +59,15 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
       authenticationController.businessDescription = userInstance?.businessDescription ?? "";
       stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
         _list.add(element.categoryName!);
+        print("userInstance?.merchantCategory:${userInstance?.merchantCategory}");
+        print("element.categoryName:${element.categoryName}");
         if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
           authenticationController.businessType = element.categoryName;
           authenticationController.businessTypeId = element.id;
         }
+      });
+      setState(() {
+
       });
     });
 

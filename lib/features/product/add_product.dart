@@ -28,10 +28,12 @@ class AddProduct extends StatefulWidget {
 class _AddProductState extends State<AddProduct> {
 
   final List<String> weightList = [
-    'KG',
+    'kg',
     'ml',
     'litre',
     'gm',
+    'box',
+    'unit',
   ];
   File? mediaPath;
   AuthenticationController authenticationController = AuthenticationController();
@@ -45,7 +47,7 @@ class _AddProductState extends State<AddProduct> {
   String? weight;
    List<String> _list = [];
   validateField(){
-    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty && stockController.text.isNotEmpty && (mediaPath != null || widget.productData != null) && weight != null){
+    if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty  && (mediaPath != null || widget.productData != null) && weight != null){
       return true;
     }
     return false;
@@ -257,27 +259,17 @@ class _AddProductState extends State<AddProduct> {
                       ),
                     ),
                     const SizedBox(height: 20,),
-                    CustomTextAmountField(
-                      placeholder: "00.00 p",
-                      controller: amountController,
-                      onChange: (value){
-                        setState(() {
 
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20,),
                     CustomTextField(
                       keyboardType: TextInputType.number,
                       controller: quantityController,
-                      placeholder: "Quantity (optional)",
+                      placeholder: "Quantity",
                       onChange: (value){
                         setState(() {
 
                         });
                       },
                     ),
-
 
                     const SizedBox(height: 20,),
                     CustomTextField(
@@ -293,7 +285,7 @@ class _AddProductState extends State<AddProduct> {
 
 
                     const SizedBox(height: 20,),
-                    Container(
+                    SizedBox(
                       height: 50,
                       child: ListView.builder(
                         itemCount: weightList.length,
@@ -322,6 +314,22 @@ class _AddProductState extends State<AddProduct> {
 
                       }),
                     ),
+                    const SizedBox(height: 20,),
+                    CustomTextAmountField(
+                      placeholder: "00.00 p",
+                      controller: amountController,
+
+                      onChange: (value){
+                        setState(() {
+
+                        });
+                      },
+                      suffix:Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: sText("${quantityController.text}/$weight",color: Color(0xFF879EA4)),
+                      ),
+                    ),
+
                     const SizedBox(height: 40,),
                     mainButton(
                         width: appWidth(context),
