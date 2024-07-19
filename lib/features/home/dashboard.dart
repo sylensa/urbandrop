@@ -103,7 +103,9 @@ class _DashboardPageState extends State<DashboardPage> {
         Expanded(
           child: SmartRefresh(
             onLoading:(){},
-            onRefresh: state.onRefresh,
+            onRefresh: (){
+              state.onRefresh(context);
+            },
             child:  ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: const [

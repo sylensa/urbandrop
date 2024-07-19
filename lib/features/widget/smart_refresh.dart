@@ -28,22 +28,17 @@ class _SmartRefreshState extends State<SmartRefresh> {
     productsController = context.read<ProductsController>();
     productsController.listProducts.clear();
     productsController.unFilteredListProducts.clear();
-    setState(() {
       widget.onRefresh();
-    });
     _refreshController.refreshCompleted();
   }
 
   // scroll to paginate the data on the UI
   void _onLoading() async{
-    setState(() {
       widget.onLoading();
-    });
     _refreshController.loadComplete();
   }
   @override
   Widget build(BuildContext context) {
-    final state = Get.put(OrdersController());
 
     return SmartRefresher(
       reverse: false,

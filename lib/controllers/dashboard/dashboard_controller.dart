@@ -53,11 +53,10 @@ class DashboardController extends GetxController{
     orderSummaryController.orderSummary == null;
     recentDeliveryController.recentOrderDelivery == null;
     recentOrderController.recentOrderData == null;
-    topProductController.getTopProducts();
-    orderSummaryController.getOrderSummary();
-    recentDeliveryController.getRecentDelivery();
-    recentOrderController.getRecentOrder();
-    refreshController.loadComplete();
+    await topProductController.getTopProducts();
+    await orderSummaryController.getOrderSummary();
+    await recentDeliveryController.getRecentDelivery();
+    await recentOrderController.getRecentOrder();
   }
 
 
