@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:urbandrop/controllers/notifications/notification_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/home/dashboard.dart';
@@ -26,6 +27,16 @@ class _WorkspacePageState extends State<WorkspacePage> with TickerProviderStateM
   final PageController _controller = PageController();
   int currentIndex = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(const Duration(seconds: 1),()async{
+      await NotificationController(context: context).initialise();
+      await NotificationController(context: context).initialize();
+      NotificationController(context: context).requestPermissions();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

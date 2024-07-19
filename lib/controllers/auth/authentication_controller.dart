@@ -277,7 +277,8 @@ sendPasswordLink(BuildContext context,{String? email}) async {
           "email": email,
         });
         log("(response.body:$response");
-      toastMessage(response['message'], context);
+      toastSuccessMessage(response['message'], context);
+      context.pop();
       context.pop();
     } catch (e) {
       print(e.toString());

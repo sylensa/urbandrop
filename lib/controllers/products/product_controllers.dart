@@ -84,6 +84,18 @@ class ProductsController extends GetxController{
     context.pop();
    return false;
   }
+  outOfStock(String productId,)async{
+
+   try{
+     final response = await _http.putRequest("${AppUrl.productStock}/$productId",{});
+     if(response["status"].toUpperCase() == AppResponseCodes.success){
+       return true;
+     }
+   }
+   catch(e){
+   }
+   return false;
+  }
 
   removeProductFromList(String productId){
 

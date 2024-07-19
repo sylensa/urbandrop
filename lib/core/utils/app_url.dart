@@ -21,6 +21,7 @@ class AppUrl {
   static String orders = "$baseURL/order";
   static String promotions = "$baseURL/merchant/promotions";
   static String products = "$baseURL/product";
+  static String productStock = "$baseURL/product/toggle-stock";
   static String createFolder = "$baseURL/folder/create";
   static String addCardsToFolder = "$baseURL/folder/add-card";
   static String removeCardsToFolder = "$baseURL/folder/remove-card";

@@ -68,15 +68,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    pageRedirect();
 
-    Future.delayed(const Duration(seconds: 3),()async{
-      await NotificationController(context: context).initialise();
-      await NotificationController(context: context).initialize();
-      NotificationController(context: context).requestPermissions();
-      await pageRedirect();
-
-
-    });
 
   }
   @override

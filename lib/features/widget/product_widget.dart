@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/features/widget/flutter_switch.dart';
 import 'package:urbandrop/models/product_model.dart';
@@ -17,6 +19,7 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
+    final state = Get.put(ProductsController());
     print("${widget.productData?.imageUrl}");
     return GestureDetector(
       onTap: (){
@@ -43,7 +46,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox(height:5 ,),
-                      sText(properCase("${widget.productData?.productName}"),size: 12,weight: FontWeight.w400),
+                      sText(properCase("${widget.productData?.productName}"),size: 12,weight: FontWeight.w400,maxLines: 1),
                       const SizedBox(height:5 ,),
                       sText("£${formattedAmount(amount: "${widget.productData?.price}")}p / ${widget.productData?.unit}",size: 12,weight: FontWeight.w900),
                       const SizedBox(height:10,),
@@ -59,9 +62,13 @@ class _ProductWidgetState extends State<ProductWidget> {
                             toggleColor: Colors.white,
                             activeColor:  const Color(0XFFF74242),
                             inactiveColor: Colors.grey,
-                            onToggle: (val) {
+                            onToggle: (val)async {
+                              setState(() {
+                                widget.productData!.available = !widget.productData!.available!;
+                              });
+                                await state.outOfStock(widget.productData!.id!);
                             },
-                            value: checkOutStock(stock: widget.productData?.stock),
+                            value: widget.productData!.available!,
                           ),
                         ],
                       ),
