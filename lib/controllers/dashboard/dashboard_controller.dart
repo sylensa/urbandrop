@@ -34,14 +34,14 @@ class DashboardController extends GetxController{
   }
 
   Future start({updateLoader = false}) async {
-    return Future.wait([getOrderSummary(),getOrderSummary(),getTopProducts()]);
+    return Future.wait([getOrderSummary(),getTopProducts()]);
   }
 
   Future<void> getOrderSummary({int limit = 10, int offset = 0})async{
     OrderSummaryModel? orderSummaryModel;
     errorMessage.value = "";
     try{
-      var response  =  await _http.getRequest("${AppUrl.orders}/summary/${DateTime.now()}");
+      var response  =  await _http.getRequest("${AppUrl.orders}/summary/today");
       orderSummaryModel = OrderSummaryModel.fromJson(response);
       if(orderSummaryModel.status?.toUpperCase() == AppResponseCodes.success){
         orderSummary.value = orderSummaryModel.data;

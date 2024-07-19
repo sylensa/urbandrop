@@ -270,6 +270,22 @@ changePassword(BuildContext context,{String? currentPassword, String? newPasswor
       toastMessage(errorMessage, context);
     }
   }
+sendPasswordLink(BuildContext context,{String? email}) async {
+    try {
+      showLoaderDialog(context);
+        var response = await _http.postRequest(AppUrl.forgotPassword,{
+          "email": email,
+        });
+        log("(response.body:$response");
+      toastMessage(response['message'], context);
+      context.pop();
+    } catch (e) {
+      print(e.toString());
+      errorMessage = e.toString();
+      context.pop();
+      toastMessage(errorMessage, context);
+    }
+  }
 
 update(BuildContext context, Map body,{notLoadingDialog = false}) async {
   try {

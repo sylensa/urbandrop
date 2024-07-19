@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:country_calling_code_picker/picker.dart';
@@ -16,7 +17,7 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  TextEditingController phoneNumbersController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +39,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: CustomTextField(
                 placeholder: "Email",
+                controller: emailController,
                 prefixImage: "email.png",
                 onChange: (value){
                   setState(() {
@@ -51,12 +53,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               padding: const EdgeInsets.symmetric(horizontal: 0),
               child: mainButton(
                   content: sText("Continue",color: Colors.white,size: 18,weight: FontWeight.w600),
-                  backgroundColor: primaryColor,
+                  backgroundColor: emailController.text.isNotEmpty ? primaryColor : Colors.grey,
                   shadowStrength: 0,
                   height: 50,
                   radius: 30,
                   onPressed: (){
-                    context.push(Routing.confirmEmailPage);
+                    if(emailController.text.isNotEmpty){
+                      AuthenticationController().sendPasswordLink(context,email: emailController.text);
+                    }
+
                   }),
             ),
           ],

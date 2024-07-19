@@ -29,7 +29,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       userInstance = await UserPreferences().getUser();
       await AuthenticationController().getUserConfig();
       if(userInstance != null){
-          userInstance =  await AuthenticationController().user();
+          // userInstance =  await AuthenticationController().user();
         if(userInstance == null){
           context.go(Routing.loginPage);
         }else{
