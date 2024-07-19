@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
 import 'package:urbandrop/controllers/notifications/notification_controller.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
@@ -21,13 +23,13 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  late ConfigController configController;
 
   bool loading = true;
   pageRedirect() async{
     try{
       Get.reset();
       userInstance = await UserPreferences().getUser();
-      await AuthenticationController().getUserConfig();
       if(userInstance != null){
           userInstance =  await AuthenticationController().user();
         if(userInstance == null){
@@ -68,8 +70,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    pageRedirect();
+    configController = context.read<ConfigController>();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+       await configController.getUserConfig();
+       pageRedirect();
 
+    });
 
   }
   @override

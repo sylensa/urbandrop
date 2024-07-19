@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -11,60 +12,52 @@ import 'package:http_parser/http_parser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
+import 'package:urbandrop/controllers/dashboard/top_product_controller.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/helper/hide.dart';
 import 'package:urbandrop/core/http/http_client_wrapper.dart';
 import 'package:urbandrop/core/utils/app_url.dart';
 import 'package:urbandrop/core/utils/response_codes.dart';
+import 'package:urbandrop/cubit_state/product_state.dart';
 import 'package:urbandrop/models/product_model.dart';
 import 'package:urbandrop/models/user.dart';
 
-class ProductsController extends GetxController{
+class ProductsController extends Cubit<ProductState>{
+  ProductsController() : super(ProductInitial());
   final HttpClientWrapper _http = HttpClientWrapper();
-  final RefreshController refreshController =  RefreshController(initialRefresh: false);
   Timer? _debounce;
-  final Rx<List<ProductData>> listProducts = Rx<List<ProductData>>([]);
-  final Rx<List<ProductData>> unFilteredListProducts = Rx<List<ProductData>>([]);
-  final Rx<String> errorMessage = Rx<String>("");
-  final Rx<bool> loading = Rx<bool>(true);
-  final Rx<bool> paginationLoading = Rx<bool>(false);
+  List<ProductData> listProducts = [];
+  List<ProductData>  unFilteredListProducts = [];
   final userPreferences = UserPreferences();
-  final stateDashboard = Get.put(DashboardController());
-  // function called once the controller is instantiated
-  @override
-  onReady() {
-    super.onReady();
-    // start all controller defaults
-    start();
-  }
+  late TopProductController topProductController;
+  int offset = 1;
 
-
-  Future start({updateLoader = false}) async {
-    return Future.wait([getProducts()]);
-  }
-
-  Future<void> getProducts({int limit = 10, int offset = 0, bool refreshing = true})async{
+  Future<void> getProducts({int limit = 10, bool refreshing = true})async{
     ProductModel? productModel;
-    listProducts.value.clear();
-    errorMessage.value = "";
+    if(refreshing){
+      listProducts.clear();
+      unFilteredListProducts.clear();
+      offset = 1;
+      emit(ProductInitial());
+
+    }
     try{
-      var response  =  await _http.getRequest("${AppUrl.products}/list?limit=$limit&offset=$offset");
+      var response  =  await _http.getRequest("${AppUrl.products}/list?limit=$limit&page=$offset");
       productModel = ProductModel.fromJson(response);
       if(productModel.status?.toUpperCase() == AppResponseCodes.success){
-        if(refreshing){
-          listProducts.value.clear();
-          unFilteredListProducts.value.clear();
-        }
-        listProducts.value.addAll(productModel.data!);
-        unFilteredListProducts.value.addAll(productModel.data!);
-      }else{
-        errorMessage.value = productModel.message!;
+        listProducts.addAll(productModel.data!);
+        unFilteredListProducts.addAll(productModel.data!);
       }
+      if(listProducts.isNotEmpty){
+        emit(ProductLoaded(listProducts: listProducts));
+      }else{
+        emit(ProductEmpty());
+      }
+      
     }catch(e){
-      errorMessage.value = e.toString();
+      emit(ProductEmpty());
     }
-    refreshData();
   }
 
   deleteProduct(String productId, BuildContext context)async{
@@ -72,7 +65,7 @@ class ProductsController extends GetxController{
    try{
      final response = await _http.deleteRequest("${AppUrl.products}/$productId");
      if(response["status"].toUpperCase() == AppResponseCodes.success){
-       removeProductFromList(productId);
+       removeProductFromList(productId,context);
        toastSuccessMessage(response["message"], context);
        context.pop();
        return true;
@@ -92,23 +85,21 @@ class ProductsController extends GetxController{
        return true;
      }
    }
-   catch(e){
-   }
+   catch(e){}
    return false;
   }
 
-  removeProductFromList(String productId){
+  removeProductFromList(String productId,BuildContext context){
+    topProductController = context.read<TopProductController>();
 
-    for(int i =0; i < listProducts.value.length; i++){
-      if(listProducts.value[i].id == productId){
-        listProducts.value.removeAt(i);
-        listProducts.refresh();
+    for(int i =0; i < listProducts.length; i++){
+      if(listProducts[i].id == productId){
+        listProducts.removeAt(i);
       }
     }
-    for(int i =0; i < stateDashboard.topProducts.value.length; i++){
-      if(stateDashboard.topProducts.value[i].id == productId){
-        stateDashboard.topProducts.value.removeAt(i);
-        stateDashboard.topProducts.refresh();
+    for(int i =0; i < topProductController.topProducts.length; i++){
+      if(topProductController.topProducts[i].id == productId){
+        topProductController.topProducts.removeAt(i);
       }
     }
 
@@ -170,27 +161,25 @@ class ProductsController extends GetxController{
         List<ProductData> listProduct = [];
         listProduct.add(productData);
         if(product == null){
-          if(listProducts.value.isNotEmpty){
-            listProducts.value.insertAll(0, listProduct);
-            stateDashboard.topProducts.value.insertAll(0, listProduct);
+          if(listProducts.isNotEmpty){
+            listProducts.insertAll(0, listProduct);
+            topProductController.topProducts.insertAll(0, listProduct);
           }else{
-            listProducts.value.addAll(listProduct);
-            stateDashboard.topProducts.value.addAll(listProduct);
+            listProducts.addAll(listProduct);
+            topProductController.topProducts.addAll(listProduct);
           }
         }else{
-          if(listProducts.value.contains(product)){
-            listProducts.value.remove(product);
-            listProducts.value.insertAll(0,listProduct);
+          if(listProducts.contains(product)){
+            listProducts.remove(product);
+            listProducts.insertAll(0,listProduct);
           }
-          if(stateDashboard.topProducts.value.contains(product)){
-            stateDashboard.topProducts.value.remove(product);
-            stateDashboard.topProducts.value.insertAll(0,listProduct);
+          if(topProductController.topProducts.contains(product)){
+            topProductController.topProducts.remove(product);
+            topProductController.topProducts.insertAll(0,listProduct);
           }
         }
 
 
-        listProducts.refresh();
-        stateDashboard.topProducts.refresh();
         toastSuccessMessage(responseMap["message"], context);
         context.pop();
         context.pop();
@@ -224,21 +213,14 @@ class ProductsController extends GetxController{
   }
 
   void onRefresh()async{
-    paginationLoading.value = true;
-    loading.value = true;
-    paginationLoading.refresh();
-    listProducts.value.clear();
-    unFilteredListProducts.value.clear();
-    await getProducts(limit: 10,offset: 0);
-    refreshData();
-    refreshController.loadComplete();
+    listProducts.clear();
+    unFilteredListProducts.clear();
+    offset = 1;
+    await getProducts(limit: 10,refreshing: true);
   }
   void onLoading()async{
-    paginationLoading.value = true;
-    paginationLoading.refresh();
-    await getProducts(limit: 10,offset:  listProducts.value.length,refreshing: false);
-    refreshData();
-    refreshController.refreshCompleted();
+    offset++;
+    await getProducts(limit: 10,refreshing: false);
   }
 
   onSearchChanged(String value){
@@ -247,31 +229,23 @@ class ProductsController extends GetxController{
       if(value.isNotEmpty){
 
       }else{
-        listProducts.value.addAll(unFilteredListProducts.value);
+        listProducts.addAll(unFilteredListProducts);
       }
     });
-    refreshData();
+    
   }
 
   filterProducts(String type,String date){
     if(type.isNotEmpty  || date.isNotEmpty){
 
     }else{
-      listProducts.value.addAll(unFilteredListProducts.value);
+      listProducts.addAll(unFilteredListProducts);
     }
-    refreshData();
+    
   }
 
 
-  refreshData(){
-    listProducts.refresh();
-    errorMessage.refresh();
-    unFilteredListProducts.refresh();
-    loading.value = false;
-    loading.refresh();
-    paginationLoading.value = false;
-    paginationLoading.refresh();
-  }
+
 
 
 

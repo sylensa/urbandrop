@@ -103,7 +103,7 @@ class _PromotionsPageState extends State<PromotionsPage> {
                                                 color: const Color(0XFF183A37).withOpacity(0.4),
                                                 borderRadius: BorderRadius.circular(30)
                                             ),
-                                            child: sText("${getPromotionCategory(promotionCategory: state.listPromotions.value[index].promoCategory)}",size: 10,weight: FontWeight.w600,color: Colors.white)
+                                            child: sText("${getPromotionCategory(context,promotionCategory: state.listPromotions.value[index].promoCategory)}",size: 10,weight: FontWeight.w600,color: Colors.white)
                                         ),
                                         const SizedBox(height: 10,),
                                         sText("${getPromotionType(promotionType: state.listPromotions.value[index].promoType) ? "${state.listPromotions.value[index].promoValue}%" : "£${state.listPromotions.value[index].promoValue}"} OFF",size: 30,color: const Color(0XFF183A37),weight: FontWeight.w900),

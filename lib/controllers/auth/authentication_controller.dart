@@ -639,28 +639,8 @@ getUser({String userId = ''}) async {
   } catch (e) {}
 }
 
-getUserConfig() async {
-  try {
-    var response = await _http.getRequest(AppUrl.config);
-    if (response["status"] == AppResponseCodes.success) {
-      final stateDashboard = Get.put(DashboardController());
-      stateDashboard.configModel.value = ConfigData.fromJson(response["data"]);
-      print("stateDashboard.configModel.value:${stateDashboard.configModel.value!.merchantCategories!.length}");
-      stateDashboard.configModel.refresh();
-    }
-  } catch (e) {}
-}
-getFaq() async {
-  final stateDashboard = Get.put(DashboardController());
-  try {
-    var response = await _http.getRequest(AppUrl.faq);
-    FaqModel faqModel = FaqModel.fromJson(response);
-    if (faqModel.status == AppResponseCodes.success) {
-      stateDashboard.listFaqData.value.addAll(faqModel.data ?? []);
-    }
 
-  } catch (e) {}
-}
+
 
 Future<void> signOut() async {
   try {

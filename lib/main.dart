@@ -4,8 +4,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
+import 'package:urbandrop/controllers/config/faq_controller.dart';
+import 'package:urbandrop/controllers/dashboard/order_summary_controller.dart';
+import 'package:urbandrop/controllers/dashboard/recent_delivery_controller.dart';
+import 'package:urbandrop/controllers/dashboard/recent_order_controller.dart';
+import 'package:urbandrop/controllers/dashboard/top_product_controller.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/controllers/shared_preference.dart';
 import 'package:urbandrop/core/utils/themes.dart';
 import 'package:urbandrop/firebase_options.dart';
@@ -58,24 +66,51 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
-      builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: 1.0,
-            boldText: false,
-          ),
-          child: child!,
-        );
-      },
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<OrderSummaryController>(
+          create: (context) => OrderSummaryController(),
+        ),
+        BlocProvider<RecentDeliveryController>(
+          create: (context) => RecentDeliveryController(),
+        ),
+        BlocProvider<RecentOrderController>(
+          create: (context) => RecentOrderController(),
+        ),
+        BlocProvider<TopProductController>(
+          create: (context) => TopProductController(),
+        ),
+        BlocProvider<ProductsController>(
+          create: (context) => ProductsController(),
+        ),
+        BlocProvider<ConfigController>(
+          create: (context) => ConfigController(),
+        ),
+        BlocProvider<FaqController>(
+          create: (context) => FaqController(),
+        ),
+
+
       ],
-      routerConfig: ref.watch(routerProvider),
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData,
+      child: MaterialApp.router(
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaleFactor: 1.0,
+              boldText: false,
+            ),
+            child: child!,
+          );
+        },
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        routerConfig: ref.watch(routerProvider),
+        debugShowCheckedModeBanner: false,
+        theme: lightThemeData,
+      ),
     );
   }
 }

@@ -138,6 +138,7 @@ dependencies:
   time_picker_spinner_pop_up: ^2.0.0
   adaptive_dialog: ^2.1.0
   awesome_dialog: ^3.2.1
+  flutter_bloc: ^8.1.1
 
 
 dev_dependencies:

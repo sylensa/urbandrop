@@ -5,10 +5,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
@@ -33,20 +35,17 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
   TextEditingController businessPostcode = TextEditingController();
   TextEditingController businessDescription = TextEditingController();
   List<String> _list = [];
+  late ConfigController configController;
 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    final stateDashboard = Get.put(DashboardController());
-    Future.delayed(const Duration(seconds: 1),()async{
-      if(stateDashboard.configModel.value == null){
-        await AuthenticationController().getUserConfig();
-        setState(() {
+    configController = context.read<ConfigController>();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+      await configController.getUserConfig();
 
-        });
-      }
       businessName.text = userInstance?.businessName ?? "";
       authenticationController.businessName = userInstance?.businessName ?? "";
       businessAddress.text = userInstance?.address ?? "";
@@ -57,7 +56,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
       authenticationController.businessPostCode = userInstance?.postCode ?? "";
       businessDescription.text = userInstance?.businessDescription ?? "";
       authenticationController.businessDescription = userInstance?.businessDescription ?? "";
-      stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+      configController.configModel!.merchantCategories!.forEach((element) {
         _list.add(element.categoryName!);
         print("userInstance?.merchantCategory:${userInstance?.merchantCategory}");
         print("element.categoryName:${element.categoryName}");
@@ -65,6 +64,9 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
           authenticationController.businessType = element.categoryName;
           authenticationController.businessTypeId = element.id;
         }
+      });
+      setState(() {
+
       });
       setState(() {
 
@@ -235,7 +237,7 @@ class _UpdateBusinessInformationPageState extends State<UpdateBusinessInformatio
                       onPressed: ()async{
                         try{
                           if(authenticationController.validateBusinessInformation() && authenticationController.businessDescription.isNotEmpty){
-                            stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+                            configController.configModel!.merchantCategories!.forEach((element) {
                               if(element.id == userInstance?.merchantCategory || element.categoryName == userInstance?.merchantCategory ){
                                 authenticationController.businessType = element.categoryName;
                                 authenticationController.businessTypeId = element.id;

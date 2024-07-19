@@ -11,6 +11,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:recase/recase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
+import 'package:urbandrop/controllers/dashboard/top_product_controller.dart';
 import 'package:urbandrop/controllers/notifications/notification_controller.dart';
 import 'package:urbandrop/controllers/orders/orders_controller.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
@@ -666,9 +669,11 @@ getPromotionType({String? promotionType}){
   return false;
 }
 
-getPromotionCategory({String? promotionCategory}){
-  final stateDashboard = Get.put(DashboardController());
-  return stateDashboard.configModel.value!.promotionCategories!.where((element) => element.id == promotionCategory).isNotEmpty ? stateDashboard.configModel.value!.promotionCategories!.where((element) => element.id == promotionCategory).first.name : "N/A";
+getPromotionCategory(BuildContext context,{String? promotionCategory}){
+  late ConfigController configController;
+  configController = context.read<ConfigController>();
+
+  return configController.configModel!.promotionCategories!.where((element) => element.id == promotionCategory).isNotEmpty ? configController.configModel!.promotionCategories!.where((element) => element.id == promotionCategory).first.name : "N/A";
 }
 
 Future goTo(BuildContext context, Widget target,

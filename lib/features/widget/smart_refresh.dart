@@ -1,9 +1,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:urbandrop/controllers/orders/orders_controller.dart';
+import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 
 // custom smart refresh for UI pagination
@@ -19,9 +21,13 @@ class SmartRefresh extends StatefulWidget {
 
 class _SmartRefreshState extends State<SmartRefresh> {
   final RefreshController _refreshController =  RefreshController(initialRefresh: false);
+  late ProductsController productsController;
 
   // pull to refresh the UI data
   void _onRefresh() async{
+    productsController = context.read<ProductsController>();
+    productsController.listProducts.clear();
+    productsController.unFilteredListProducts.clear();
     setState(() {
       widget.onRefresh();
     });

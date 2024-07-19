@@ -5,11 +5,13 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart' hide Routing;
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
@@ -33,12 +35,11 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
   TextEditingController businessPostcode = TextEditingController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   List<String> _list = [];
+  late ConfigController configController;
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    final stateDashboard = Get.put(DashboardController());
-
     businessName.text = userInstance?.businessName ?? "";
     authenticationController.businessName = userInstance?.businessName ?? "";
     businessAddress.text = userInstance?.address ?? "";
@@ -47,10 +48,19 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
     authenticationController.businessCity = userInstance?.city ?? "";
     businessPostcode.text = userInstance?.postCode ?? "";
     authenticationController.businessPostCode = userInstance?.postCode ?? "";
-    stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
-      _list.add(element.categoryName!);
+    configController = context.read<ConfigController>();
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+      await configController.getUserConfig();
+      configController.configModel!.merchantCategories!.forEach((element) {
+        _list.add(element.categoryName!);
+
+      });
+      setState(() {
+
+      });
     });
+
   }
   @override
   Widget build(BuildContext context) {
@@ -201,7 +211,7 @@ class _BusinessInformationPageState extends State<BusinessInformationPage> {
                     onPressed: ()async{
                      try{
                        if(authenticationController.validateBusinessInformation()){
-                         stateDashboard.configModel.value!.merchantCategories!.forEach((element) {
+                         configController.configModel!.merchantCategories!.forEach((element) {
                            if(element.categoryName == authenticationController.businessType ){
                              authenticationController.businessType = element.categoryName;
                              authenticationController.businessTypeId = element.id;

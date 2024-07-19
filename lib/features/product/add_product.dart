@@ -6,9 +6,11 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/core/helper/helper.dart';
@@ -45,7 +47,9 @@ class _AddProductState extends State<AddProduct> {
   String? category;
   String? categoryId;
   String? weight;
-   List<String> _list = [];
+  late ConfigController configController;
+
+  List<String> _list = [];
   validateField(){
     if(productNameController.text.isNotEmpty && productDescriptionController.text.isNotEmpty && category != null && amountController.text.isNotEmpty  && (mediaPath != null || widget.productData != null) && weight != null){
       return true;
@@ -57,6 +61,8 @@ class _AddProductState extends State<AddProduct> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    configController = context.read<ConfigController>();
+
     final stateDashboard = Get.put(DashboardController());
     if(widget.productData != null){
       productNameController.text ="${widget.productData?.productName}";
@@ -67,13 +73,20 @@ class _AddProductState extends State<AddProduct> {
       weight = widget.productData?.unit ;
 
     }
-      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+      await configController.getUserConfig();
+      configController.configModel!.productCategories!.forEach((element) {
         _list.add(element.categoryName!);
         if(element.id == widget.productData?.categoryId ){
           category = element.categoryName;
           categoryId = element.id;
         }
       });
+      setState(() {
+
+      });
+    });
+
 
   }
   @override
@@ -341,7 +354,7 @@ class _AddProductState extends State<AddProduct> {
                         content:  sText(widget.productData == null ? "Ad product" : "Save",color: Colors.white,weight: FontWeight.w600,size: 18),
                         onPressed:(){
                           if(validateField()){
-                            stateDashboard.configModel.value!.productCategories!.forEach((element) {
+                            configController.configModel!.productCategories!.forEach((element) {
                               if(element.categoryName == category ){
                                 category = element.categoryName;
                                 categoryId = element.id;

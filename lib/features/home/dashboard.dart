@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
+import 'package:urbandrop/controllers/dashboard/order_summary_controller.dart';
+import 'package:urbandrop/controllers/dashboard/recent_delivery_controller.dart';
+import 'package:urbandrop/controllers/dashboard/recent_order_controller.dart';
+import 'package:urbandrop/controllers/dashboard/top_product_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
+import 'package:urbandrop/features/home/dashboard_daily_summary.dart';
+import 'package:urbandrop/features/home/dashboard_recent_delivery.dart';
+import 'package:urbandrop/features/home/dashboard_recent_order.dart';
+import 'package:urbandrop/features/home/dashboard_top_product.dart';
 import 'package:urbandrop/features/widget/daily_summary_widget.dart';
 import 'package:urbandrop/features/widget/flutter_switch.dart';
 import 'package:urbandrop/features/widget/product_widget.dart';
@@ -17,11 +26,31 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-
+  late OrderSummaryController orderSummaryController;
+  late RecentDeliveryController recentDeliveryController;
+  late RecentOrderController recentOrderController;
+  late TopProductController topProductController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    topProductController = context.read<TopProductController>();
+    orderSummaryController = context.read<OrderSummaryController>();
+    recentDeliveryController = context.read<RecentDeliveryController>();
+    recentOrderController = context.read<RecentOrderController>();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+      topProductController.topProducts.clear();
+      orderSummaryController.orderSummary == null;
+      recentDeliveryController.recentOrderDelivery == null;
+      recentOrderController.recentOrderData == null;
+      topProductController.getTopProducts();
+      orderSummaryController.getOrderSummary();
+      recentDeliveryController.getRecentDelivery();
+      recentOrderController.getRecentOrder();
+      setState(() {
+
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -71,93 +100,23 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
         ),
-        Obx(() =>  state.loading.value ?
-        Expanded(child: Center(child: progressCircular(),)) :
-        !state.loading.value ?
         Expanded(
           child: SmartRefresh(
             onLoading:(){},
             onRefresh: state.onRefresh,
             child:  ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                const SizedBox(height: 10,),
-                Row(
-                  children: [
-                    sText("Daily Summary",weight: FontWeight.w500,size: 15,color: Colors.black)
-                  ],
-                ),
-                const SizedBox(height: 20,),
-                Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(child: DailySummary(backgroundColor: const Color(0xFF5CB35E).withOpacity(0.3),amount: "${state.orderSummary.value?.count}",)),
-                    const SizedBox(width: 10,),
-                    Expanded(child: DailySummary(backgroundColor: const Color(0xFF5CB35E),textColor: Colors.white,title: "received",amount: "£ ${state.orderSummary.value?.revenue}",image: "received.png",)),
-                    const SizedBox(width: 10,),
-                    Expanded(child: DailySummary(backgroundColor: const Color(0xFF183A37),textColor: Colors.white,title: "deliveries",amount: "${state.orderSummary.value?.deliveries}",image: "deliveries.png",))
-                  ],
-                )),
-                const SizedBox(height: 20,),
-                Row(
-                  children: [
-                    sText("Recent delivery",weight: FontWeight.w500,size: 15,color: Colors.black)
-                  ],
-                ),
-                const SizedBox(height: 20,),
-                Obx(() => RecentDDeliveryWidget(recentDelivery: state.recentOrderDelivery.value,)),
-                const SizedBox(height: 20,),
-
-                Obx(() => Column(
-                  children: [
-                    if(state.recentOrderData.value != null)
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              sText("Recent order",weight: FontWeight.w500,size: 15,color: Colors.black)
-                            ],
-                          ),
-                          const SizedBox(height: 20,),
-                          RecentOrder(recentOrder: state.recentOrderData.value ,),
-                          const SizedBox(height: 20,),
-                        ],
-                      )
-                  ],
-                )),
-                Row(
-                  children: [
-                    sText("Popular products",weight: FontWeight.w500,size: 15,color: Colors.black)
-                  ],
-                ),
-                const SizedBox(height: 20,),
-                Obx(() =>   SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                      itemCount: state.topProducts.value.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index){
-                        return Row(
-                          children: [
-                            ProductWidget(productData: state.topProducts.value[index],),
-                            const SizedBox(width: 10,),
-                          ],
-                        );
-
-                      }),
-                )),
-
-
-                const SizedBox(height: 20,),
+              children: const [
+                DashboardDailySummary(),
+                DashboardRecentDelivery(),
+                DashboardRecentOrder(),
+                DashboardTopProduct()
               ],
             ),
           )
 
           ,
-        ) :
-        Expanded(child: Center(child: sText( state.errorMessage.value.isEmpty ? "Check your internet and try again" :  state.errorMessage.value),))),
-
+        )
       ],
     );
   }

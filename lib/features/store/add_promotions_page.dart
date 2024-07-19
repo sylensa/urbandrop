@@ -5,10 +5,12 @@ import 'dart:io';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:recase/recase.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
+import 'package:urbandrop/controllers/config/config_controller.dart';
 import 'package:urbandrop/controllers/dashboard/dashboard_controller.dart';
 import 'package:urbandrop/controllers/products/product_controllers.dart';
 import 'package:urbandrop/controllers/promotions/promotions_controller.dart';
@@ -49,6 +51,8 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   TextEditingController promotionNameController = TextEditingController();
   TextEditingController promotionOfferController = TextEditingController();
   TextEditingController minimumController = TextEditingController();
+  late ConfigController configController;
+  late ProductsController productsController;
 
   validateField(){
     if(promotionNameController.text.isNotEmpty && endDate != null && startDate != null && promotionOfferController.text.isNotEmpty && promotionCategory != null && promotionType != null && productName != null && (mediaPath != null || widget.promotionsData != null) ){
@@ -63,7 +67,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
     final stateProduct = Get.put(ProductsController());
     final stateDashboard = Get.put(DashboardController());
     if(filterCategory){
-      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+      configController.configModel!.productCategories!.forEach((element) {
         if(element.categoryName == productCategory ){
           print("element.id:${element.id}");
           productCategoryId = element.id;
@@ -72,13 +76,13 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
     }
     productList.clear();
     if(productCategoryId != null){
-      stateProduct.listProducts.value = stateProduct.unFilteredListProducts.value.where((element) => element.categoryId == productCategoryId).toList();
-      stateProduct.listProducts.value.forEach((element) {
+      productsController.listProducts = productsController.unFilteredListProducts.where((element) => element.categoryId == productCategoryId).toList();
+    productsController.listProducts.forEach((element) {
         productList.add(element.productName!);
       });
       print("productList:${productList}");
     }else{
-      stateProduct.unFilteredListProducts.value.forEach((element) {
+      productsController.unFilteredListProducts.forEach((element) {
         productList.add(element.productName!);
       });
     }
@@ -91,20 +95,21 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    configController = context.read<ConfigController>();
+    productsController = context.read<ProductsController>();
+
     log("widget.promotionsData!.imageUrl:${widget.promotionsData?.toJson()}");
     Future.delayed(const Duration(seconds: 1),()async{
-      final stateProduct = Get.put(ProductsController());
-      final stateDashboard = Get.put(DashboardController());
-      stateProduct.listProducts.value.clear();
-      stateProduct.listProducts.value.addAll(stateProduct.unFilteredListProducts.value);
-      if(stateDashboard.configModel.value == null){
-        await AuthenticationController().getUserConfig();
+      productsController.listProducts.clear();
+      productsController.listProducts.addAll(productsController.unFilteredListProducts);
+      if(configController.configModel == null){
+        await configController.getUserConfig();
         setState(() {
 
         });
       }
-      if( stateProduct.listProducts.value.isEmpty){
-        await stateProduct.getProducts();
+      if( productsController.listProducts.isEmpty){
+        await productsController.getProducts(limit: 100000000000000);
         setState(() {
 
         });
@@ -119,7 +124,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
         endDate = widget.promotionsData!.promoExpiry;
       }
 
-      stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
+      configController.configModel!.promotionCategories!.forEach((element) {
         promotionCategories.add(element.name!);
         print("promo element.name:${element.name}");
         if(element.id == widget.promotionsData?.promoCategory ){
@@ -129,7 +134,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
         }
       });
 
-      stateDashboard.configModel.value!.productCategories!.forEach((element) {
+      configController.configModel!.productCategories!.forEach((element) {
         productCategories.add(element.categoryName!);
         log("productCategories:$productCategories");
         if(widget.promotionsData != null){
@@ -143,7 +148,7 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
 
       });
 
-      stateProduct.unFilteredListProducts.value.forEach((element) {
+      productsController.unFilteredListProducts.forEach((element) {
         if(widget.promotionsData != null){
           for(int i =0;  i < widget.promotionsData!.promoProducts!.length; i++){
             if(element.id == widget.promotionsData!.promoProducts![i] ){
@@ -616,21 +621,21 @@ class _AddPromotionsPageState extends State<AddPromotionsPage> {
                                 return;
                               }
                             }
-                            stateDashboard.configModel.value!.promotionCategories!.forEach((element) {
+                            configController.configModel!.promotionCategories!.forEach((element) {
                               if(element.name == promotionCategory ){
                                 promotionCategory= element.name;
                                 promotionCategoryId = element.id;
                                 promotionDescription = element.description;
                               }
                             });
-                            stateDashboard.configModel.value!.productCategories!.forEach((element) {
+                            configController.configModel!.productCategories!.forEach((element) {
                               if(element.name == productCategory ){
                                 productCategory= element.name;
                                 productCategoryId = element.id;
                               }
                             });
                             productId.clear();
-                            stateProduct.listProducts.value.forEach((element) {
+                            productsController.listProducts.forEach((element) {
                               for(int i =0;  i < productName.length; i++){
                                 if(element.productName == productName[i] ){
                                   productId.add(element.id!);
