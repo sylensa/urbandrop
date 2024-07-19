@@ -52,10 +52,7 @@ class _SmartRefreshState extends State<SmartRefresh> {
       footer: CustomFooter(
         builder: (BuildContext context,LoadStatus? mode){
           Widget body ;
-          if(state.paginationLoading.value){
-            body =  const CupertinoActivityIndicator();
-          }
-          else  if(mode==LoadStatus.idle){
+         if(mode==LoadStatus.idle){
             body =  sText("No more Data");
           }
           else if(mode == LoadStatus.failed){

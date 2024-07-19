@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:urbandrop/controllers/orders/orders_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
@@ -18,9 +19,18 @@ class OrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   int orderStatus = 1;
+  late OrdersController ordersController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ordersController = context.read<OrdersController>();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    final state = Get.put(OrdersController());
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -164,7 +174,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         onPressed:(){
                           widget.orderData?.status = OrderStatus.accepted;
                           setState(() {});
-                          state.changeOrderPendingState(widget.orderData!);
+                          ordersController.changeOrderPendingState(widget.orderData!);
                         }),
                   ),
                   const SizedBox(width: 20,),
@@ -179,7 +189,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         content:  sText("Decline",color: appMainRedColor,weight: FontWeight.w600,size: 18),
                         onPressed:(){
                           widget.orderData?.status = OrderStatus.declined;
-                          state.changeOrderPendingState(widget.orderData!);
+                          ordersController.changeOrderPendingState(widget.orderData!);
                           setState(() {});
                         }),
                   ),
@@ -221,7 +231,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         orderStatus = 3;
                         widget.orderData?.status = OrderStatus.delivering;
                         setState(() {});
-                        state.changeOrderPendingState(widget.orderData!);
+                        ordersController.changeOrderPendingState(widget.orderData!);
                       }),
 
 
@@ -262,7 +272,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       onPressed:(){
                         widget.orderData?.status = OrderStatus.completed;
                         setState(() {});
-                        state.changeOrderPendingState(widget.orderData!);
+                        ordersController.changeOrderPendingState(widget.orderData!);
                       }),
 
 

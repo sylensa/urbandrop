@@ -42,7 +42,8 @@ class _DashboardRecentOrderState extends State<DashboardRecentOrder> {
                 ],
               ),
               const SizedBox(height: 20,),
-              RecentOrder(recentOrder: state.recentOrderData ,),
+              RecentOrder(recentOrder: state.recentOrderData),
+
               const SizedBox(height: 20,),
             ],
           )
