@@ -124,6 +124,7 @@ class UserModel {
     documentSubmitted: json["document_submitted"] == 1 ? true : false,
     notifications: json["notifications"] == null ? null : Notifications.fromJson(json["notifications"]),
     notification_channels: json["notification_channels"] == null ? null : NotificationsChannels.fromJson(json["notification_channels"]),
+
     address: json["address"] ?? "",
     city: json["city"] ?? "",
     postCode: json["post_code"] ?? "",

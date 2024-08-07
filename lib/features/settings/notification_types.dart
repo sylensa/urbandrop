@@ -37,7 +37,7 @@ class _NotificationSettingTypesPageState extends State<NotificationSettingTypesP
                   children:[
                     StoreWidget(
                       image: "new_order.png",
-                      content: "New orders ",
+                      content: "New orders",
                       onTap: ()async{
                         userInstance?.notifications?.orders = !userInstance!.notifications!.orders!;
                         setState(() {});

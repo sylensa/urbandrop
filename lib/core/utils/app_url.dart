@@ -142,13 +142,13 @@ class UploadingFileIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       height: 80,
       width: 80,
       child: Center(
         child: Stack(
           fit: StackFit.expand,
-          children: const [
+          children: [
             CircularProgressIndicator(
               strokeWidth: 10,
               backgroundColor: Colors.white,

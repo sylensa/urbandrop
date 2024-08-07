@@ -664,7 +664,7 @@ verifyEmail(BuildContext context) async {
     if(validatePinCode()){
       userInstance =  await userPreferences.getUser();
       var response = await _http.postRequest(AppUrl.userVerify, {
-        "id": userInstance?.id,
+        "email": userInstance?.email,
         "token": pinCode
       });
       log("(response.body:$response");
@@ -753,7 +753,7 @@ resendEmail(BuildContext context) async {
   }
 }
 
-resendOTP(BuildContext context) async {
+resendOTP(BuildContext context,{bool verify = true}) async {
   try {
     showLoaderDialog(context);
     if(mobileNumber.isNotEmpty && mobileNumberWithoutCountryCode.isNotEmpty){
@@ -769,7 +769,9 @@ resendOTP(BuildContext context) async {
        if (response["status"] == AppResponseCodes.success) {
          context.pop();
          toastSuccessMessage(response['message'], context);
-         context.push(Routing.confirmOTP,extra: false);
+         if(verify){
+           context.push(Routing.confirmOTP,extra: false);
+         }
        } else{
          context.pop();
          toastMessage(response['message'], context);

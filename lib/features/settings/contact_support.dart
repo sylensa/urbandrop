@@ -1,25 +1,14 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:urbandrop/controllers/auth/authentication_controller.dart';
 import 'package:urbandrop/core/helper/helper.dart';
 import 'package:urbandrop/core/utils/colors_utils.dart';
 import 'package:urbandrop/features/widget/custom_text_field.dart';
-import 'package:urbandrop/features/widget/social_login_widgets.dart';
-import 'package:urbandrop/routes.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:urbandrop/core/helper/helper.dart';
-import 'package:urbandrop/core/utils/colors_utils.dart';
-import 'package:country_calling_code_picker/picker.dart';
-import 'package:country_picker/country_picker.dart' as c;
 import 'package:intl_phone_field/countries.dart' as intl;
 
 class ContactSupportPage extends StatefulWidget {
   const ContactSupportPage({super.key});
-
   @override
   State<ContactSupportPage> createState() => _ContactSupportPageState();
 }

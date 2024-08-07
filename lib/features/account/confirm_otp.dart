@@ -60,7 +60,7 @@ class _ConfirmOTPState extends State<ConfirmOTP> {
                   authenticationController.mobileNumber = "${userInstance?.mcc}${userInstance?.mobileNumber}";
                   authenticationController.mobileNumberWithoutCountryCode = "${userInstance?.mobileNumber}";
                   authenticationController.mcc = "${userInstance?.mcc}";
-                  authenticationController.resendOTP(context,);
+                  authenticationController.resendOTP(context,verify: false);
                 }
 
               },
